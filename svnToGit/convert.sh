@@ -2,15 +2,23 @@
 
 # convert svn to get
 # select only desired packages for each new git repository
+# run convert.sh on cluck
+
+#Need to move
+#Filters/ShowerSelectorFilter_module.cc -> ShowerFinder/ShowerSelectorFilter_module.cc1.
+
+# Monitoring will be retired - create larobsolete for this
+# make sure .root files are excluded
+# use verbose on all
 
 source /products/setup
 setup git
 
-working_dir=/home/garren/scratch/larsoft
-author_list=/home/garren/larsoft/notes/larsoft.git.author.list
+working_dir=/home/garren/larsoft/2013.11.25
+author_list=/home/garren/larsoft/convert/larsoft.git.author.list
 larsoft_svn=http://cdcvs.fnal.gov/subversion/larsoftsvn
-lardir=${working_dir}/gitlar
-larsoft_dir_list="larcore larexamples lardata larevt larsim larreco larana lareventdisplay larsoft"
+lardir=${working_dir}/larg-take2
+larsoft_dir_list="larcore larexamples lardata larevt larsim larreco larana larpandora lareventdisplay larsoft"
 
 if [ -d ${lardir} ]
 then
@@ -44,6 +52,8 @@ svn2git ${larsoft_svn} --authors ${author_list} --verbose \
 --exclude Genfit \
 --exclude HitFinder \
 --exclude LArG4 \
+--exclude LArPandoraAlgorithms \
+--exclude LArPandoraInterface \
 --exclude MCCheater \
 --exclude Monitoring \
 --exclude OpticalDetector \
@@ -81,6 +91,8 @@ svn2git ${larsoft_svn} --authors ${author_list} \
 --exclude Genfit \
 --exclude HitFinder \
 --exclude LArG4 \
+--exclude LArPandoraAlgorithms \
+--exclude LArPandoraInterface \
 --exclude MCCheater \
 --exclude 'OpticalDetector\b' \
 --exclude ParticleIdentification \
@@ -114,6 +126,8 @@ svn2git ${larsoft_svn} --authors ${author_list} \
 --exclude Genfit \
 --exclude HitFinder \
 --exclude LArG4 \
+--exclude LArPandoraAlgorithms \
+--exclude LArPandoraInterface \
 --exclude MCCheater \
 --exclude Monitoring \
 --exclude OpticalDetector \
@@ -152,6 +166,8 @@ svn2git ${larsoft_svn} --authors ${author_list} \
 --exclude Geometry \
 --exclude Genfit \
 --exclude HitFinder \
+--exclude LArPandoraAlgorithms \
+--exclude LArPandoraInterface \
 --exclude Monitoring \
 --exclude OpticalDetector \
 --exclude OpticalDetectorData \
@@ -185,6 +201,8 @@ svn2git ${larsoft_svn} --authors ${author_list} \
 --exclude Filters \
 --exclude Geometry \
 --exclude LArG4 \
+--exclude LArPandoraAlgorithms \
+--exclude LArPandoraInterface \
 --exclude MCCheater \
 --exclude Monitoring \
 --exclude OpticalDetector \
@@ -221,6 +239,8 @@ svn2git ${larsoft_svn} --authors ${author_list} \
 --exclude Genfit \
 --exclude HitFinder \
 --exclude LArG4 \
+--exclude LArPandoraAlgorithms \
+--exclude LArPandoraInterface \
 --exclude MCCheater \
 --exclude Monitoring \
 --exclude OpticalDetectorData \
@@ -259,6 +279,8 @@ svn2git ${larsoft_svn} --authors ${author_list} \
 --exclude Genfit \
 --exclude HitFinder \
 --exclude LArG4 \
+--exclude LArPandoraAlgorithms \
+--exclude LArPandoraInterface \
 --exclude MCCheater \
 --exclude Monitoring \
 --exclude OpticalDetector \
@@ -299,6 +321,8 @@ svn2git ${larsoft_svn} --authors ${author_list} \
 --exclude Genfit \
 --exclude HitFinder \
 --exclude LArG4 \
+--exclude LArPandoraAlgorithms \
+--exclude LArPandoraInterface \
 --exclude MCCheater \
 --exclude Monitoring \
 --exclude OpticalDetector \
@@ -321,9 +345,9 @@ svn2git ${larsoft_svn} --authors ${author_list} \
 --exclude VertexFinder \
  >& ${lardir}/log.larexamples.convert &
 
-cd ${lardir}/larsoft
+cd ${lardir}/larpandora
 echo "_____________________________________________________________________"
-echo "make larsoft"
+echo "make larpandora"
 svn2git ${larsoft_svn} --authors ${author_list} \
 --exclude AnalysisAlg \
 --exclude AnalysisBase \
@@ -350,6 +374,49 @@ svn2git ${larsoft_svn} --authors ${author_list} \
 --exclude RecoAlg \
 --exclude RecoBase \
 --exclude RecoObjects \
+--exclude setup \
+--exclude ShowerFinder \
+--exclude SimpleTypesAndConstants \
+--exclude Simulation \
+--exclude SRT_LAR \
+--exclude SummaryData \
+--exclude TrackFinder \
+--exclude TriggerAlgo \
+--exclude Utilities \
+--exclude VertexFinder \
+ >& ${lardir}/log.larpandora.convert &
+
+cd ${lardir}/larsoft
+echo "_____________________________________________________________________"
+echo "make larsoft"
+svn2git ${larsoft_svn} --authors ${author_list} \
+--exclude AnalysisAlg \
+--exclude AnalysisBase \
+--exclude AnalysisExample \
+--exclude CalData \
+--exclude Calorimetry \
+--exclude ClusterFinder \
+--exclude DetSim \
+--exclude EventDisplay \
+--exclude EventFinder \
+--exclude EventGenerator \
+--exclude Filters \
+--exclude Geometry \
+--exclude Genfit \
+--exclude HitFinder \
+--exclude LArG4 \
+--exclude LArPandoraAlgorithms \
+--exclude LArPandoraInterface \
+--exclude MCCheater \
+--exclude Monitoring \
+--exclude OpticalDetector \
+--exclude OpticalDetectorData \
+--exclude ParticleIdentification \
+--exclude PhotonPropagation \
+--exclude RawData \
+--exclude RecoAlg \
+--exclude RecoBase \
+--exclude RecoObjects \
 --exclude ShowerFinder \
 --exclude SimpleTypesAndConstants \
 --exclude Simulation \
@@ -360,6 +427,10 @@ svn2git ${larsoft_svn} --authors ${author_list} \
 --exclude Utilities \
 --exclude VertexFinder \
  >& ${lardir}/log.larsoft.convert &
+
+echo 
+echo "svn2git is running in the background"
+echo 
 
 
 exit 0
@@ -377,10 +448,12 @@ exit 0
 --exclude EventFinder \
 --exclude EventGenerator \
 --exclude Filters \
---exclude Geometry \
 --exclude Genfit \
+--exclude Geometry \
 --exclude HitFinder \
 --exclude LArG4 \
+--exclude LArPandoraAlgorithms \
+--exclude LArPandoraInterface \
 --exclude MCCheater \
 --exclude Monitoring \
 --exclude OpticalDetector \
