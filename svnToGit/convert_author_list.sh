@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# to get the base svn author list:
+# svn log --quiet http://cdcvs.fnal.gov/subversion/larsoftsvn | grep -E "r[0-9]+ \| .+ \|" | awk '{print $3}' | sort | uniq > larsoft.authors
+
 # format of svn2git author list:
 # user = Joe User <user@fnal.gov>
 
