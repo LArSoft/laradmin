@@ -2,8 +2,8 @@
 
 # tag and then build
 
-LARSOFT_SCRIPTS=/grid/fermiapp/larsoft/home/larsoft/scripts
-NIGHTLY_DIR=/grid/fermiapp/larsoft/home/larsoft/code/nightly
+LARSOFT_SCRIPTS=/grid/fermiapp/larsoft/home/larsoft/code/laradmin/nightly
+NIGHTLY_DIR=/grid/fermiapp/larsoft/home/larsoft/code/nightly_build
 
 if [ ! -d ${LARSOFT_SCRIPTS} ]
 then
@@ -44,6 +44,8 @@ do
   
 done
 
+
+${LARSOFT_SCRIPTS}/copy_build.sh  >& ${NIGHTLY_DIR}/logs/copy_nightly_$today.log || \
+     { echo "ERROR: copy_nightly failed"; exit 1; }
+
 exit 0
-
-
