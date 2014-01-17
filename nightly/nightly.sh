@@ -2,8 +2,8 @@
 
 # tag and then build
 
-LARSOFT_SCRIPTS=/grid/fermiapp/larsoft/home/larsoft/scripts
-NIGHTLY_DIR=/grid/fermiapp/larsoft/home/larsoft/code/nightly
+LARSOFT_SCRIPTS=/grid/fermiapp/larsoft/home/larsoft/code/laradmin/nightly
+NIGHTLY_DIR=/grid/fermiapp/larsoft/home/larsoft/code/nightly_build
 
 if [ ! -d ${LARSOFT_SCRIPTS} ]
 then

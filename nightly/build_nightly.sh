@@ -29,7 +29,7 @@ setup gitflow || exit 1;
 setup mrb || exit 1;
 export MRB_PROJECT=larsoft
 
-NIGHTLY_DIR=/grid/fermiapp/larsoft/home/larsoft/code/nightly
+NIGHTLY_DIR=/grid/fermiapp/larsoft/home/larsoft/code/nightly_build
 if [ ! -d ${NIGHTLY_DIR} ]
 then
    echo "ERROR: ${NIGHTLY_DIR} does not exist"
@@ -62,9 +62,12 @@ then
    exit 1
 fi
 
+# set our own MRB_INSTALL
+# we install everything in the SAME directory
+export MRB_INSTALL=${NIGHTLY_DIR}/install
+
 echo "begin build for ${OS}_${quals}"
 set -x
-rm -rf ${MRB_INSTALL}/lar*  || exit 1;
 cd $MRB_BUILDDIR  || exit 1;
 mrb z  || exit 1;
 set +x
