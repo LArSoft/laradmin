@@ -61,6 +61,7 @@ svn2git ${larsoft_svn} --authors ${author_list} --verbose \
 --exclude LArPandoraAlgorithms \
 --exclude LArPandoraInterface \
 --exclude MCCheater \
+--exclude Monitoring \
 --exclude 'OpticalDetector\b' \
 --exclude ParticleIdentification \
 --exclude PhotonPropagation \

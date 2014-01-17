@@ -4,6 +4,8 @@
 # select only desired packages for each new git repository
 # run convert.sh on cluck
 
+# Monitoring is obsolete and would require extensive rewriting
+# SRT_LAR is not needed
 
 usage()
 {
@@ -43,5 +45,43 @@ source /products/setups || { echo "ERROR: setup of ups failed"; exit 1; }
 setup git || { echo "ERROR: setup of git failed"; exit 1; }
 
 cd ${working_dir}
+
+svn2git ${larsoft_svn} --authors ${author_list} --verbose \
+--exclude AnalysisAlg \
+--exclude AnalysisBase \
+--exclude AnalysisExample \
+--exclude CalData \
+--exclude Calorimetry \
+--exclude ClusterFinder \
+--exclude DetSim \
+--exclude EventDisplay \
+--exclude EventFinder \
+--exclude EventGenerator \
+--exclude Filters \
+--exclude Genfit \
+--exclude Geometry \
+--exclude HitFinder \
+--exclude LArG4 \
+--exclude LArPandoraAlgorithms \
+--exclude LArPandoraInterface \
+--exclude MCCheater \
+--exclude OpticalDetector \
+--exclude OpticalDetectorData \
+--exclude ParticleIdentification \
+--exclude PhotonPropagation \
+--exclude RawData \
+--exclude RecoAlg \
+--exclude RecoBase \
+--exclude RecoObjects \
+--exclude setup \
+--exclude ShowerFinder \
+--exclude SimpleTypesAndConstants \
+--exclude Simulation \
+--exclude SummaryData \
+--exclude TrackFinder \
+--exclude TriggerAlgo \
+--exclude Utilities \
+--exclude VertexFinder \
+ >& ../log.larobsolete.convert &
 
 exit 0
