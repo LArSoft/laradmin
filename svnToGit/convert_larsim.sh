@@ -4,6 +4,8 @@
 # select only desired packages for each new git repository
 # run convert.sh on cluck
 
+# exclude LibraryData subdiretory 
+# PhotonPropagation/LibraryData/ contains root data files which are now part of larsoft_data
 
 usage()
 {
@@ -75,6 +77,7 @@ svn2git ${larsoft_svn} --authors ${author_list} --verbose \
 --exclude TrackFinder \
 --exclude Utilities \
 --exclude VertexFinder \
+--exclude PhotonPropagation/LibraryData \
  >& ../log.larsim.convert &
 
 exit 0
