@@ -1,0 +1,64 @@
+#!/bin/bash
+#
+# Usage: 
+#   cd <working directory>/srcs
+#   move_experiment_dirs
+#
+# Details:
+# --------
+# The process of extracting files from svn and putting them into 
+# the lbnecode and uboonecode repositories leaves the files at 
+# a spot too high in the directory hierarchy. (Include file directives
+# cannot distinguish the two locations, e.g., #include "Geometry/Geometry.h"
+# could refer either to larcore/Geometry/Geometry.h or
+# uboonecode/Geometry/Geometry.h) Consequently, we need to move files from
+# the top-level directories in each repository into a sub-directory
+# that is experiment specific (so that in the example above, we would
+# have #include "uboone/Geometry/Geometry.h" for the one in uboonecode.
+#
+# Starting from the srcs sub-directory in an mrb-based working area,
+# this script loops over the known sub-directories in a freshly migrated
+# uboonecode and lbnecode and moves them into a "uboone" or "lbne" 
+# sub-directory, respectively. It does this using the "git filter-branch"
+# command so that all history information is (seamlessly) retained.
+#
+# Erica Snider
+# Fermilab
+# 17-Jan-2014
+
+cd uboonecode
+[[ -d uboone ]] || mkdir uboone
+gitMoveDirsDown \
+    -t uboone 
+    -s AnalysisTree \
+       CalData \
+       DetSim \
+       EventGenerator \
+       Geometry \
+       LArG4 \
+       PhotonPropagation \
+       RawData \
+       Simulation \
+       TriggerAlgo \
+       Utilities
+
+(( $? == 0 )) || echo ERROR:  moves in uboonecode failed
+cd ..
+
+cd lbnecode
+[[ -d lbne ]] || mkdir lbne
+gitMoveDirsDown \
+    -t lbne
+    -s CalData \
+       DetSim \
+       EventGenerator \
+       Geometry \
+       LArG4 \
+       PhotonPropagation \
+       Simulation \
+       Utilities
+       
+(( $? == 0 )) || echo ERROR:  moves in lbnecode failed
+cd ..
+
+echo "Done!"
