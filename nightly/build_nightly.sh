@@ -64,6 +64,7 @@ fi
 
 # set our own MRB_INSTALL
 # we install everything in the SAME directory
+# MRB_INSTALL is redefined when you source localProducts_XXX/setup, so define it here for safety
 export MRB_INSTALL=${NIGHTLY_DIR}/install
 
 echo "begin build for ${OS}_${quals}"
@@ -77,23 +78,6 @@ source mrb s  || exit 1;
 set -x
 mrb i -j4  || exit 1;
 set +x
-
-
-# now remove and restore the official copy of the nightly updates
-# This is a very dangerous step
-# It needs lots of double checking to make sure you aren't about to blow away all of ${LARSOFT_PRODUCTS} or worse
-# Perhaps the nightly updates should be in their own product directory?
-# If the nightly updates are in a separate product directory which is JUST for them, it will make syncing with cvmfs cleaner
-larlist="larana lardata larevt larpandora larsim larcore lareventdisplay larexamples larreco larsoft"
-for larpkg in ${larlist}
-do
-  # this is tricky - each release has shared and specific directories
-  # so the directories specifically called out below are not correct, need finer control
-  # great care must be taken with this step
-  # getting this right is probably the hardest part of the entire exercise
-  echo "rsync ${MRB_INSTALL}/${larpkg}/nightly with ${LARSOFT_PRODUCTS}/${larpkg}/nightly"
-  echo "rsync ${MRB_INSTALL}/${larpkg}/nightly.version with ${LARSOFT_PRODUCTS}/${larpkg}/nightly.version"
-done
 
 cd ${NIGHTLY_DIR} || exit 1;
 touch nightly_build_${OS}_${quals}_$mytime  || exit 1;
