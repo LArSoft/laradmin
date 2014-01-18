@@ -1,0 +1,79 @@
+#!/bin/bash
+#
+# gitMoveDirsDown -t <destination dir> -s <source dir1> [<source dir2> [...]]
+#
+# Takes files/directores specified after the "-s" option and moves
+# them into <destination dir> in the same repository. The histories
+# of all files is retained through the move, so that they appear as
+# though they always lived in the new locations. 
+#
+# All specified directories must be present and writeable.
+#
+# Erica Snider
+# Fermilab
+# 17-Jan-2014
+
+
+
+function usage() {
+  echo "Usage:  gitMoveDirsDown -t <target dir> -s <source dir1> [<source dir2> [...]]"
+  echo "        (order of options is not important)"
+}
+
+# Check that we are in a git repository
+#
+[[ -d .git ]]  || echo "ERROR:  not in a git repository!!" ; exit 1
+
+# Get source and target directories
+#
+source_dirs=""
+for arg in $argv ; do
+  case $arg in
+    -t) pop
+        target_dir=$1
+        unset finding_sources
+	pop 
+	;;
+    -s) pop
+        source_dirs="${source_dirs} $1"
+	finding_sources=true
+	pop
+	;;
+    *)  if [[ -n $finding_sources ]] ; then
+          $source_dirs="${source_dirs} $1"
+	  pop
+	else
+	  echo "ERROR:  missing option/argument!!"
+	  echo "You must specify at least one source dir and one target dir"
+	  usage
+	  exit 1
+	  
+        fi
+	;;
+  esac
+done
+
+# Check that everything exists and is writeable
+#
+for $dir in $source_dirs ; do
+  [[ -d $dir ]] || echo "ERROR:  source directory \"$dir\" does not exist" ; exit 1
+  [[ -w $dir ]] || echo "ERROR:  source directory \"$dir\" not writeable" ; exit 1
+done
+
+[[ -d $target_dir ]] \
+    || echo "ERROR:  target directory \"$target_dir\" does not exist ; exit 1
+[[ -w $target_dir ]] \
+    || echo "ERROR:  target directory \"$target_dir\" not writeable ; exit 1
+
+
+# Now start the move
+#
+for source in $source_dirs ; do
+  echo "gitMoveDirsDown:  moving ${source} to ${target_dir}/${source}"
+  git filter-branch -f --tree-filter \
+      'test ${source} && mv ${source} ${target_dir}/${source}' 
+      || echo "Nothing to do" HEAD
+done
+
+echo "Done!"	
+  
