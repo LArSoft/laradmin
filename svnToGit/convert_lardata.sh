@@ -4,6 +4,7 @@
 # select only desired packages for each new git repository
 # run convert.sh on cluck
 
+# RawData/uboone_datatypes belongs in uboonecode
 
 usage()
 {
@@ -65,6 +66,7 @@ svn2git ${larsoft_svn} --authors ${author_list} --verbose \
 --exclude 'OpticalDetector\b' \
 --exclude ParticleIdentification \
 --exclude PhotonPropagation \
+--exclude RawData/uboone_datatypes \
 --exclude RecoAlg \
 --exclude setup \
 --exclude ShowerFinder \
