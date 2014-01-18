@@ -4,6 +4,8 @@
 # select only desired packages for each new git repository
 # run convert.sh on cluck
 
+# larevt/Filters/ShowerSelectorFilter_module.cc belongs in larreco/ShowerFinder
+
 
 usage()
 {
@@ -53,7 +55,16 @@ svn2git ${larsoft_svn} --authors ${author_list} --verbose \
 --exclude DetSim \
 --exclude EventDisplay \
 --exclude EventGenerator \
---exclude Filters \
+--exclude Filters/ADCFilter_module.cc  \
+--exclude Filters/CMakeLists.txt  \
+--exclude 'Filters/ChannelFilter.*'  \
+--exclude Filters/EmptyFilter_module.cc  \
+--exclude Filters/EventFilter_module.cc  \
+--exclude Filters/FinalStateParticleFilter_module.cc  \
+--exclude Filters/GNUmakefile  \
+--exclude Filters/MuonFilter_module.cc  \
+--exclude Filters/SmallClusterFilter_module.cc  \
+--exclude 'Filters/*.fcl'  \
 --exclude Geometry \
 --exclude LArG4 \
 --exclude LArPandoraAlgorithms \
