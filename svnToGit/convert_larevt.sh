@@ -4,6 +4,8 @@
 # select only desired packages for each new git repository
 # run convert.sh on cluck
 
+# Filters/ShowerSelectorFilter_module.cc belongs in larreco/ShowerFinder
+
 
 usage()
 {
@@ -54,6 +56,7 @@ svn2git ${larsoft_svn} --authors ${author_list} --verbose \
 --exclude EventDisplay \
 --exclude EventFinder \
 --exclude EventGenerator \
+--exclude Filters/ShowerSelectorFilter_module.cc \
 --exclude Geometry \
 --exclude Genfit \
 --exclude HitFinder \
