@@ -64,7 +64,10 @@ svn2git ${larsoft_svn} --authors ${author_list} --verbose \
 --exclude Filters/GNUmakefile  \
 --exclude Filters/MuonFilter_module.cc  \
 --exclude Filters/SmallClusterFilter_module.cc  \
---exclude 'Filters/*.fcl'  \
+--exclude Filters/filters_argoneut.fcl  \
+--exclude Filters/filters.fcl  \
+--exclude Filters/mufilter.fcl  \
+--exclude Genfit/genfitGeom.root \
 --exclude Geometry \
 --exclude LArG4 \
 --exclude LArPandoraAlgorithms \
