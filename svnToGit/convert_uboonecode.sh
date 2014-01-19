@@ -51,7 +51,6 @@ svn2git ${larsoft_svn} --authors ${author_list} --verbose \
 --exclude AnalysisAlg \
 --exclude AnalysisBase \
 --exclude AnalysisExample \
---exclude CalData/MicrobooneResponseFile \
 --exclude CalData/CMakeLists.txt \
 --exclude CalData/CalGausHFLBNE10kt_module.cc \
 --exclude CalData/CalGausHFLBNE35t_module.cc \
@@ -78,7 +77,7 @@ svn2git ${larsoft_svn} --authors ${author_list} --verbose \
 --exclude CalData/test/simwire_argoneut.fcl \
 --exclude Calorimetry \
 --exclude ClusterFinder \
---exclude DetSim/MakeLists.txt \
+--exclude DetSim/CMakeLists.txt \
 --exclude DetSim/GNUmakefile \
 --exclude DetSim/SimWireAna_module.cc \
 --exclude DetSim/SimWireLBNE10kt_module.cc \
