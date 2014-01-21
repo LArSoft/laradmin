@@ -12,10 +12,13 @@
 function usage () {
   echo "Usage:  copy_build_files [-n] -s <source dir> -t <target dir> "
   echo 
-  echo "        where -n => show what will be done without doing it"
+  echo "        where <source dir> is the top-level directory of the source git repository"
+  echo "        <target dir> is the top-level directory of the target git respository"
+  echo "        -n : show actions that will be taken, but don't execute any of them"
 }
 
-
+# Parse arguments
+#
 while (( $# )) ; do
   arg=$1
   case $arg in
@@ -36,6 +39,8 @@ while (( $# )) ; do
   shift
 done
 
+# Check input
+#
 if [[ -z $source_dir ]] ; then
   echo "ERROR:  no source directory specified"
   usage
@@ -56,7 +61,15 @@ elif [[ ! -w $target_dir ]] ; then
   echo "ERROR:  target directory \"${target_dir}\" is not writable"
   usage
   exit 1
+elif [[ ! -d $target_dir/.git ]] ; then
+  echo "ERROR:  target directory \"${target_dir}\" not a git repository"
+  usage
+  exit 1
 fi
+
+# Get full path so we can move to the target dir
+#
+source_dir_full_path=`cd ${source_dir} ; pwd`
 
 copy_command="cp"
 [[ -n $do_nothing ]] && copy_command="echo ${copy_command}"
@@ -65,7 +78,7 @@ copy_command="cp"
 #
 echo "Copy the ups directory"
 if [[ -d ${source_dir}/ups ]] ; then
-  ${copy_command} -r ${source_dir}/ups ${target_dir}/
+  ${copy_command} -r ${source_dir_full_path}/ups ${target_dir}/
 else
   echo "  No ups directory in ${source_dir}"
 fi
@@ -80,17 +93,19 @@ alldirs=`find ${target_dir} -type d | grep -v \.git`
 echo "Target directories:"
 echo $alldirs
 
-# construct a relative path to be used on the source directory specification
-#
-relpath=`echo $target_dir | sed -e "s/\//\\\//g"`
-echo relpath = $relpath
+# # construct a relative path to be used on the source directory specification
+# #
+# relpath=`echo $target_dir | sed -e "s/\//\\\//g"`
+# echo relpath = $relpath
 
 echo "Copy CMakeLists.txt to target directories from corresponding directories in source"
 for tdir in $alldirs ; do
   echo "Target dir $tdir"
-  sdir=${source_dir}/${tdir}
+  sdir=${source_dir_full_path}/${tdir}
+  #######
   #sed -e "s/${relpath}/${tdir}/"
-  #sdir=${source_dir}/`sed -e "s/${relpath}/${tdir}/"`
+  #sdir=${source_dir_full_path}/`sed -e "s/${relpath}/${tdir}/"`
+  #######
   echo "Source dir $sdir"
   if [[ -e ${sdir}/CMakeLists.txt ]] ; then
     $copy_command ${sdir}/CMakeLists.txt $tdir/

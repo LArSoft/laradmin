@@ -16,22 +16,33 @@
 # that is experiment specific (so that in the example above, we would
 # have #include "uboone/Geometry/Geometry.h" for the one in uboonecode.
 #
-# Starting from the srcs sub-directory in an mrb-based working area,
+# Starting from a directory with lbnecode and uboonecode repositories present,
 # this script loops over the known sub-directories in a freshly migrated
 # uboonecode and lbnecode and moves them into a "uboone" or "lbne" 
 # sub-directory, respectively. It does this using the "git filter-branch"
 # command so that all history information is (seamlessly) retained.
 #
+# Prerequisites:
+# o  lbnecode and uboonecode in the current working directory
+# o  the 'laradmin' repository is in the current working directory
+# o  git is set up
+#
 # Erica Snider
 # Fermilab
 # 17-Jan-2014
 
+if [[ ! -x laradmin/svnToGit/refactor/gitMoveDirsDown ]] ; then
+  echo "ERROR:  the \'laradmin\' repository must be in your current working directory"
+  exit 1
+fi
+
+MOVE_COMMAND=`pwd`/laradmin/svnToGit/refactor/gitMoveDirsDown
+
 cd uboonecode
 [[ -d uboone ]] || mkdir uboone
-gitMoveDirsDown \
-    -t uboone 
-    -s AnalysisTree \
-       CalData \
+$MOVE_COMMAND \
+    -t uboone \
+    -s CalData \
        DetSim \
        EventGenerator \
        Geometry \
@@ -47,8 +58,8 @@ cd ..
 
 cd lbnecode
 [[ -d lbne ]] || mkdir lbne
-gitMoveDirsDown \
-    -t lbne
+$MOVE_COMMAND \
+    -t lbne \
     -s CalData \
        DetSim \
        EventGenerator \
