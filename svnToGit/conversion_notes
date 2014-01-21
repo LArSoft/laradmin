@@ -1,6 +1,6 @@
 Jan 21, 2014
 
-Make final tag of svn 
+1. Make final tag of svn 
 
 Check author list:
 svn log --quiet http://cdcvs.fnal.gov/subversion/larsoftsvn | grep -E "r[0-9]+ \| .+ \|" | awk '{print $3}' | so
@@ -15,14 +15,17 @@ setup git
 cp -pr /home/garren/scratch/larsoft/2014.01.21.take3 /home/garren/scratch/larsoft/2014.01.21.clean
 ./cleanup.sh /home/garren/scratch/larsoft/2014.01.21.clean
 
+2. Remove old git repositories and remake.
 
-
-
-
-Remove old git repositories and remake.
 The steps listed here are for larcore - repeat for each repository.
 
 ssh p-larcore@cdcvs
+
+edit .admin file to remove lueking
+
+cd /cvs/projects/larcore/
+tar cjf ~/larcore.beta.tar.bz2 .
+
 
 cd /cvs/projects/larcore/
 rm -rf * 
@@ -30,14 +33,81 @@ rm -rf *
 /usr/bin/git update-server-info
 mv hooks/post-update.sample hooks/post-update
 
-Now add the results of svn2git before the next step
-Also create the develop branch
+3. put the new code into the empty repository
+
+work on cluck with git 1.8
+cd /home/garren/scratch/larsoft/2014.01.21.clean/larcore
+
+git remote add origin ssh://p-larcore@cdcvs.fnal.gov/cvs/projects/larcore
+git push origin master
+git push --all
+git push --tags
+
+4. create the develop branch+
+
+mkdir -p /home/garren/scratch/larsoft/final
+cd final
+git clone ssh://p-larcore@cdcvs.fnal.gov/cvs/projects/larcore
+cd larcore
+git flow init -d
+git push origin develop
+
+5. Make it so that git clone puts you in the develop branch by default
+
+sh p-larcore@cdcvs
 
 cd /cvs/projects/larcore/
-usr/bin/git symbolic-ref HEAD refs/heads/develop
+/usr/bin/git symbolic-ref HEAD refs/heads/develop
 (after this, HEAD is "ref: refs/heads/develop")
+NOTE: This is not sufficient.  But mrb deals with this so we can proceed while figuring it out.
+Readonly clone does the expected thing???
 
 cd /cvs/projects/larcore/hooks
 ln -s /fnal/ups/db/fnal_git_notifier/current/scripts/fnal-git-notify-redmine post-receive
+(for email notifications)
 
-edit .admin file to remove lueking
+6. add ups and top CMakeLists.txt
+
+mkdir -p /home/garren/scratch/larsoft/v1_00_00/wdbg
+source /home/garren/scratch/larsoft/v1_00_00/setlar.sh
+cd /home/garren/scratch/larsoft/v1_00_00/wdbg
+mrb newDev -v v1_00_00 -q e4:debug
+source /home/garren/scratch/larsoft/v1_00_00/wdbg/localProducts_larsoft_v1_00_00_e4_debug/setup
+cd $MRB_SOURCE 
+mrg g larcore
+
+diff -r /home/garren/larsoft/2014.01.21.reference/larcore larcore | egrep "diff|Only" | grep -v '.git'
+cp -pr /home/garren/larsoft/2014.01.21.reference/larcore/ups larcore/
+cp -p /home/garren/larsoft/2014.01.21.reference/larcore/CMakeLists.txt larcore/
+cp -p /home/garren/larsoft/2014.01.21.reference/larcore/Geometry/CMakeLists.txt larcore/Geometry/CMakeLists.txt
+cp -p /home/garren/larsoft/2014.01.21.reference/larcore/Geometry/gdml/CMakeLists.txt larcore/Geometry/gdml/
+ cp -p /home/garren/larsoft/2014.01.21.reference/larcore/Geometry/gdml/GDMLSchema/CMakeLists.txt larcore/Geometry/gdml/GDMLSchema/
+ git commit and push
+ 
+7. Final steps 
+
+Edit ups/product_deps
+parent is v1_00_00
+use cetbuildtools v3_07_04
+(use nutools v1_01_05)
+(use genie v2_8_0d)
+(use genie_phyopt R-2_8_0 and genie_xsec R-2_8_0)
+
+In larcore/Geometry, a number of lbne and microboone files need to be either removed or renamed
+git mv ChannelMap35Alg.cxx ChannelMap35Alg.cxx.sample
+git mv ChannelMap35Alg.h ChannelMap35Alg.h.sample
+git mv ChannelMapAPAAlg.cxx ChannelMapAPAAlg.cxx.sample
+git mv ChannelMapAPAAlg.h ChannelMapAPAAlg.h.sample
+git mv GeoObjectSorter35.cxx GeoObjectSorter35.cxx.sample
+git mv GeoObjectSorter35.h GeoObjectSorter35.h.sample
+git mv GeoObjectSorterAPA.cxx GeoObjectSorterAPA.cxx.sample
+git mv GeoObjectSorterAPA.h GeoObjectSorterAPA.h.sample
+git rm LBNEGeometryHelper.h LBNEGeometryHelper_service.cc
+....
+
+cd $MRB_BUILDDIR
+source mrb s
+mrb b -j20
+If all is well, commit and push the changes.
+
+
