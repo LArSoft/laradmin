@@ -1,0 +1,101 @@
+#!/bin/bash
+#
+# copy_build_files -s <source dir> -t <target dir>
+#
+# Copy all the build files and directories from <source dir> (assumed to be
+# the final beta release copy) and it's sub-directories to <target dir> (assumed
+# to be a new snapshot) in the corresponding sub-directories
+#
+# Erica Snider
+# 20-Jan-2014
+
+function usage () {
+  echo "Usage:  copy_build_files [-n] -s <source dir> -t <target dir> "
+  echo 
+  echo "        where -n => show what will be done without doing it"
+}
+
+
+while (( $# )) ; do
+  arg=$1
+  case $arg in
+    -s) shift
+        source_dir=$1
+	;;
+    -t) shift
+        target_dir=$1
+        ;;
+    -n) do_nothing=true
+        ;;
+    *)  echo "copy_build_files:  ERROR! Unexpected argument \"$arg\""
+        usage
+	exit 1
+	;;
+  esac
+  
+  shift
+done
+
+if [[ -z $source_dir ]] ; then
+  echo "ERROR:  no source directory specified"
+  usage
+  exit 1
+elif [[ -z $target_dir ]]  ; then
+  echo "ERROR:  no target directory specified"
+  usage
+  exit 1
+elif [[ ! -d $source_dir ]] ; then
+  echo "ERROR:  source directory \"${source_dir}\" does not exist"
+  usage
+  exit 1
+elif [[ ! -d $target_dir ]] ; then
+  echo "ERROR:  target directory \"${target_dir}\" does not exist"
+  usage
+  exit 1
+elif [[ ! -w $target_dir ]] ; then
+  echo "ERROR:  target directory \"${target_dir}\" is not writable"
+  usage
+  exit 1
+fi
+
+copy_command="cp"
+[[ -n $do_nothing ]] && copy_command="echo ${copy_command}"
+ 
+# Copy the ups directory
+#
+echo "Copy the ups directory"
+if [[ -d ${source_dir}/ups ]] ; then
+  ${copy_command} -r ${source_dir}/ups ${target_dir}/
+else
+  echo "  No ups directory in ${source_dir}"
+fi
+
+
+# Copy the CMakeLists.txt files. Use the target directory to determine
+# which CMakeLists.txt files are needed, since there may be some extra
+# ones in the source.
+echo "Find all target directories"
+alldirs=`find ${target_dir} -type d | grep -v \.git`
+#
+echo "Target directories:"
+echo $alldirs
+
+# construct a relative path to be used on the source directory specification
+#
+relpath=`echo $target_dir | sed -e "s/\//\\\//g"`
+echo relpath = $relpath
+
+echo "Copy CMakeLists.txt to target directories from corresponding directories in source"
+for tdir in $alldirs ; do
+  echo "Target dir $tdir"
+  sdir=${source_dir}/${tdir}
+  #sed -e "s/${relpath}/${tdir}/"
+  #sdir=${source_dir}/`sed -e "s/${relpath}/${tdir}/"`
+  echo "Source dir $sdir"
+  if [[ -e ${sdir}/CMakeLists.txt ]] ; then
+    $copy_command ${sdir}/CMakeLists.txt $tdir/
+  fi
+  echo
+done
+
+
