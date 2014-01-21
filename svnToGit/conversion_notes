@@ -1,0 +1,43 @@
+Jan 21, 2014
+
+Make final tag of svn 
+
+Check author list:
+svn log --quiet http://cdcvs.fnal.gov/subversion/larsoftsvn | grep -E "r[0-9]+ \| .+ \|" | awk '{print $3}' | so
+rt | uniq > larsoft.authors
+(no changes)
+
+Run final svn2git conversion on cluck.fnal.gov:
+source /products/setup
+setup git
+./convert.sh /home/garren/scratch/larsoft/2014.01.21.take3
+
+cp -pr /home/garren/scratch/larsoft/2014.01.21.take3 /home/garren/scratch/larsoft/2014.01.21.clean
+./cleanup.sh /home/garren/scratch/larsoft/2014.01.21.clean
+
+
+
+
+
+Remove old git repositories and remake.
+The steps listed here are for larcore - repeat for each repository.
+
+ssh p-larcore@cdcvs
+
+cd /cvs/projects/larcore/
+rm -rf * 
+/usr/bin/git  init --bare --shared
+/usr/bin/git update-server-info
+mv hooks/post-update.sample hooks/post-update
+
+Now add the results of svn2git before the next step
+Also create the develop branch
+
+cd /cvs/projects/larcore/
+usr/bin/git symbolic-ref HEAD refs/heads/develop
+(after this, HEAD is "ref: refs/heads/develop")
+
+cd /cvs/projects/larcore/hooks
+ln -s /fnal/ups/db/fnal_git_notifier/current/scripts/fnal-git-notify-redmine post-receive
+
+edit .admin file to remove lueking
