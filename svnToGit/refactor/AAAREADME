@@ -1,0 +1,50 @@
+# AAAREADME
+
+Instructions for running the re-factoring procedure.
+Prerequisites:
+o  A set of git repositories made from the LArSoft svn2git procedure
+o  A working directory created by 'mrb newDev'
+o  The standard LArSoft setup procedure has been executed
+
+0) Initial steps:  create working area from last beta release
+
+   . /grid/fermiapp/products/larsoft/setup
+   setup git
+   setup gitflow
+   setup mrb
+   export MRB_PROJECT=larsoft
+   
+   mkdir <work directory>
+   cd <work directory>
+   mrb newDev -v v0_02_02 -q e4:debug
+   
+   . localProducts_larsoft_v0_02_02_e4_debug/setup
+   cd srcs
+   
+   git clone ssh://p-laradmin@cdcvs.fnal.gov/cvs/projects/laradmin
+   
+   
+The following scripts are in laradmin/svnToGit/refactor:
+
+1) Run prepare_source_area
+2) Run populate_uboonecode and populate_lbnecode
+3) Run the following
+
+   copy_build_files -s <path to final beta release>/uboonecode -t uboonecode
+   copy_build_files -s <path to final beta release>/lbnecode -t lbnecode
+   
+4)  Look for include file directives to change in lbnecode and uboonecode
+   grep -ri "#include.*boone" uboonecode
+   grep -ril "#include.*boone" uboonecode
+   
+   grep -ri "#include.*lbne" lbnecode  
+   grep -ril "#include.*lbne" lbnecode
+   
+5) Modify larcore/Geometry/Geometry.h
+          larcore/Geometry/Geometry_service.cc
+	 
+6) Modify all fcl files that have "Geometry\s*:" strings in them.
+   Add experiment helper configurations. (See issue #5037)
+
+
+ 
