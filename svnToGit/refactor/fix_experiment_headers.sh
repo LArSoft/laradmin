@@ -101,6 +101,20 @@ Pipe="$(mktemp)"
 rm -f "$Pipe"
 mkfifo "$Pipe"
 
+# The first parameter is the path to the local GIT repository;
+# the next is the name of the code package (it's an existing directory);
+# the third is a filter (regex): only headers whose name matched the specified
+#   one are processed
+# the last is also a filter: sources matching the pattern won't be processed,
+#   and include directives including files which match that pattern won't be
+#   touched either
+#
+# Using the third parameter as filter is safer but it missed some headers in
+# LBNE code. Not using the filter produces a lot of unknown headers, and the
+# relative warning messages are disabled by default, which might be dangerous;
+# they can be enabled back by setting VERBOSE=1. But in this way some matches
+# are recovered.
+#
 # ReplaceHeaders uboonecode uboone boone uboone_datatypes/
 ReplaceHeaders uboonecode uboone '' uboone_datatypes/
 
