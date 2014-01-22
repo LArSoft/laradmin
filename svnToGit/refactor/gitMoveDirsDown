@@ -7,7 +7,7 @@
 # of all files is retained through the move, so that they appear as
 # though they always lived in the new locations. 
 #
-# All specified directories must be present and writeable.
+# All specified directories must be present and writable.
 #
 # Erica Snider
 # Fermilab
@@ -18,30 +18,36 @@
 function usage() {
   echo "Usage:  gitMoveDirsDown -t <target dir> -s <source dir1> [<source dir2> [...]]"
   echo "        (order of options is not important)"
+  echo "        (can specify -s multiple times)"
 }
 
 # Check that we are in a git repository
 #
-[[ -d .git ]]  || echo "ERROR:  not in a git repository!!" ; exit 1
+if [[ ! -d .git ]] ; then
+  echo "ERROR:  not in a git repository!!" 
+  exit 1
+fi
 
 # Get source and target directories
 #
-source_dirs=""
-for arg in $argv ; do
-  case $arg in
-    -t) pop
+while (( $# )) ; do
+  arg=$1
+
+  case $arg in \
+    -t) shift
         target_dir=$1
         unset finding_sources
-	pop 
+	shift 
+	
 	;;
-    -s) pop
+    -s) shift
         source_dirs="${source_dirs} $1"
 	finding_sources=true
-	pop
+	shift
 	;;
     *)  if [[ -n $finding_sources ]] ; then
-          $source_dirs="${source_dirs} $1"
-	  pop
+          source_dirs="${source_dirs} $1"
+	  shift
 	else
 	  echo "ERROR:  missing option/argument!!"
 	  echo "You must specify at least one source dir and one target dir"
@@ -53,26 +59,50 @@ for arg in $argv ; do
   esac
 done
 
-# Check that everything exists and is writeable
+echo "Source directories = $source_dirs"
+echo "Target directory   = $target_dir"
+
+# Check that everything exists and is writable
 #
-for $dir in $source_dirs ; do
-  [[ -d $dir ]] || echo "ERROR:  source directory \"$dir\" does not exist" ; exit 1
-  [[ -w $dir ]] || echo "ERROR:  source directory \"$dir\" not writeable" ; exit 1
+if [[ -z $source_dirs ]] ; then
+  echo "ERROR:  no source directory specified"
+  usage
+  exit 1
+fi
+
+for dir in $source_dirs ; do
+  if [[ ! -d $dir ]] ; then
+    echo "ERROR:  source directory \"$dir\" does not exist" 
+    usage
+    exit 1
+  elif [[ ! -w $dir ]] ; then
+    echo "ERROR:  source directory \"$dir\" not writable" 
+    usage
+    exit 1
+  fi
 done
 
-[[ -d $target_dir ]] \
-    || echo "ERROR:  target directory \"$target_dir\" does not exist ; exit 1
-[[ -w $target_dir ]] \
-    || echo "ERROR:  target directory \"$target_dir\" not writeable ; exit 1
+if [[ -z $target_dir ]] ; then
+  echo "ERROR:  no target directory specified"
+  usage
+fi
 
+if [[ ! -d `dirname $target_dir` ]] ; then
+  echo "ERROR:  target parent directory \"`dirname $target_dir`\" does not exist"
+  usage
+  exit 1
+elif [[ ! -w `dirname $target_dir` ]] ; then
+  echo "ERROR:  target parent directory \"`dirname $target_dir`\" not writable"
+  usage
+  exit 1
+fi
 
 # Now start the move
 #
 for source in $source_dirs ; do
   echo "gitMoveDirsDown:  moving ${source} to ${target_dir}/${source}"
   git filter-branch -f --tree-filter \
-      'test ${source} && mv ${source} ${target_dir}/${source}' 
-      || echo "Nothing to do" HEAD
+        "test -e ${source} && ( [[ -d ${target_dir} ]] || mkdir ${target_dir} ) && mv ${source} ${target_dir}/${source} || echo '  Nothing to do'" HEAD
 done
 
 echo "Done!"	

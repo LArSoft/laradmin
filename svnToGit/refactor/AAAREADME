@@ -1,0 +1,82 @@
+# AAAREADME
+
+Instructions for running the re-factoring procedure.
+Prerequisites:
+o  A set of git repositories made from the LArSoft svn2git procedure
+o  A working directory created by 'mrb newDev'
+o  The standard LArSoft setup procedure has been executed
+
+0) Initial steps:  create working area from last beta release
+
+   . /grid/fermiapp/products/larsoft/setup
+   setup git
+   setup gitflow
+   setup mrb
+   export MRB_PROJECT=larsoft
+   
+   mkdir <work directory>
+   cd <work directory>
+   mrb newDev -v v0_02_02 -q e4:debug
+   
+   . localProducts_larsoft_v0_02_02_e4_debug/setup
+   cd srcs
+   
+   git clone ssh://p-laradmin@cdcvs.fnal.gov/cvs/projects/laradmin
+   
+   
+The following scripts are in laradmin/svnToGit/refactor:
+
+1) Run prepare_source_area
+2) Run populate_uboonecode and populate_lbnecode
+   NOTE:  make sure that UBOONE_DATATYPES_SOURCE in populate_uboonecode points to
+   a raw uboonecode from the svn2git procedure. This is the only source for 
+   the uboone_datatypes files.
+3) Run the following (in laradmin/svnToGit/refactor)
+
+   copy_build_files -s <path to final beta release>/uboonecode -t uboonecode
+   copy_build_files -s <path to final beta release>/lbnecode -t lbnecode
+   
+4)  Look for include file directives to change in lbnecode and uboonecode
+   grep -ri "#include.*boone" uboonecode | grep -v \.fcl | grep -v uboone_datatypes\/ 
+   grep -ril "#include.*boone" uboonecode | grep -v \.fcl | grep -v uboone_datatypes\/
+   
+   grep -ri "#include.*lbne" lbnecode | grep -v \.fcl 
+   grep -ril "#include.*lbne" lbnecode | grep -v \.fcl
+   
+   Will need to make sure these point to lbne/<Package>/<header.h>
+   
+   
+5) Modify larcore/Geometry/Geometry.h
+          larcore/Geometry/Geometry_service.cc
+	  
+   to use Geometry helper interface class
+	 
+6) Modify all fcl files that have "Geometry\s*:" strings in them.
+   Add experiment helper configurations. (See issue #5037)
+   
+   # Define configuration macros here:
+   #
+   larcore/Geometry/geometry.fcl
+   -- define standard_geometry_helper :
+          { service_provider : StandardGeometryHelper }
+   -- Note that this files includes the following two
+
+   larcore/Geometry/geometry_lbne.fcl
+   -- define lbne_geometry_helper :
+          { service_provider : LBNEGeometryHelper }
+
+   larcore/Geometry/geometry_microboone.flc
+   -- define microboone_geometry_helper : 
+          { service_provider : StandardGeometryHelper }
+
+   larcore/Geometry/geometry_&lt;expt&gt;.fcl (for all but lbne and microboone)
+   -- define <expt>_geometry_helper :
+          { service_provider : StandardGeometryHelper }
+
+   # Reference configuration macros in files returned
+   # by these commands
+   #
+   find . -name \*fcl|xargs grep -l "^\s*Geometry\s*:" 
+   find . -name \*fcl|xargs grep -l "\.Geometry\s*:" 
+   
+   

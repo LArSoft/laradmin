@@ -1,0 +1,150 @@
+#!/bin/bash
+#
+# populate-uboonecode
+#
+# Assumes you are in a directory with uboonecode, and larcore, lardata, larsim and larevt 
+# NOTE: there will also need to be an alternate source for lardata/RawData/uboone_datatypes,
+# such as a previous uboonecode availalbe. Set UBOONE_DATATYPES_SOURCE appropriately.
+
+UBOONE_DATATYPES_SOURCE=/grid/fermiapp/larsoft/home/larsoft/work/garren/good_dry/uboonecode
+
+export WORKDIR=`pwd`
+
+
+# Extract and move:
+GITLOG_CMD="git log --pretty=email --patch-with-stat --reverse --full-index --binary"
+
+echo "Extracting larcore"
+cd larcore
+ls Geometry/*?microboone* \
+   Geometry/gdml/microboone/m* \
+   Geometry/gdml/microboone/G* \
+   Geometry/gdml/microboone/H* \
+   Geometry/gdml/microboone/g* \
+   Geometry/gdml/microboone/ScriptFragments/* \
+   Geometry/gdml/GDMLSchema/gdml* \
+   Geometry/gdml/microboone?* \
+   > $WORKDIR/larcore-moved-files-uboonecode.txt
+   
+
+$GITLOG_CMD \
+  `ls Geometry/*?microboone* \
+   Geometry/gdml/microboone/m* \
+   Geometry/gdml/microboone/G* \
+   Geometry/gdml/microboone/H* \
+   Geometry/gdml/microboone/g* \
+   Geometry/gdml/microboone/ScriptFragments/* \
+   Geometry/gdml/GDMLSchema/gdml* \
+   Geometry/gdml/microboone?*` \
+   > $WORKDIR/patch-uboonecode-larcore
+cd ..
+
+# Note the extra step here for lardata...
+#
+echo "Extracting lardata"
+cd lardata
+ls RawData/utils/boone* \
+   RawData/utils/*UBooNE* \
+   Utilities/test/*boone* \
+   Utilities/test/*BooNE* \
+   Utilities/*boone* \
+   Utilities/*BooNE* \
+   > $WORKDIR/lardata-moved-files-uboonecode.txt
+
+$GITLOG_CMD \
+  `ls RawData/utils/boone* \
+   RawData/utils/*UBooNE* \
+   Utilities/test/*boone* \
+   Utilities/test/*BooNE* \
+   Utilities/*boone* \
+   Utilities/*BooNE*` \
+   > $WORKDIR/patch-uboonecode-lardata
+  
+cd $UBOONE_DATATYPES_SOURCE
+ls RawData/uboone_datatypes/*cpp \
+   RawData/uboone_datatypes/*h \
+   RawData/uboone_datatypes/*cc \
+   RawData/uboone_datatypes/gps/* \
+   RawData/uboone_datatypes/share/* \
+   > $WORKDIR/lardata-uboone_datatypes-moved-files-uboonecode.txt
+
+$GITLOG_CMD \
+  `ls RawData/uboone_datatypes/*cpp \
+   RawData/uboone_datatypes/*h \
+   RawData/uboone_datatypes/*cc \
+   RawData/uboone_datatypes/gps/* \
+   RawData/uboone_datatypes/share/*` \
+   > $WORKDIR/patch-uboonecode-lardata-uboone_datatypes
+cd $WORKDIR
+   
+
+echo "Extracting larevt"
+cd larevt
+ls CalData/*BooNE* \
+   CalData/*microboone* \
+   CalData/test/*uboone* \
+   CalData/MicrobooneResponseFile/* \
+   > $WORKDIR/larevt-moved-files-uboonecode.txt
+
+$GITLOG_CMD \
+  `ls CalData/*BooNE* \
+   CalData/*microboone* \
+   CalData/test/*uboone* \
+   CalData/MicrobooneResponseFile/*` \
+   > $WORKDIR/patch-uboonecode-larevt
+cd ..
+
+echo "Extracting larsim"
+cd larsim
+ls DetSim/*microboone* \
+   DetSim/*BooNE* \
+   EventGenerator/*boone* \
+   EventGenerator/GENIE/*microboone* \
+   LArG4/*microboone* \
+   PhotonPropagation/*microboone* \
+   Simulation/*microboone* \
+   TriggerAlgo/*Boone* \
+   > $WORKDIR/larsim-moved-files-uboonecode.txt
+      
+$GITLOG_CMD \
+  `ls DetSim/*microboone* \
+   DetSim/*BooNE* \
+   EventGenerator/*boone* \
+   EventGenerator/GENIE/*microboone* \
+   LArG4/*microboone* \
+   PhotonPropagation/*microboone* \
+   Simulation/*microboone* \
+   TriggerAlgo/*Boone*` \
+   > $WORKDIR/patch-uboonecode-larsim
+cd ..
+
+# Now move the files into the proper location in uboonecode
+#
+MOVE_DIR_CMD=${WORKDIR}/laradmin/svnToGit/refactor/gitMoveDirsDown
+
+cd uboonecode
+echo "Fill from larcore"
+git am < $WORKDIR/patch-uboonecode-larcore
+echo "Move larcore directories"
+$MOVE_DIR_CMD -t uboone -s Geometry
+
+echo "Fill from lardata"
+git am < $WORKDIR/patch-uboonecode-lardata
+git am < $WORKDIR/patch-uboonecode-lardata-uboone_datatypes
+echo "Move lardata directories"
+$MOVE_DIR_CMD -t uboone -s RawData Utilities
+
+echo "Fill from larevt"
+git am < $WORKDIR/patch-uboonecode-larevt
+echo "Move larevt directories"
+$MOVE_DIR_CMD -t uboone -s CalData
+
+echo "Fill from larsim"
+git am < $WORKDIR/patch-uboonecode-larsim
+echo "Move larsim directories"
+$MOVE_DIR_CMD -t uboone -s DetSim EventGenerator LArG4 PhotonPropagation Simulation TriggerAlgo
+
+############
+echo "Done!"
+ 
+     
