@@ -21,7 +21,7 @@ The steps listed here are for larcore - repeat for each repository.
 
 ssh p-larcore@cdcvs
 
-edit .admin file to remove lueking
+edit .admin file to remove lueking and make sure brebel is there
 
 cd /cvs/projects/larcore/
 tar cjf ~/larcore.beta.tar.bz2 .
