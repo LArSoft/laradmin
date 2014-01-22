@@ -33,26 +33,21 @@ rm -rf *
 /usr/bin/git update-server-info
 mv hooks/post-update.sample hooks/post-update
 
-3. put the new code into the empty repository
+3. create the develop branch and put the new code into the empty repository
 
 work on cluck with git 1.8
+(setup git)
+(setup gitflow v0_4_2_pre)
 cd /home/garren/scratch/larsoft/2014.01.21.clean/larcore
 
+git flow init -d
 git remote add origin ssh://p-larcore@cdcvs.fnal.gov/cvs/projects/larcore
 git push origin master
 git push --all
 git push --tags
 
-4. create the develop branch+
 
-mkdir -p /home/garren/scratch/larsoft/final
-cd final
-git clone ssh://p-larcore@cdcvs.fnal.gov/cvs/projects/larcore
-cd larcore
-git flow init -d
-git push origin develop
-
-5. Make it so that git clone puts you in the develop branch by default
+4. Make it so that git clone puts you in the develop branch by default
 
 sh p-larcore@cdcvs
 
@@ -66,7 +61,7 @@ cd /cvs/projects/larcore/hooks
 ln -s /fnal/ups/db/fnal_git_notifier/current/scripts/fnal-git-notify-redmine post-receive
 (for email notifications)
 
-6. add ups and top CMakeLists.txt
+5. add ups and top CMakeLists.txt
 
 mkdir -p /home/garren/scratch/larsoft/v1_00_00/wdbg
 source /home/garren/scratch/larsoft/v1_00_00/setlar.sh
@@ -84,7 +79,7 @@ cp -p /home/garren/larsoft/2014.01.21.reference/larcore/Geometry/gdml/CMakeLists
  cp -p /home/garren/larsoft/2014.01.21.reference/larcore/Geometry/gdml/GDMLSchema/CMakeLists.txt larcore/Geometry/gdml/GDMLSchema/
  git commit and push
  
-7. Final steps 
+6. Final steps 
 
 Edit ups/product_deps
 parent is v1_00_00
