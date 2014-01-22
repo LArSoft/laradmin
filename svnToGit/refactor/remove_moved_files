@@ -6,9 +6,11 @@
 #       --rename : instead of deleting, add <suffix> to the end of the 
 #                  file name
 #
-# Removes files moved by populate-lbnecode and populate-uboonecode
+# Git removes files moved by populate-lbnecode and populate-uboonecode
 # from their original locations. Uses the <repo>-moved-files-<expt>code.txt
-# files created by that script to find the files to delete.
+# files created by that script to find the files to delete. 
+#
+# Alternatively, git renames the files in place.
 #
 # Must be run from the directory with the moved txt files created by
 # the populate-* scripts. The target repositories are assumed to be
@@ -33,12 +35,12 @@ while (( $# )) ; do
 done
 
 if [[ -n $rename_suffix ]] ; then
-  command="mv"
+  command="git mv"
 else
-  command="rm"
+  command="git rm"
 fi
 
-[[ -n $do_nothing ]] && command="echo ${command}"
+[[ -n $do_nothing ]] && command="${command} --dry-run"
 
 
 function remove_files () {
