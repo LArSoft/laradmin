@@ -31,27 +31,46 @@ The following scripts are in laradmin/svnToGit/refactor:
    NOTE:  make sure that UBOONE_DATATYPES_SOURCE in populate_uboonecode points to
    a raw uboonecode from the svn2git procedure. This is the only source for 
    the uboone_datatypes files.
-3) Run the following (in laradmin/svnToGit/refactor)
+3.0) Remove old production git repositories on cdcvs and remake. 
+   
+   See laradmin/svnToGit/conversion_notes for instructions on 
+   preparing the production repositories. (step 2)
+
+3.5) Create develop branch and put newly populated code in uboonecode
+   and lbnecode into the empty repositories
+
+   Refer to laradmin/svnToGit/conversion_notes step (3) for
+   instructions.
+
+3.6 ) Configure repositories so that git clone puts you in the 
+   develop branch by default.
+   
+   Refer to laradmin/svnToGit/conversion_notes setup (4) for
+   instructions.
+   
+4) Run the following (in laradmin/svnToGit/refactor)
 
    copy_build_files -s <path to final beta release>/uboonecode -t uboonecode
    copy_build_files -s <path to final beta release>/lbnecode -t lbnecode
    
-4)  Look for include file directives to change in lbnecode and uboonecode
+5) Look for include file directives to change in lbnecode and uboonecode
+   
    grep -ri "#include.*boone" uboonecode | grep -v \.fcl | grep -v uboone_datatypes\/ 
    grep -ril "#include.*boone" uboonecode | grep -v \.fcl | grep -v uboone_datatypes\/
+   
+   The above references should point to uboonecode/<Package>/<header.h>
    
    grep -ri "#include.*lbne" lbnecode | grep -v \.fcl 
    grep -ril "#include.*lbne" lbnecode | grep -v \.fcl
    
-   Will need to make sure these point to lbne/<Package>/<header.h>
+   These need to point to lbne/<Package>/<header.h>
    
-   
-5) Modify larcore/Geometry/Geometry.h
+6) Modify larcore/Geometry/Geometry.h
           larcore/Geometry/Geometry_service.cc
 	  
    to use Geometry helper interface class
 	 
-6) Modify all fcl files that have "Geometry\s*:" strings in them.
+7) Modify all fcl files that have "Geometry\s*:" strings in them.
    Add experiment helper configurations. (See issue #5037)
    
    # Define configuration macros here:
@@ -79,7 +98,7 @@ The following scripts are in laradmin/svnToGit/refactor:
    find . -name \*fcl|xargs grep -l "^\s*Geometry\s*:" 
    find . -name \*fcl|xargs grep -l "\.Geometry\s*:" 
 
-7) Run remove_moved_files
+8) Run remove_moved_files
    This removes files that were re-factored in step (2) from their
    original locations.   
    (Use remove_moved_files -n to show what it will do without removing

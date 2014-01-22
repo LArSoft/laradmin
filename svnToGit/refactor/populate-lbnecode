@@ -112,7 +112,7 @@ $MOVE_DIR_CMD -t lbne -s CalData
 echo "Fill from larsim"
 git am < $WORKDIR/patch-lbnecode-larsim
 echo "Move larsim directories"
-$MOVE_DIR_CMD -t lbne -s DetSim EventGenerator LArG4 PhotonPropagation
+$MOVE_DIR_CMD -t lbne -s DetSim EventGenerator LArG4 PhotonPropagation Simulation
 
 ############
 echo "Done!"
