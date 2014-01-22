@@ -1,8 +1,10 @@
 #!/bin/bash
 #
-# remove_moved_files [-n]
+# remove_moved_files [-n] [-rename <suffix>]
 # 
-# where -n : print what will be done, but don't do it
+# where -n       : print what will be done, but don't do it
+#       --rename : instead of deleting, add <suffix> to the end of the 
+#                  file name
 #
 # Removes files moved by populate-lbnecode and populate-uboonecode
 # from their original locations. Uses the <repo>-moved-files-<expt>code.txt
@@ -12,15 +14,32 @@
 # the populate-* scripts. The target repositories are assumed to be
 # in the same directory.
 
-do_nothing=$1
-if [[ $do_nothing != "-n" ]] ; then
-  echo "ERROR:  unrecognized option \"$do_nothing\""
-  echo "Usage:  remove_moved_files [-n]"
-  echo "        where -n : print what will be done without doing it"
+while (( $# )) ; do
+  arg=$1
+  case $arg in
+    -n) do_nothing="true" ;;
+    --rename) shift
+              rename_suffix=$1
+	      ;;
+    *) echo "ERROR:  unrecognized argument \"$arg\""
+       echo "Usage:  remove_moved_files [-n] [--rename <suffix>]"
+       echo "        where -n       :  print what will be done without doing it"
+       echo "              --rename : instead of deleting, add .<suffix> to"
+       echo "                         the end of the file name"
+       exit 1
+       ;;
+  esac
+  shift
+done
+
+if [[ -n $rename_suffix ]] ; then
+  command="mv"
+else
+  command="rm"
 fi
 
-rm_cmd="rm"
-[[ -n $do_nothing ]] && rm_cmd="echo $rm_cmd"
+[[ -n $do_nothing ]] && command="echo ${command}"
+
 
 function remove_files () {
   repository=$1
@@ -29,8 +48,14 @@ function remove_files () {
   cd $repository
   for file in `cat $list_file` ; do
     if [[ -e $file ]] ; then
-      echo "Removing $file from $repository"
-      $rm_cmd $file
+      if [[ -n $rename_suffix ]] ; then
+        echo "Renaming $file in $repository to ${file}.${rename_suffix}"
+	second_arg="${file}.${rename_suffix}"
+      else
+        echo "Removing $file from $repository"
+	second_arg=""
+      fi
+      $command $file $second_arg
     else
       echo "File $file not found in $repository"
     fi
