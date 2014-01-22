@@ -98,10 +98,14 @@ The following scripts are in laradmin/svnToGit/refactor:
    find . -name \*fcl|xargs grep -l "^\s*Geometry\s*:" 
    find . -name \*fcl|xargs grep -l "\.Geometry\s*:" 
 
-8) Run remove_moved_files
-   This removes files that were re-factored in step (2) from their
-   original locations.   
+8) Run remove_moved_files --rename sample
+   This renames files that were re-factored in step (2) that are still in
+   their original locations. The suffix ".sample" is added to each file.
    (Use remove_moved_files -n to show what it will do without removing
    anything.)
+   
+   First need to copy all the *moved_files*.txt files from the directory
+   in which populate* was run, to the current directcory
+   q
    
    
