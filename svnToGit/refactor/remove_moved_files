@@ -1,0 +1,56 @@
+#!/bin/bash
+#
+# remove_moved_files [-n]
+# 
+# where -n : print what will be done, but don't do it
+#
+# Removes files moved by populate-lbnecode and populate-uboonecode
+# from their original locations. Uses the <repo>-moved-files-<expt>code.txt
+# files created by that script to find the files to delete.
+#
+# Must be run from the directory with the moved txt files created by
+# the populate-* scripts. The target repositories are assumed to be
+# in the same directory.
+
+do_nothing=$1
+if [[ $do_nothing != "-n" ]] ; then
+  echo "ERROR:  unrecognized option \"$do_nothing\""
+  echo "Usage:  remove_moved_files [-n]"
+  echo "        where -n : print what will be done without doing it"
+fi
+
+rm_cmd="rm"
+[[ -n $do_nothing ]] && rm_cmd="echo $rm_cmd"
+
+function remove_files () {
+  repository=$1
+  list_file=../$2
+  
+  cd $repository
+  for file in `cat $list_file` ; do
+    if [[ -e $file ]] ; then
+      echo "Removing $file from $repository"
+      $rm_cmd $file
+    else
+      echo "File $file not found in $repository"
+    fi
+  done
+  cd ..
+}
+
+list_files="\
+	larcore-moved-files-lbnecode.txt \
+	larcore-moved-files-uboonecode.txt \
+	lardata-moved-files-lbnecode.txt \
+	lardata-moved-files-uboonecode.txt \
+	lardata-uboone_datatypes-moved-files-uboonecode.txt \
+	larevt-moved-files-lbnecode.txt \
+	larevt-moved-files-uboonecode.txt \
+	larsim-moved-files-lbnecode.txt \
+	larsim-moved-files-uboonecode.txt"
+
+for list in $list_files ; do
+  repo=`echo $list | sed -e "s/-.*//"`
+  remove_files $repo $list
+done
+

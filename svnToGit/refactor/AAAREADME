@@ -78,5 +78,11 @@ The following scripts are in laradmin/svnToGit/refactor:
    #
    find . -name \*fcl|xargs grep -l "^\s*Geometry\s*:" 
    find . -name \*fcl|xargs grep -l "\.Geometry\s*:" 
+
+7) Run remove_moved_files
+   This removes files that were re-factored in step (2) from their
+   original locations.   
+   (Use remove_moved_files -n to show what it will do without removing
+   anything.)
    
    
