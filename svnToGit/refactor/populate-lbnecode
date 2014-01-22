@@ -1,0 +1,120 @@
+#!/bin/bash
+#
+# populate-lbnecode
+#
+# Assumes you are in a directory with lbnecode, and larcore, lardata, larsim and larevt 
+
+export WORKDIR=`pwd`
+
+
+# Extract and move:
+GITLOG_CMD="git log --pretty=email --patch-with-stat --reverse --full-index --binary"
+
+echo "Extracting larcore"
+cd larcore
+ls Geometry/GeoObjectSorter35* \
+   Geometry/ChannelMapAPA* \
+   Geometry/LBNEGeometryHelper* \
+   Geometry/GeoObjectSorterAPA* \
+   Geometry/ChannelMap35* \
+   Geometry/gdml/*?lbne* \
+   Geometry/gdml/lbne?* \
+   Geometry/gdml/GDMLSchema/gdml* \
+   Geometry/gdml/lbne/* \
+   > $WORKDIR/larcore-moved-files-lbnecode.txt
+   
+
+$GITLOG_CMD \
+   `ls  Geometry/GeoObjectSorter35* \
+   Geometry/ChannelMapAPA* \
+   Geometry/LBNEGeometryHelper* \
+   Geometry/GeoObjectSorterAPA* \
+   Geometry/ChannelMap35* \
+   Geometry/gdml/*?lbne* \
+   Geometry/gdml/lbne?* \
+   Geometry/gdml/GDMLSchema/gdml* \
+   Geometry/gdml/lbne/*` \
+   > $WORKDIR/patch-lbnecode-larcore
+cd ..
+
+echo "Extracting lardata"
+cd lardata
+ls Utilities/*lbne* \
+   Utilities/*LBNE* \
+   Utilities/test/*lbne* \
+   Utilities/test/*LBNE* \
+   > $WORKDIR/lardata-moved-files-lbnecode.txt
+   
+$GITLOG_CMD \
+  `ls Utilities/*lbne* \
+   Utilities/*LBNE* \
+   Utilities/test/*lbne* \
+   Utilities/test/*LBNE*` \
+   > $WORKDIR/patch-lbnecode-lardata
+cd ..
+
+echo "Extracting larevt"
+cd larevt
+ls CalData/*LBNE* \
+   CalData/*lbne* \
+   > $WORKDIR/larevt-moved-files-lbnecode.txt
+
+$GITLOG_CMD \
+  `ls CalData/*LBNE* \
+   CalData/*lbne*` \
+   > $WORKDIR/patch-lbnecode-larevt
+cd ..
+
+echo "Extracting larsim"
+cd larsim
+ls DetSim/*lbne* \
+   DetSim/*LBNE* \
+   EventGenerator/*lbne* \
+   EventGenerator/GENIE/*lbne* \
+   EventGenerator/CRY/*lbne* \
+   LArG4/*lbne* \
+   PhotonPropagation/*lbne* \
+   Simulation/*lbne* \
+   > $WORKDIR/larsim-moved-files-lbnecode.txt
+   
+$GITLOG_CMD \
+  `ls DetSim/*lbne* \
+   DetSim/*LBNE* \
+   EventGenerator/*lbne* \
+   EventGenerator/GENIE/*lbne* \
+   EventGenerator/CRY/*lbne* \
+   LArG4/*lbne* \
+   PhotonPropagation/*lbne* \
+   Simulation/*lbne*` \
+   > $WORKDIR/patch-lbnecode-larsim
+cd ..
+
+# Now move the files into the proper location in lbnecode
+#
+MOVE_DIR_CMD=${WORKDIR}/laradmin/svnToGit/refactor/gitMoveDirsDown
+
+cd lbnecode
+echo "Fill from larcore"
+git am < $WORKDIR/patch-lbnecode-larcore
+echo "Move larcore directories"
+$MOVE_DIR_CMD -t lbne -s Geometry
+
+echo "Fill from lardata"
+git am < $WORKDIR/patch-lbnecode-lardata
+echo "Move lardata directories"
+$MOVE_DIR_CMD -t lbne -s Utilities
+
+echo "Fill from larevt"
+git am < $WORKDIR/patch-lbnecode-larevt
+echo "Move larevt directories"
+$MOVE_DIR_CMD -t lbne -s CalData
+
+echo "Fill from larsim"
+git am < $WORKDIR/patch-lbnecode-larsim
+echo "Move larsim directories"
+$MOVE_DIR_CMD -t lbne -s DetSim EventGenerator LArG4 PhotonPropagation
+
+############
+echo "Done!"
+
+        

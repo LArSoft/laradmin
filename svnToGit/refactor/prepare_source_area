@@ -1,0 +1,32 @@
+#!/bin/bash
+# 
+# prepare_source_area
+#
+# Configures the an empty source area in preparation for the re-factoring
+# of LArSoft into lbnecode and uboonecode repositories
+# 
+# The standard LArSoft setup must have been run.
+# REPO_DIR points to the location of a LArSoft snapshot created by
+# the LArSoft svn2git procedure.
+
+REPO_DIR=/grid/fermiapp/larsoft/home/larsoft/work/garren/final_svn_copy
+
+echo "Create lbnecode and uboonecode skelton areas"
+
+mrb newProduct lbnecode
+rm -r lbnecode/ups lbnecode/CMakeLists.txt
+
+mrb newProduct uboonecode
+rm -r uboonecode/ups uboonecode/CMakeLists.txt
+
+echo "Cloning the repositories from which code will be re-factored"
+
+git clone $REPO_DIR/larcore
+git clone $REPO_DIR/lardata
+git clone $REPO_DIR/larevt
+git clone $REPO_DIR/larsim
+
+
+echo "Done!"
+echo "Proceed to populate lbnecode and uboonecode"
+

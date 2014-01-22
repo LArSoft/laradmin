@@ -87,12 +87,12 @@ if [[ -z $target_dir ]] ; then
   usage
 fi
 
-if [[ ! -d $target_dir ]] ; then
-  echo "ERROR:  target directory \"$target_dir\" does not exist"
+if [[ ! -d `dirname $target_dir` ]] ; then
+  echo "ERROR:  target parent directory \"`dirname $target_dir`\" does not exist"
   usage
   exit 1
-elif [[ ! -w $target_dir ]] ; then
-  echo "ERROR:  target directory \"$target_dir\" not writable"
+elif [[ ! -w `dirname $target_dir` ]] ; then
+  echo "ERROR:  target parent directory \"`dirname $target_dir`\" not writable"
   usage
   exit 1
 fi
