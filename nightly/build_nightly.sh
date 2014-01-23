@@ -45,13 +45,13 @@ source ${working_dir}/localProducts_larsoft_nightly*/setup || exit 1;
 
 mytime=`date +%Y-%m-%d` || exit 1;
 setup cetpkgsupport || exit 1;
-OS=`get-directory-name os` || exit 1;
+myOS=`get-directory-name os` || exit 1;
 unsetup cetpkgsupport || exit 1;
-quals=`echo ${MRB_QUALS} | sed -e 's/:/_/g'` || exit 1;
+myquals=`echo ${MRB_QUALS} | sed -e 's/:/_/g'` || exit 1;
 
-if [ -e ${NIGHTLY_DIR}/nightly_build_${OS}_${quals}_$mytime ]
+if [ -e ${NIGHTLY_DIR}/nightly_build_${myOS}_${myquals}_${mytime} ]
 then
-  echo "nightly build has already been done for ${OS}_${quals} $mytime"
+  echo "nightly build has already been done for ${myOS}_${myquals} ${mytime}"
   exit 0
 fi
 
@@ -67,7 +67,7 @@ fi
 # MRB_INSTALL is redefined when you source localProducts_XXX/setup, so define it here for safety
 export MRB_INSTALL=${NIGHTLY_DIR}/install
 
-echo "begin build for ${OS}_${quals}"
+echo "begin build for ${myOS}_${myquals}"
 set -x
 cd $MRB_BUILDDIR  || exit 1;
 mrb z  || exit 1;
@@ -80,6 +80,6 @@ mrb i -j4  || exit 1;
 set +x
 
 cd ${NIGHTLY_DIR} || exit 1;
-touch nightly_build_${OS}_${quals}_$mytime  || exit 1;
+touch nightly_build_${myOS}_${myquals}_${mytime}  || exit 1;
 
 exit 0
