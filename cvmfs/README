@@ -17,3 +17,7 @@ oasis-sync options:
   -v: use the rsync verbose option
   -r: do only rsync step
   -p: do only publish step
+
+general instructions: 
+https://twiki.grid.iu.edu/bin/view/Documentation/Release3/UpdateOasis
+
