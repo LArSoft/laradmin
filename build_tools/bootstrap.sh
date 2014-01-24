@@ -6,7 +6,7 @@
 
 usage()
 {
-   echo "USAGE: `basename ${0}` <product_dir>"
+   echo "USAGE: `basename ${0}` <product_dir> <version>"
 }
 
 get_this_dir() 
@@ -20,9 +20,9 @@ get_this_dir()
 }
 
 product_dir=${1}
+pkgver=${2}
 package=larsoft_suite
-pkgver=v1_00_00
-pkgdotver=`echo ${pkgver} | sed -e 's/_/./g' | sed -e 's/^v//'`
+#pkgver=v1_00_00
 
 if [ -z ${product_dir} ]
 then
@@ -30,6 +30,14 @@ then
    usage
    exit 1
 fi
+
+if [ -z ${pkgver} ]
+then
+   echo "ERROR: please specify the package version"
+   usage
+   exit 1
+fi
+pkgdotver=`echo ${pkgver} | sed -e 's/_/./g' | sed -e 's/^v//'`
 
 get_this_dir
 

@@ -5,16 +5,17 @@
 
 usage()
 {
-   echo "USAGE: `basename ${0}` <product_dir> <e4> <debug|opt|prof> [-jN]"
+   echo "USAGE: `basename ${0}` <product_dir> <version> <e4> <debug|opt|prof> [-jN]"
    echo "        you must be able to write in <product_dir>"
    echo "        art, root, etc. need to be in your $PRODUCTS path"
    echo "        -jN (select a number) is the number of parallel build threads"
 }
 
 product_dir=${1}
-basequal=${2}
-extraqual=${3}
-npar=${4}
+pkgver=${2}
+basequal=${3}
+extraqual=${4}
+npar=${5}
 
 my_dir=${PWD}
 
@@ -25,8 +26,15 @@ then
    exit 1
 fi
 
+if [ -z ${pkgver} ]
+then
+   echo "ERROR: please specify the package version"
+   usage
+   exit 1
+fi
+
 package=larsoft_suite
-pkgver=v1_00_00
+#pkgver=v1_00_00
 pkgdotver=`echo ${pkgver} | sed -e 's/_/./g' | sed -e 's/^v//'`
 
 tardir=${my_dir}/tar

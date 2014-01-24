@@ -4,18 +4,26 @@
 
 usage()
 {
-   echo "USAGE: `basename ${0}` <product_dir> <e4> <debug|opt|prof>"
+   echo "USAGE: `basename ${0}` <product_dir> <version> <e4> <debug|opt|prof>"
 }
 
 product_dir=${1}
-basequal=${2}
-extraqual=${3}
+pkgver=${2}
+basequal=${3}
+extraqual=${4}
 
 my_dir=${PWD}
 
 if [ -z ${product_dir} ]
 then
    echo "ERROR: please specify the product directory"
+   usage
+   exit 1
+fi
+
+if [ -z ${pkgver} ]
+then
+   echo "ERROR: please specify the package version"
    usage
    exit 1
 fi
@@ -36,7 +44,7 @@ else
 fi
 
 package=larsoft_suite
-pkgver=v1_00_00
+#pkgver=v1_00_00
 pkgdotver=`echo ${pkgver} | sed -e 's/_/./g' | sed -e 's/^v//'`
 
 # make sure we can use the setup alias
