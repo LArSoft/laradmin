@@ -94,6 +94,7 @@ do
   if [ -d ${product_dir}/${code}/${pkgver}/gdml ]; then tarlist="${tarlist} ${code}/${pkgver}/gdml"; fi
   if [ -d ${product_dir}/${code}/${pkgver}/fcl ]; then tarlist="${tarlist} ${code}/${pkgver}/fcl"; fi
   if [ -d ${product_dir}/${code}/${pkgver}/cmake ]; then tarlist="${tarlist} ${code}/${pkgver}/cmake"; fi
+  if [ -d ${product_dir}/${code}/${pkgver}/scripts ]; then tarlist="${tarlist} ${code}/${pkgver}/scripts"; fi
 done
 
 set -x
