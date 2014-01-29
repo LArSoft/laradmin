@@ -114,14 +114,7 @@ FULL_PATH_NAMES        = YES
 # If left blank the directory from which doxygen is run is used as the
 # path to strip.
 
-STRIP_FROM_PATH        = $(LARNIGHTLY)/larana 
-STRIP_FROM_PATH       += $(LARNIGHTLY)/larcore
-STRIP_FROM_PATH       += $(LARNIGHTLY)/lardata
-STRIP_FROM_PATH       += $(LARNIGHTLY)/lareventdisplay
-STRIP_FROM_PATH       += $(LARNIGHTLY)/larevt
-STRIP_FROM_PATH       += $(LARNIGHTLY)/larexamples
-STRIP_FROM_PATH       += $(LARNIGHTLY)/larpandora
-STRIP_FROM_PATH       += $(LARNIGHTLY)/larsim
+STRIP_FROM_PATH        = $(LARNIGHTLY)
 STRIP_FROM_PATH       += $(ART_DIR)/source 
 STRIP_FROM_PATH       += $(MESSAGEFACILITY_DIR)/source 
 STRIP_FROM_PATH       += $(NUTOOLS_DIR)/source 
