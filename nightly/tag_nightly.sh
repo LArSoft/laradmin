@@ -8,10 +8,7 @@ update_tag()
 {
   # make sure we are on the develop branch
   git checkout develop || exit 1;
-  # restore unmodified product_deps
-  cp -p ups/product_deps.orig ups/product_deps || exit 1;
-  git pull || exit 1;
-  # tag NOW
+  # we just did a clean checkout - tag NOW
   git tag -a -f -m"nightly $mytime" nightly || exit 1;
   # modify this copy of product_deps
   version=`grep parent ups/product_deps | grep -v \# | cut -f3` || exit 1;
@@ -20,24 +17,27 @@ update_tag()
     echo "ERROR: failed to find existing version for ${larpkg}"
     exit 1
   fi
+  # we need a newer product-config.cmake.in
+  cp -p /grid/fermiapp/products/larsoft/cetbuildtools/v3_07_05/templates/product-config.cmake.in.template ups/ || exit 1;
   # need to use a fixit script here
   fixfile=${larpkg}.fix.sh
   rm -f ${fixfile}
   echo "#!/bin/bash" > ${fixfile}
   echo "set -x" >> ${fixfile}
   echo "mv ups/product_deps ups/product_deps.bak || exit 1;" >> ${fixfile}
-  echo "cat ups/product_deps.bak | sed -e 's%$version%nightly%g' | sed -e 's%v3_07_03%v3_07_04%' > ups/product_deps || exit 1;" >> ${fixfile}
+  echo "cat ups/product_deps.bak | sed -e 's%$version%nightly%g' | sed -e 's%v3_07_04%v3_07_05%' > ups/product_deps || exit 1;" >> ${fixfile}
   echo "set +x" >> ${fixfile}
   echo "exit 0" >> ${fixfile}
   chmod +x ${fixfile} || exit 1;
   ./${fixfile} || exit 1;
 }
 
-
 # establish the environment
-# we only need git for the tagging step
+# we need git and mrb for the tagging step
 source /grid/fermiapp/products/larsoft/setups || exit 1;
 setup git || exit 1;
+setup gitflow || exit 1;
+setup mrb || exit 1;
 MRB_SOURCE=/grid/fermiapp/larsoft/home/larsoft/code/nightly_build/srcs
 NIGHTLY_DIR=/grid/fermiapp/larsoft/home/larsoft/code/nightly_build
 
@@ -65,10 +65,19 @@ larlist="larana lardata larevt larpandora larsim larcore lareventdisplay larexam
 for larpkg in ${larlist}
 do
   set -x
+  cd $MRB_SOURCE || exit 1;
+  if [ -d ${larpkg} ]
+  then
+    rm -rf ${larpkg}
+  fi
+  mrb g ${larpkg} || exit 1;
   cd $MRB_SOURCE/${larpkg} || exit 1;
   update_tag
   set +x
 done
+
+cd $MRB_SOURCE || exit 1;
+mrb uc || exit 1;
 
 # cleanup here - ONCE ONLY
 rm -rf ${NIGHTLY_DIR}/install/lar*  || exit 1;
