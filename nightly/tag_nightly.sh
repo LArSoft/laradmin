@@ -17,7 +17,7 @@ update_tag()
     echo "ERROR: failed to find existing version for ${larpkg}"
     exit 1
   fi
-  # we need a newer product-config.cmake.in
+  # we need the new product-config.cmake.in
   cp -p /grid/fermiapp/products/larsoft/cetbuildtools/v3_07_05/templates/product-config.cmake.in.template ups/product-config.cmake.in || exit 1;
   # need to use a fixit script here
   fixfile=${larpkg}.fix.sh
@@ -38,8 +38,9 @@ source /grid/fermiapp/products/larsoft/setups || exit 1;
 setup git || exit 1;
 setup gitflow || exit 1;
 setup mrb || exit 1;
-MRB_SOURCE=/grid/fermiapp/larsoft/home/larsoft/code/nightly_build/srcs
+export MRB_SOURCE=/grid/fermiapp/larsoft/home/larsoft/code/nightly_build/srcs
 NIGHTLY_DIR=/grid/fermiapp/larsoft/home/larsoft/code/nightly_build
+export MRB_PROJECT=larsoft
 
 if [ ! -d ${MRB_SOURCE} ]
 then
