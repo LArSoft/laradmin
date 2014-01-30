@@ -15,7 +15,7 @@ LARSOFT_SCRIPTS="$(cd $(dirname $0);pwd)"
 NIGHTLY_DIR="$(dirname $(dirname $LARSOFT_SCRIPTS))/${PROJECT}_nightly_build"
 PROJ_PRODUCTS="/grid/fermiapp/products/$PROJECT"
 SETUPS="$PROJ_PRODUCTS/setups"
-PROJ_PRODUCTS="$(dirname $NIGHTLY_DIR)/products/$PROJECT"  # for development test
+#PROJ_PRODUCTS="$(dirname $NIGHTLY_DIR)/products/$PROJECT"  # for development test
 
 case "$PROJECT" in
   "")
@@ -27,12 +27,12 @@ case "$PROJECT" in
     ;;
   uboone|lbne)
     PKGLIST="${PROJECT}code"
-    #PROJ_PRODUCTS="/grid/fermiapp/$PROJECT/software/products/${PROJECT}code"
+    PROJ_PRODUCTS="/grid/fermiapp/$PROJECT/software/products/${PROJECT}code"
     SETUPS="/grid/fermiapp/$PROJECT/software/setup_${PROJECT}.sh"
-    #if [ $PROJECT = lbne ]
-    #then
-    #	MACHINES[0]="lbnegpvm01"
-    #fi
+    if [ $PROJECT = lbne ]
+    then
+    	MACHINES[0]="lbnegpvm01"
+    fi
     ;;
   *)
     echo "$BASESCRIPT: unrecognized project $PROJECT" >&2
