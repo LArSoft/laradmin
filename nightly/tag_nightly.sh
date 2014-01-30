@@ -18,7 +18,7 @@ update_tag()
     exit 1
   fi
   # we need a newer product-config.cmake.in
-  cp -p /grid/fermiapp/products/larsoft/cetbuildtools/v3_07_05/templates/product-config.cmake.in.template ups/ || exit 1;
+  cp -p /grid/fermiapp/products/larsoft/cetbuildtools/v3_07_05/templates/product-config.cmake.in.template ups/product-config.cmake.in || exit 1;
   # need to use a fixit script here
   fixfile=${larpkg}.fix.sh
   rm -f ${fixfile}
