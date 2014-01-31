@@ -2,10 +2,10 @@
 
 usage()
 {
-   echo "Usage: `basename ${0}` <project>" >&2
+   echo "Usage: `basename ${0}` [-d] <project>" >&2
 }
 
-source $(dirname $0)/config_nightly.sh "$1"
+source $(dirname $0)/config_nightly.sh "$@"
 
 # just copy the nightly build
 

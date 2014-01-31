@@ -4,10 +4,10 @@
 
 usage()
 {
-   echo "Usage: `basename ${0}` <project>" >&2
+   echo "Usage: `basename ${0}` [-d] <project>" >&2
 }
 
-source $(dirname $0)/config_nightly.sh "$1"
+source $(dirname $0)/config_nightly.sh "$@"
 
 if [ ! -d ${LARSOFT_SCRIPTS} ]
 then
@@ -44,5 +44,12 @@ do
   done
   let M+=1
 done
+
+if [ -n "$NIGHTLYDEVELOPMODE" ]
+then
+  mkdir -p $PROJ_PRODUCTS
+  cd $PROJ_PRODUCTS
+  mkdir -p $PKGLIST
+fi
 
 exit 0

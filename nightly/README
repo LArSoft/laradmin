@@ -5,13 +5,19 @@ They are checked out at
 All the nightly scripts source config_nightly.sh to set variables used
 by the scripts.
 
+For development testing of the nightly scripts, add a "-d" option to
+any of them before the project name.  This will avoid writing to
+anything that's in production.  (The -d option isn't supported or
+needed if you directly invoke nightly_build.sh.)
+
 To initialize: run "init_nightly.sh <project>" where <project> is "larsoft",
 "uboone", or "lbne".  This will initialize ../../<project>_nightly_build
 relative to the location of where the nightly scripts are checked out.
 
 To run a nightly build: run "nightly.sh <project>".  This calls
 tag_nightly.sh to check out and tag the source, build_nightly.sh once
-for each build type, and copy_nightly.sh at the end to copy.
+for each build type, and copy_nightly.sh at the end to install into
+the final products area.
 
 There will be 4 builds:
 slf5 debug

@@ -6,10 +6,10 @@
 
 usage()
 {
-   echo "Usage: `basename ${0}` <project>" >&2
+   echo "Usage: `basename ${0}` [-d] <project>" >&2
 }
 
-source $(dirname $0)/config_nightly.sh "$1"
+source $(dirname $0)/config_nightly.sh "$@"
 
 export MRB_SOURCE=$NIGHTLY_DIR/srcs
 
@@ -18,8 +18,11 @@ update_tag()
   pkg=$1
   # we just did a clean checkout - tag NOW
   git tag -a -f -m"nightly $mytime" nightly || exit 1
-  # push the tags back to the git develop branch
-  git push
+  if [ -z "$NIGHTLYDEVELOPMODE" ]
+  then
+    # push the tags back to the git develop branch
+    git push
+  fi
   # modify this copy of product_deps
   version="`grep ^parent ups/product_deps | grep -v \# | awk '{print $3}'`" || exit 1
   if [ -z "${version}" ]

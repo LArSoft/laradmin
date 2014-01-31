@@ -5,6 +5,20 @@
 # expect the project name as a parameter
 
 BASESCRIPT="$(basename $0)"
+
+NIGHTLYDEVELOPMODE=
+case "$1" in
+  -d)
+    NIGHTLYDEVELOPMODE=true
+    shift
+    ;;
+  -*)
+    echo "$BASESCRIPT: unrecognized option $1" >&2
+    usage
+    exit 1
+    ;;
+esac
+
 PROJECT="$1"
 
 # MACHINES and OSES have to be corresponding and in the same order
@@ -15,8 +29,6 @@ LARSOFT_SCRIPTS="$(cd $(dirname $0);pwd)"
 NIGHTLY_DIR="$(dirname $(dirname $LARSOFT_SCRIPTS))/${PROJECT}_nightly_build"
 PROJ_PRODUCTS="/grid/fermiapp/products/$PROJECT"
 SETUPS="$PROJ_PRODUCTS/setups"
-#PROJ_PRODUCTS="$(dirname $NIGHTLY_DIR)/products/$PROJECT"  # for development test
-
 case "$PROJECT" in
   "")
     usage
@@ -31,7 +43,7 @@ case "$PROJECT" in
     SETUPS="/grid/fermiapp/$PROJECT/software/setup_${PROJECT}.sh"
     if [ $PROJECT = lbne ]
     then
-    	MACHINES[0]="lbnegpvm01"
+      MACHINES[0]="lbnegpvm01"
     fi
     ;;
   *)
@@ -48,3 +60,8 @@ setup git || exit 1
 setup gitflow || exit 1
 setup mrb || exit 1
 export MRB_PROJECT=$PROJECT
+
+if [ -n "$NIGHTLYDEVELOPMODE" ]
+then
+  PROJ_PRODUCTS="$(dirname $NIGHTLY_DIR)/products/$PROJECT"
+fi

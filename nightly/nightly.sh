@@ -4,10 +4,10 @@
 
 usage()
 {
-   echo "Usage: `basename ${0}` <project>" >&2
+   echo "Usage: `basename ${0}` [-d] <project>" >&2
 }
 
-source $(dirname $0)/config_nightly.sh "$1"
+source $(dirname $0)/config_nightly.sh "$@"
 
 if [ ! -d ${LARSOFT_SCRIPTS} ]
 then
@@ -23,7 +23,7 @@ fi
 
 LOGFILE=$NIGHTLY_DIR/logs/tag_nightly_$TODAY.log
 echo "Tagging $PROJECT, output in $LOGFILE"
-${LARSOFT_SCRIPTS}/tag_nightly.sh $PROJECT >> $LOGFILE 2>&1 || \
+${LARSOFT_SCRIPTS}/tag_nightly.sh "$@" >> $LOGFILE 2>&1 || \
     { echo "ERROR: tag_nightly failed" >&2; exit 1; }
 
 qual=e4
@@ -54,7 +54,7 @@ done
 
 LOGFILE=${NIGHTLY_DIR}/logs/copy_nightly_$TODAY.log
 echo "Beginning copy, output in $LOGFILE"
-${LARSOFT_SCRIPTS}/copy_build.sh $PROJECT >> $LOGFILE 2>&1 || \
+${LARSOFT_SCRIPTS}/copy_build.sh "$@" >> $LOGFILE 2>&1 || \
      { echo "ERROR: copy_nightly failed" >&2; exit 1; }
 
 exit 0
