@@ -27,7 +27,7 @@ case "$PROJECT" in
     ;;
   uboone|lbne)
     PKGLIST="${PROJECT}code"
-    PROJ_PRODUCTS="/grid/fermiapp/$PROJECT/software/products/${PROJECT}code"
+    PROJ_PRODUCTS="/grid/fermiapp/$PROJECT/software/products"
     SETUPS="/grid/fermiapp/$PROJECT/software/setup_${PROJECT}.sh"
     if [ $PROJECT = lbne ]
     then
