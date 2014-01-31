@@ -21,7 +21,7 @@ update_tag()
   if [ -z "$NIGHTLYDEVELOPMODE" ]
   then
     # push the tags back to the git develop branch
-    git push
+    git push --tags
   fi
   # modify this copy of product_deps
   version="`grep ^parent ups/product_deps | grep -v \# | awk '{print $3}'`" || exit 1
