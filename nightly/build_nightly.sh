@@ -55,12 +55,6 @@ fi
 # MRB_INSTALL is redefined when you source localProducts_XXX/setup, so define it here for safety
 export MRB_INSTALL=${NIGHTLY_DIR}/install
 
-if [ $PROJECT != larsoft ]
-then
-    # set up to build against the larsoft nightly
-    setup larsoft nightly -q $MRB_QUALS
-fi
-
 echo "begin build for ${myOS}_${myquals}"
 set -x
 cd $MRB_BUILDDIR  || exit 1
