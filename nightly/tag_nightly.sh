@@ -18,7 +18,8 @@ update_tag()
   pkg=$1
   # we just did a clean checkout - tag NOW
   git tag -a -f -m"nightly $mytime" nightly || exit 1
-  # git push
+  # push the tags back to the git develop branch
+  git push
   # modify this copy of product_deps
   version="`grep ^parent ups/product_deps | grep -v \# | awk '{print $3}'`" || exit 1
   if [ -z "${version}" ]
