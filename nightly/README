@@ -1,0 +1,37 @@
+Scripts for the build are in the laradmin git repository. 
+They are checked out at
+    /grid/fermiapp/larsoft/home/larsoft/code/laradmin/nightly
+
+All the nightly scripts source config_nightly.sh to set variables used
+by the scripts.
+
+To initialize: run "init_nightly.sh <project>" where <project> is "larsoft",
+"uboone", or "lbne".  This will initialize ../../<project>_nightly_build
+relative to the location of where the nightly scripts are checked out.
+
+To run a nightly build: run "nightly.sh <project>".  This calls
+tag_nightly.sh to check out and tag the source, build_nightly.sh once
+for each build type, and copy_nightly.sh at the end to copy.
+
+There will be 4 builds:
+slf5 debug
+slf5 prof
+slf6 debug
+slf6 prof
+
+Each script has its own completion file in <project>_nightly_build/stamps.
+Logs go into <project>_nightly_build/logs.  Old stamps & logs, and tags
+from the git repository, should be cleaned out from cron occasionally
+with "cleanold_nightly.sh <project>".
+
+SLF5 machines:
+uboonegpvm01
+uboonegpvm02
+uboonegpvm03
+lbnegpvm01
+lbnegpvm02
+
+SLF6 machines:
+uboonegpvm04
+
+
