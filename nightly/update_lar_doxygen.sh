@@ -7,7 +7,7 @@ export LARPRODUCTS=/grid/fermiapp/larsoft/products
 export LAR_WWW=/nusoft/app/web/htdoc/larsoft/doxsvn
 
 source ${LARPRODUCTS}/setup
-setup larsoft v1_00_01 -q e4:debug
+setup larsoft v1_00_02 -q e4:debug
 
 echo Running Doxygen
 cd ${LARHOME}/doxygen

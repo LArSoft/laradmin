@@ -30,11 +30,9 @@ update_tag()
     echo "ERROR: failed to find existing version for ${pkg}" >&2
     exit 1
   fi
-  # TEMPORARY: we need the new product-config.cmake.in
-  cp -p /grid/fermiapp/products/larsoft/cetbuildtools/v3_07_06/templates/product-config.cmake.in.template ups/product-config.cmake.in || exit 1
+  # from now on, all releases of cetbuildtools should properly support the nightly updates
   mv ups/product_deps ups/product_deps.bak || exit 1
-  # TEMPORARY: edit version of cetbuildtools
-  sed -e "s%$version%nightly%g" -e 's%cetbuildtools.*v3_07_04%cetbuildtools v3_07_06%' ups/product_deps.bak > ups/product_deps || exit 1
+  sed -e "s%$version%nightly%g" ups/product_deps.bak > ups/product_deps || exit 1
 }
 
 
