@@ -22,7 +22,6 @@ get_this_dir()
 product_dir=${1}
 pkgver=${2}
 package=larsoft_suite
-#pkgver=v1_00_00
 
 if [ -z ${product_dir} ]
 then

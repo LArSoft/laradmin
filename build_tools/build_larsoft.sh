@@ -34,7 +34,6 @@ then
 fi
 
 package=larsoft_suite
-#pkgver=v1_00_00
 pkgdotver=`echo ${pkgver} | sed -e 's/_/./g' | sed -e 's/^v//'`
 
 tardir=${my_dir}/tar
