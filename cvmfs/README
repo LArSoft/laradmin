@@ -2,15 +2,16 @@ At this time oasis-sync needs to be run as yourself, not as user larsoft.
 
 Before running oasis-sync, you need to initialize your grid credentials.
 
-voms-proxy-init -voms fermilab
+grid-proxy-init -voms fermilab
 
 This step must be interactive because you need to supply a password.
-Somewhere around June 2014 we hope that infrastructure will be in place so that
-this can be automated and run by larsoft instead of individual users.
+Somewhere around March 2014 we hope that infrastructure will be in
+place so that this can be automated and run by larsoft instead of
+individual users.
 
 Once you have completed the init step:
 
-/grid/fermiapp/larsoft/home/larsoft/code/laradmin/cvmfs/oasis-sync larsoft
+~larsoft/code/laradmin/cvmfs/oasis-sync larsoft
 
 oasis-sync options:
   -n: use the rsync dry-run option (implies -r)
@@ -18,6 +19,10 @@ oasis-sync options:
   -r: do only rsync step
   -p: do only publish step
 
-general instructions: 
+The parameter can be larsoft, common, uboone, or lbne, and it can be 
+followed by a subdirectory to sync just a specific tool or version,
+for example larsoft/mrb or common/prd/jobsub_client/v0_1_3. 
+
+general OASIS instructions: 
 https://twiki.grid.iu.edu/bin/view/Documentation/Release3/UpdateOasis
 
