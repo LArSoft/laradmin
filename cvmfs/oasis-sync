@@ -2,10 +2,16 @@
 # Sync files from /grid/fermiapp/products to oasis
 # Written by Dave Dykstra
 
+#set this to true when oasis requires it
+REQUIREVOMS=false
+
 ME="`basename $0`"
 usage()
 {
-    echo "$ME [-nvrp] <path_under_/grid/fermiapp/products>" >&2
+    echo "$ME [-nvrp] <project>[/subdir]" >&2
+#    echo "Project expected at /grid/fermiapp/<project>/software/products" >&2
+#    echo "  or /grid/fermiapp/products/<project>" >&2
+    echo "Project expected at /grid/fermiapp/products/<project>" >&2
     echo "  -n: use the rsync dry-run option (implies -r)" >&2
     echo "  -v: use the rsync verbose option" >&2
     echo "  -r: do only rsync step" >&2
@@ -47,46 +53,71 @@ fi
 
 PRODUCTS="$1"
 
-if [ ! -d "/grid/fermiapp/products/$PRODUCTS" ]; then
-    echo "/grid/fermiapp/products/$PRODUCTS does not exist" >&2
-    exit 1
-fi
-
-DESTPRODUCT="${PRODUCTS%%/*}"
-case "$DESTPRODUCT" in
+SRCPRODUCT="${PRODUCTS%%/*}"
+DESTPRODUCT=""
+case "$SRCPRODUCT" in
     "") echo "$ME: destination path may not start with '/'" >&2
 	exit 1
 	;;
     common|larsoft)
 	VO=fermilab
+	DESTPRODUCT="/$SRCPRODUCT"
 	;;
-    *)	VO="$DESTPRODUCT"
+    uboone)
+	VO=microboone
+	;;
+    *)	VO="$SRCPRODUCT"
 	;;
 esac
 
-PROXYVO="`voms-proxy-info -all|awk '{if ($1 == "VO"){print $3}}'`"
+SUBDIR="${PRODUCTS#*/}"
+if [ "$SUBDIR" = "$PRODUCTS" ]; then
+    # there was no slash
+    SUBDIR=""
+else
+    SUBDIR="/$SUBDIR"
+fi
 
-if [ -z "$PROXYVO" ]; then
-    echo "$ME: did you do \"voms-proxy-init -voms $VO\"?" >&2
+#SRCPATH="/grid/fermiapp/$SRCPRODUCT/software/products"
+#if [ ! -d "$SRCPATH" ]; then
+SRCPATH="/grid/fermiapp/products/$SRCPRODUCT"
+#fi
+SRCPATH="$SRCPATH$SUBDIR"
+
+if [ ! -d "$SRCPATH" ]; then
+    echo "$SRCPATH does not exist!" >&2
     exit 1
 fi
 
-if [ "$VO" != "$PROXYVO" ]; then
-    echo "$ME: voms proxy VO \"$PROXYVO\" does not match expected VO \"$VO\"" >&2
-    exit 1
+DESTDIR="/net/nas01/Public/ouser.$VO/products"
+DESTPATH="$DESTDIR$DESTPRODUCT$SUBDIR"
+
+if $REQUIREVOMS; then
+    PROXYVO="`voms-proxy-info -all|awk '{if ($1 == "VO"){print $3}}'`"
+    if [ -z "$PROXYVO" ]; then
+	echo "$ME: did you do \"voms-proxy-init -voms $VO\"?" >&2
+	exit 1
+    fi
+    if [ "$VO" != "$PROXYVO" ]; then
+	echo "$ME: voms proxy VO \"$PROXYVO\" does not match expected VO \"$VO\"" >&2
+	exit 1
+    fi
 fi
 
-if voms-proxy-info -all|grep -q "timeleft.*: 0:00:00"; then
-    echo "$ME: voms proxy expired, run voms-proxy-init again" 2>&1
+if grid-proxy-info|grep -q "timeleft.*: 0:00:00"; then
+    if $REQUIREVOMS; then
+	echo "$ME: voms proxy expired, run voms-proxy-init again" 2>&1
+    else
+	echo "$ME: proxy expired, run grid-proxy-init again" 2>&1
+    fi
     exit 1
 fi
 
 GSISSH="gsissh -o GSSAPIDelegateCredentials=yes"
 HOST="ouser.$VO@oasis-login.opensciencegrid.org"
-DIR="/net/nas01/Public/ouser.$VO/products"
 
-if ! $GSISSH $HOST test -d $DIR/$DESTPRODUCT; then
-    echo "$ME: cannot see destination directory $DIR/$DESTPRODUCT on $HOST" >&2
+if ! $GSISSH $HOST test -d $DESTDIR$DESTPRODUCT; then
+    echo "$ME: cannot see destination directory $DESTDIR$DESTPRODUCT on $HOST" >&2
     exit 2
 fi
 
@@ -103,7 +134,7 @@ esac
 
 RET=0
 if $DORSYNC; then
-    (set -x;time rsync -e "$GSISSH" -aW $RSYNCOPTS --delete $EXCLUDE --stats /grid/fermiapp/products/$PRODUCTS/ "$HOST:$DIR/$PRODUCTS/")
+    (set -x;time rsync -e "$GSISSH" -aHW $RSYNCOPTS --delete $EXCLUDE --stats ${SRCPATH}/ "$HOST:${DESTPATH}/")
     RET=$?
     if [ "$RET" != 0 ]; then
 	DOPUBLISH=false
