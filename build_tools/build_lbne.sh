@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# Use this script to build all of LarSoft
-# This is a very stupid script, it builds everything regardless of whether it has already been built or not
-
 usage()
 {
    echo "USAGE: `basename ${0}` <product_dir> <version> <e4> <debug|opt|prof> [-jN]"
@@ -33,7 +30,7 @@ then
    exit 1
 fi
 
-package=larsoft_suite
+package=lbnecode
 pkgdotver=`echo ${pkgver} | sed -e 's/_/./g' | sed -e 's/^v//'`
 
 tardir=${my_dir}/tar
@@ -131,45 +128,32 @@ then
 fi
 
 # OK - ready to build
-# build order: 
-# 1. larcore 
-# 2. lardata
-# 3. larevt
-# 4. larsim
-# 5. larreco
-# 6. larana, lareventdisplay, larexamples, larpandora
-# 7. larsoft
 
-# list in build order
-larsoft_list="larcore  lardata larevt larsim larreco larana larexamples lareventdisplay larpandora larsoft"
-for code in ${larsoft_list}
-do
   echo ""
   echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
-  echo "setup for ${code} ${extraqual} build"
-  builddir=${blddir}/${code}/${flvr}-${basequal}-${extraqual}
+  echo "setup for ${package} ${extraqual} build"
+  builddir=${blddir}/${package}/${flvr}-${basequal}-${extraqual}
   if [ -d ${builddir} ]
   then
     rm -rf ${builddir}
   fi
   mkdir -p ${builddir} || exit 1;
-  mkdir -p ${sourcedir}/${code} || exit 1;
-  echo "extract ${code} from ${tardir}/${code}.${pkgdotver}.tbz2"
-  cd ${sourcedir}/${code}
-  tar xf ${tardir}/${code}.${pkgdotver}.tbz2
-  echo "begin building ${code} ${basequal} ${extraqual}"
+  mkdir -p ${sourcedir}/${package} || exit 1;
+  echo "extract ${package} from ${tardir}/${package}.${pkgdotver}.tbz2"
+  cd ${sourcedir}/${package}
+  tar xf ${tardir}/${package}.${pkgdotver}.tbz2
+  echo "begin building ${package} ${basequal} ${extraqual}"
   cd ${builddir}
   echo ""
-  echo "source ${sourcedir}/${code}/ups/setup_for_development ${command}"
-  source ${sourcedir}/${code}/ups/setup_for_development ${command} || exit 1;
+  echo "source ${sourcedir}/${package}/ups/setup_for_development ${command}"
+  source ${sourcedir}/${package}/ups/setup_for_development ${command} || exit 1;
   echo ""
   echo "buildtool -I ${product_dir} -i ${npar}"
   # adding -p to build a package tarball
-  buildtool -I ${product_dir} -i -p ${npar} >& ${my_dir}/log.build.${code}.${basequal}.${extraqual} || exit 1;
+  buildtool -I ${product_dir} -i -p ${npar} >& ${my_dir}/log.build.${package}.${basequal}.${extraqual} || exit 1;
   # move the tarball to the build directory
-  mv ${builddir}/${code}-${pkgdotver}*.tar.bz2 ${my_dir}/ || exit 1;
-done
+  mv ${builddir}/${package}-${pkgdotver}*.tar.bz2 ${my_dir}/ || exit 1;
 
-echo "use tar_larsoft_suite.sh ${basequal} ${extraqual} to make the larsoft_suite tarball"
+#echo "use tar_lbnecode.sh ${basequal} ${extraqual} to make the lbnecode tarball"
 
 exit 0

@@ -1,8 +1,6 @@
 #!/bin/bash
 
-# This script creates a source code tarball for the larsoft suite.
-# For now, we presume that all pieces use the same tag.
-# This may not always be true.
+# This script creates a source code tarball for uboonecode.
 
 usage()
 {
@@ -21,7 +19,7 @@ get_this_dir()
 
 product_dir=${1}
 pkgver=${2}
-package=larsoft_suite
+package=uboonecode
 
 if [ -z ${product_dir} ]
 then
@@ -59,22 +57,17 @@ then
    exit 1
 fi
 
-larsoft_list="larana  larcore  lardata  lareventdisplay  larevt  larexamples  larreco  larsim larpandora larsoft"
-
 set -x
 
 cd ${pkgdir}
-cp -p ${thisdir}/build_larsoft.sh .|| exit 1;
-cp -p ${thisdir}/tar_larsoft_suite.sh .|| exit 1;
+cp -p ${thisdir}/build_uboone.sh .|| exit 1;
+#cp -p ${thisdir}/tar_uboonecode.sh .|| exit 1;
 
 cd ${pkgdir}/tar
-for code in ${larsoft_list}
-do
-  curl --fail --silent --location --insecure \
-   "http://cdcvs.fnal.gov/cgi-bin/git_archive.cgi/cvs/projects/${code}.${pkgver}.tbz2" \
-   > "${code}.${pkgdotver}.tbz2" || \
-   { echo "ERROR: Unable to obtain source from Redmine for ${code} ${pkgver}" 1>&2; exit 1; }
-done
+curl --fail --silent --location --insecure \
+   "http://cdcvs.fnal.gov/cgi-bin/git_archive.cgi/cvs/projects/${package}.${pkgver}.tbz2" \
+   > "${package}.${pkgdotver}.tbz2" || \
+   { echo "ERROR: Unable to obtain source from Redmine for ${package} ${pkgver}" 1>&2; exit 1; }
 
 set +x
 

@@ -44,7 +44,6 @@ else
 fi
 
 package=larsoft_suite
-#pkgver=v1_00_00
 pkgdotver=`echo ${pkgver} | sed -e 's/_/./g' | sed -e 's/^v//'`
 
 # make sure we can use the setup alias

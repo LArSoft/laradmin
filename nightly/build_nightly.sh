@@ -4,61 +4,49 @@
 
 usage()
 {
-   echo "USAGE: `basename ${0}` <working_dir>"
+   echo "Usage: `basename ${0}` <project> <working_dir>" >&2
 }
 
-working_dir=${1}
+source $(dirname $0)/config_nightly.sh "$1"
+
+working_dir="${2}"
 
 if [ -z ${working_dir} ]
 then
-   echo "ERROR: please specify the working directory"
+   echo "ERROR: please specify the working directory" >&2
    usage
    exit 1
 fi
-LARSOFT_PRODUCTS=/grid/fermiapp/products/larsoft
-if [ ! -d ${LARSOFT_PRODUCTS} ]
-then
-   echo "ERROR: ${LARSOFT_PRODUCTS} does not exist"
-   exit 1
-fi
 
-# establish the environment
-source ${LARSOFT_PRODUCTS}/setup || exit 1;
-setup git || exit 1;
-setup gitflow || exit 1;
-setup mrb || exit 1;
-export MRB_PROJECT=larsoft
 
-NIGHTLY_DIR=/grid/fermiapp/larsoft/home/larsoft/code/nightly_build
 if [ ! -d ${NIGHTLY_DIR} ]
 then
-   echo "ERROR: ${NIGHTLY_DIR} does not exist"
+   echo "ERROR: ${NIGHTLY_DIR} does not exist" >&2
    exit 1
 fi
 if [ ! -d ${working_dir} ]
 then
-   echo "ERROR: ${working_dir} does not exist"
+   echo "ERROR: ${working_dir} does not exist" >&2
    exit 1
 fi
 
-source ${working_dir}/localProducts_larsoft_nightly*/setup || exit 1;
+source ${working_dir}/localProducts_${PROJECT}_nightly*/setup || exit 1
 
-mytime=`date +%Y-%m-%d` || exit 1;
-setup cetpkgsupport || exit 1;
-myOS=`get-directory-name os` || exit 1;
-unsetup cetpkgsupport || exit 1;
-myquals=`echo ${MRB_QUALS} | sed -e 's/:/_/g'` || exit 1;
+setup cetpkgsupport || exit 1
+myOS=`get-directory-name os` || exit 1
+unsetup cetpkgsupport || exit 1
+myquals=`echo ${MRB_QUALS} | sed -e 's/:/_/g'` || exit 1
 
-if [ -e ${NIGHTLY_DIR}/nightly_build_${myOS}_${myquals}_${mytime} ]
+if [ -e ${NIGHTLY_DIR}/stamps/nightly_build_${myOS}_${myquals}_$TODAY ]
 then
-  echo "nightly build has already been done for ${myOS}_${myquals} ${mytime}"
+  echo "nightly build has already been done for ${myOS}_${myquals} $TODAY" >&2
   exit 0
 fi
 
-if [ ! -e ${NIGHTLY_DIR}/nightly_tag_${mytime} ]
+if [ ! -e ${NIGHTLY_DIR}/stamps/nightly_tag_${TODAY} ]
 then
-   echo "ERROR: cannot find ${MRB_SOURCE}/../nightly_tag_${mytime}"
-   echo "ERROR: code has not been tagged"
+   echo "ERROR: cannot find ${NIGHTLY_DIR}/stamps/nightly_tag_${TODAY}" >&2
+   echo "ERROR: code has not been tagged" >&2
    exit 1
 fi
 
@@ -69,17 +57,17 @@ export MRB_INSTALL=${NIGHTLY_DIR}/install
 
 echo "begin build for ${myOS}_${myquals}"
 set -x
-cd $MRB_BUILDDIR  || exit 1;
-mrb z  || exit 1;
+cd $MRB_BUILDDIR  || exit 1
+mrb z  || exit 1
 set +x
 
-source mrb s  || exit 1;
+source mrb s  || exit 1
 
 set -x
-mrb i -j4  || exit 1;
+mrb i -j4  || exit 1
 set +x
 
-cd ${NIGHTLY_DIR} || exit 1;
-touch nightly_build_${myOS}_${myquals}_${mytime}  || exit 1;
+cd ${NIGHTLY_DIR} || exit 1
+touch stamps/nightly_build_${myOS}_${myquals}_$TODAY  || exit 1
 
 exit 0
