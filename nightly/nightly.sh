@@ -4,7 +4,7 @@
 
 usage()
 {
-   echo "Usage: `basename ${0}` [-d] <project>" >&2
+   echo "Usage: `basename ${0}` [-d] [-t] <project>" >&2
 }
 
 source $(dirname $0)/config_nightly.sh "$@"
@@ -43,8 +43,14 @@ do
     fi
     LOGFILE="${NIGHTLY_DIR}/logs/build_nightly_${rOS}_${qual}_${type}_$TODAY.log"
     echo "Beginning nightly build for ${rOS}_${qual}_${type} on $machine, output in $LOGFILE"
+    if [ "${machine}" = "no_ssh" ]
+    then
+    ${LARSOFT_SCRIPTS}/build_nightly.sh $PROJECT ${working_dir} >> $LOGFILE 2>&1 || \
+       { echo "ERROR: build_nightly failed for ${working_dir}" >&2; exit 1; }
+    else
     ssh ${machine} "${LARSOFT_SCRIPTS}/build_nightly.sh $PROJECT ${working_dir} >> $LOGFILE 2>&1" || \
        { echo "ERROR: build_nightly failed for ${working_dir}" >&2; exit 1; }
+    fi
     echo "nightly build is complete for ${rOS}_${qual}_${type}"
 
   done

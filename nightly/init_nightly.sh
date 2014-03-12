@@ -39,8 +39,14 @@ do
   do
     working_dir=${rOS}_${qual}_${type}
     mkdir $working_dir
+    if [ "${machine}" = "no_ssh" ]
+    then
+      source $SETUPS && setup mrb && export MRB_PROJECT=$PROJECT && cd $PWD && mrb newDev -f -T $working_dir -v nightly -q ${qual}:${type} || \
+       { echo "ERROR: init_nightly's mrb newDev failed for ${working_dir}" >&2; exit 1; }
+    else
     ssh ${machine} "source $SETUPS && setup mrb && export MRB_PROJECT=$PROJECT && cd $PWD && mrb newDev -f -T $working_dir -v nightly -q ${qual}:${type}" || \
        { echo "ERROR: init_nightly's mrb newDev failed for ${working_dir}" >&2; exit 1; }
+    fi
   done
   let M+=1
 done
