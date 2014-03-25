@@ -19,10 +19,6 @@ get_this_dir()
     thisdir=`cd ${reldir} && /bin/pwd ${pwd_P_arg}`
 }
 
-get_version()
-{
-}
-
 product_dir=${1}
 pkgver=${2}
 package=larsoft_suite
