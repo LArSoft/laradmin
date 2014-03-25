@@ -1,0 +1,509 @@
+#!/bin/bash
+
+# Use this script to build all of LarSoft
+# This script is an abstraction of buildFW
+
+usage()
+{
+  cat 1>&2 <<EOF
+Usage: $(basename ${0}) [-h]
+       $(basename ${0}) <options> <product_topdir> <build-spec>
+
+Options:
+
+  -f    Force already-built packages to be rebuilt.
+  -h    This help.
+  -t    Make package tarfiles.
+
+Arguments:
+
+  product_topdir   Top directory for relocatable-UPS products area.
+
+  build-spec       debug, opt or prof.
+  
+  larsoft-version  The version of larsoft, which may not be the same as the components of larsoft.
+
+EOF
+}
+
+########################################################################
+# prep_build
+#
+# Boiler-plate -- return true if the product should be built. Expect
+# product name, version and colon-separated qualifier list (if
+# applicable) as arguments. Optional argument: -f <flvr> if different
+# from the standard flavor (NULL, for instance).
+function prep_build() {
+  unset curr_flvr
+  while getopts :f: OPT; do
+    case $OPT in
+      f)
+        curr_flvr="$OPTARG"
+        ;;
+      *)
+        echo "INTERNAL ERROR: usage: prep_build called with args $@" 1>&2
+        exit 2
+    esac
+  done
+  shift $(( OPTIND - 1 ))
+  OPTIND=1
+  pname=${1}; shift
+  pver=${1}; shift
+  local quals
+  if [[ -n "${1}" ]]; then
+    #local noplusquals=$(sort_quals ${1//+/})
+    local noplusquals=${1//+/}
+    shift
+    tarquals=$(tar_qualstring "${noplusquals}")
+    quals=" -q +${tarquals//-/:+}"
+    pquals=" -q ${tarquals//-/:}"
+  else
+    quals=""
+    pquals=""
+    tarquals=""
+  fi
+  [[ -n "${2}" ]] && shift
+  logfile=${logdir}/build_${pname}-${pver}-${flvr}${tarquals:+-${tarquals}}.log
+  if ups exist ${pname} ${pver}${quals} "${@}" >/dev/null 2>&1; then
+    if (( ${force:-0} )); then
+      echo "INFO: Product ${pname} ${pver}${pquals} exists and will be rebuilt."
+    else
+      echo "INFO: Product ${pname} ${pver}${pquals} exists: use -f to force rebuild."
+      return 1
+    fi
+  fi
+  if [[ ! -d "${product_topdir}/${pname}/${pver}" ]] || \
+       ! cd "${product_topdir}/${pname}/${pver}"; then
+    echo "ERROR: Could not change directory to ${product_topdir}/${pname}/${pver}." 1>&2
+    exit 1
+  fi
+  echo "INFO: Building ${pname} ${pver}${pquals}."
+  backup_by_mtime "${logfile}"
+  return 0
+}
+
+
+########################################################################
+# sort_quals
+#
+# Take a colon-separated list of qualifiers and print them rearranged in
+# alphabetical order.
+function sort_quals() {
+  printf "${1}" | tr ':' '\n' | sort | tr '\n' ':' | sed -e 's/:$//'
+}
+
+########################################################################
+# tar_qualstring
+#
+# Take a colon-separated list of qualifiers and return a dash-separated
+# list with debug / prof, etc at the back.
+function tar_qualstring() {
+  local dop=$(printf "${1}" | tr ':' '\n' | \
+              grep -e '^\(debug\|prof\|opt\)$' 2>/dev/null)
+#  local squals=($(printf "${1}" | tr ':' '\n' | \
+#                  grep -v -e "^${dop}\$" 2>/dev/null | sort) ${dop})
+  local squals=($(printf "${1}" | tr ':' '\n' | \
+                  grep -v -e "^${dop}\$" 2>/dev/null) ${dop})
+  echo "${squals[@]}" | tr ' ' '-'
+}
+
+########################################################################
+# passfail
+#
+# Expects prep_build to have been run, which sets ${pname}, ${pver} and
+# ${pquals}.
+#
+# Optional argument "-m" indicating that a manifest entry should *not*
+# be made for this product.
+function passfail() {
+  local status=$?
+  local no_manifest
+  while getopts :m OPT; do
+    case $OPT in
+      m)
+        (( no_manifest = 1 ))
+        ;;
+      *)
+        echo "INTERNAL ERROR: usage: passfail [-m] <status>"
+        exit 2
+    esac
+  done
+  shift $(( OPTIND - 1 ))
+  OPTIND=1
+  if (( ${status} == 0)); then # Success!
+    (( ${no_manifest:-0} )) || add_to_manifest
+  else
+    cat 1>&2 <<EOF
+Build of ${pname} ${pver}${pquals} failed with status ${status} -- please examine:
+
+  ${logfile}
+
+and correct deficiencies before attempting to restart the build.
+EOF
+    exit ${status}
+  fi
+}
+
+########################################################################
+# add_to_manifest
+#
+# Record the product's details in the build manifest file.
+function add_to_manifest() {
+  if [[ -n "${maketar}" ]]; then
+    local tarfile=$({ ls -1t "${product_topdir}/${pname}-"*"${tarquals:+-${tarquals}}.tar"* | head -1; })
+    if [[ -f "${tarfile}" ]]; then
+      tarfile=$(basename "${tarfile}")
+    else
+      unset tarfile
+    fi
+  fi
+  printf "%-20s %-15s %-60s %-25s %-20s\n" "${pname}" "${pver}" "${tarfile:-notar}" "-f ${curr_flvr:-${flvr}}" "${pquals}" >>"${manifest}"
+}
+
+########################################################################
+# find_scriptdir
+#
+# Return the real location of this script. Since this could be "." we
+# need to do this immediately the script starts executing, before we
+# change directories.
+
+function find_scriptdir() {
+  local sdir
+  if [[ -L "${BASH_SOURCE}" ]]; then
+    sdir=$(readlink "${BASH_SOURCE}")
+  else
+    sdir="${BASH_SOURCE}"
+  fi
+  ( cd "$(dirname "${sdir}")" && /bin/pwd )
+}
+
+########################################################################
+# maybe_report_time.
+#
+# Report time required to build product
+#
+# Usage: maybe_report_time <start> product version
+function maybe_report_time() {
+  local start
+  (( start = $1))
+  local product=$2
+  local version=$3
+  local end=$(date +%s)
+  local dur h m s
+  (( dur = end - start ))
+  if (( dur > 1 )); then
+    (( h = dur / 3600 ))
+    (( dur -= h * 3600 ))
+    (( m = dur / 60 ))
+    (( s = dur - m * 60 ))
+    printf "INFO: Dealt with $product $version in "
+    if (( h > 0 )); then
+      printf "${h}:"
+    fi
+    printf "%02d:%02d\n" ${m} ${s}
+  fi
+}
+
+#########################################################################
+# find_ups_setup_script
+#
+# Find and print the correct UPS setup script.
+function find_ups_setup_script() {
+  if [[ -f "${product_topdir}/setups" ]]; then
+     ups_setup_script=${product_topdir}/setups
+  elif [[ -f "${product_topdir}/setup" ]]; then
+     ups_setup_script=${product_topdir}/setup
+  fi
+  if [ -z ${UPS_DIR} ]
+  then
+     echo "ERROR: please setup ups"
+     exit 1
+  fi
+  product_dir_list=`echo ${PRODUCTS} | sed -e 's/\:/ /g'`
+  for pd in ${product_dir_list}
+  do
+    if [[ -f "${pd}/setups" ]]; then
+       ups_setup_script=${pd}/setups
+    elif [[ -f "${pd}/setup" ]]; then
+       ups_setup_script=${pd}/setup
+    fi
+  done
+  echo ${ups_setup_script}
+}
+
+########################################################################
+# bootstrap_cet
+#
+# Get the source for a cet package and unwind it.
+function bootstrap_cet() {
+  local cetprod=$1
+  [[ cetprod == art ]] && set -x
+  local cetver=$2
+  local project=${3:-${cetprod}}
+  (( $(ls -1A "${product_topdir}/${cetprod}/${cetver}/src" 2>/dev/null | wc -l) == 0 )) || return 0;
+  echo "INFO: Bootstrapping ${cetprod} ${cetver} from project ${project}."
+  mkdir -p "${product_topdir}/${cetprod}/${cetver}" || \
+   { echo "ERROR: Could not create product directory for ${cetprod} ${cetver}" 1>&2; exit 1; }
+  cd "${product_topdir}/${cetprod}/${cetver}" || \
+   { echo "ERROR: Could not change to product directory for ${cetprod} ${cetver}" 1>&2; exit 1; }
+  mkdir -p src tar || \
+   { echo "ERROR: Could create necessary directories in ${cetprod}/${cetver}" 1>&2; exit 1; }
+  cd tar
+  curl --fail --silent --location --insecure \
+   "http://cdcvs.fnal.gov/cgi-bin/git_archive.cgi/cvs/projects/${project}.${cetver}.tbz2" \
+   > "${cetprod}.${cetver}.tbz2" || \
+   { echo "ERROR: Unable to obtain source from Redmine for ${cetprod} ${cetver}" 1>&2; exit 1; }
+  cd ../src
+  tar xf "../tar/${cetprod}.${cetver}.tbz2" || \
+   { echo "ERROR: Unable to unpack source archive ${product_topdir}/${cetprod}/${cetver}/tar/${cetprod}.${cetver}.tbz2" 1>&2
+     ( cd .. && rm -rf src )
+     exit 1;
+   }
+}
+
+
+########################################################################
+# build_cet_detail
+#
+# Actually build a CET package (wrapped to ensure good pass-fail
+# semantics).
+function build_cet_detail() {
+  while getopts :p:n OPT; do
+    case $OPT in
+      n)
+        (( notest=1 ))
+        ;;
+      p)
+        local project="$OPTARG"
+        ;;
+      *)
+        echo "usage: ${0##*/} [-p <project>] [--] product version basequal"
+        exit 2
+    esac
+  done
+  shift $(( OPTIND - 1 ))
+  OPTIND=1
+  
+  local cetprod=$1
+  local cetver=$2
+  local basequal=$3
+  bootstrap_cet "${cetprod}" "${cetver}" ${project} || return $?
+
+  prep_build ${cetprod} ${cetver} ${basequal}:${build_type} || return 0
+
+  local sourcedir="${product_topdir}/${pname}/${pver}/src"
+  local builddir="${product_topdir}/${pname}/${pver}/build-${flvr}${tarquals:+-${tarquals}}"
+  mkdir -p "${builddir}" || \
+   { echo "ERROR: Unable to make build directory ${builddir}" 1>&2; exit 1; }
+  local bti
+  local testarg
+  if [[ -n "${maketar}" ]]; then
+    if (( ${notest:-0} == 0 )); then
+      bti=-A
+      testarg=-R
+    else
+      bti=-p
+      unset testarg
+    fi
+  else
+    bti=-i
+    if (( ${notest:-0} == 0 )); then
+      testarg=-R
+    else
+      unset testarg
+    fi
+  fi
+  ( cd "${builddir}"
+    source "${sourcedir}/ups/setup_for_development" ${basequal} ${btopt} || exit $?
+    buildtool -c -I ${product_topdir} ${bti} ${testarg} || exit $?
+    if [[ -n "${maketar}" ]]; then
+       mv "${pname}-"*.tar.bz2 "${product_topdir}"
+    else
+      :
+    fi
+  ) > ${logfile} 2>&1
+}
+
+########################################################################
+# build_cet
+#
+# Build a package known to use the CET CMake build system.
+function build_cet() {
+  while getopts :p:n OPT; do
+    case $OPT in
+      n)
+        (( notest=1 ))
+        ;;
+      p)
+        local project="$OPTARG"
+        ;;
+      *)
+        echo "usage: ${0##*/} [-p <project>] [--] product version basequal"
+        exit 2
+    esac
+  done
+  shift $(( OPTIND - 1 ))
+  OPTIND=1
+
+  local cetprod=$1
+  local cetver=$2
+  local start=$(date +%s)
+  build_cet_detail ${notest:+-n} ${project:+-p ${project}} "$@"; passfail
+  maybe_report_time ${start} ${cetprod} ${cetver}
+}
+
+########################################################################
+# version_greater
+#
+# Compare two UPS version strings and return success if the first is
+# greater.
+function version_greater() {
+  perl -e 'use strict;
+$ARGV[0] =~ s&^\s*"([^"]+)"\s*$&${1}&;
+$ARGV[1] =~ s&^\s*"([^"]+)"\s*$&${1}&;
+my @v1 = ( $ARGV[0] =~ m&^v(\d+)(?:_(\d+)(?:_(\d+))?)?(.*)& );
+my @v2 = ( $ARGV[1] =~ m&^v(\d+)(?:_(\d+)(?:_(\d+))?)?(.*)& );
+my $result;
+if (defined $v1[0] and defined $v2[0] and $v1[0] == $v2[0]) {
+  if (defined $v1[1] and defined $v2[1] and $v1[1] == $v2[1]) {
+    if (defined $v1[2] and defined $v2[2] and $v1[2] == $v2[2]) {
+      $result = ($v1[3] and (!$v2[3] or $v1[3] gt $v2[3]))?1:0;
+    } else {
+      $result = (defined $v1[2] and (!defined $v2[2] or $v1[2] > $v2[2]))?1:0;
+    }
+  } else {
+    $result = (defined $v1[1] and (!defined $v2[1] or $v1[1] > $v2[1]))?1:0;
+  }
+} else {
+  $result = (defined $v1[0] and (!defined $v2[0] or $v1[0] > $v2[0]))?1:0
+}
+exit(($result == 1)? 0 : 1);
+' "$@"
+}
+
+########################################################################
+# backup_by_mtime
+#
+# Make a backup of the specified file, named by last-modified time.
+function backup_by_mtime() {
+  local file=${1}
+  [[ -f "${file}" ]] || return 1
+  local backup_suffix
+  if (( ${darwin:-0} )); then
+    backup_suffix="$(date -r $(stat -f %m "${file}") +%Y%m%d_%H%M%S)"
+  else
+    backup_suffix="$(date -r "${file}" +%Y%m%d_%H%M%S)"
+  fi
+  mv "${file}" "${file}.${backup_suffix}"
+}
+
+########################################################################
+# Main body.
+
+# Global variables.
+current_os=$(uname)
+[[ "${current_os}" == Darwin ]] && (( darwin = 1 ))
+
+bqual=e4
+logdir=$(/bin/pwd)
+scriptdir=$(find_scriptdir)
+
+while getopts :fhtU OPT; do
+  case ${OPT} in
+    f)
+      (( force = 1 ))
+      ;;
+    h)
+      usage
+      exit 1
+      ;;
+    t)
+      maketar=tar
+      ;;
+    *)
+      usage
+      exit 1
+  esac
+done
+shift `expr $OPTIND - 1`
+OPTIND=1
+
+if (( $# != 2 )); then
+  echo "ERROR: Expected 2 non-option arguments; received $#." 1>&2
+  usage
+  exit 1
+fi
+
+product_topdir="${1}"
+
+[[ -n "$product_topdir" ]] && \
+  [[ -d "${product_topdir}" ]] && \
+  [[ -w "${product_topdir}" ]] || \
+  { echo "ERROR: Could not write to specified product directory \"${product_topdir}\"." 1>&2; exit 1; }
+
+build_type="${2}"
+case ${build_type} in
+  debug)
+    btopt=-d
+    ;;
+  opt)
+    btopt=-o
+    ;;
+  prof)
+    btopt=-p
+    ;;
+  *)
+    echo "ERROR: Unrecognized build type \"${build_type}\"." 1>&2
+    exit 1
+esac
+
+larsoft_version=v1_00_06
+larsoft_dot_version=1.00.06
+
+if (( ${darwin:-0} )) && \
+   { [[ -x /usr/local/bin/homebrew ]] || \
+     [[ -x /usr/local/bin/port ]]; }; then
+  cat 1>&2 <<EOF
+ERROR: homebrew or macports installation detected in /usr/local. Build would
+       not be portable! Move /usr/local before restarting.
+EOF
+  exit 1
+fi
+
+# Set up UPS for use here.
+source "$(find_ups_setup_script)" >/dev/null 2>&1
+type -t ups >/dev/null 2>&1 || \
+ { cat 1>&2 <<EOF
+ERROR: Unable to find a usable UPS ! 
+EOF
+   exit 1
+ }
+PRODUCTS=${product_topdir}:${PRODUCTS}
+export -f setup unsetup # So "setup" is usable in invoked scripts.
+if (( ${darwin:-0} )); then
+  flvr=$(ups flavor -2)
+else
+  flvr=$(ups flavor)
+fi
+
+  manifest=${product_topdir}/larsoft-${larsoft_version}${flvr:+-${flvr}}-${bqual}-${build_type}_MANIFEST.txt
+  backup_by_mtime "${manifest}"
+
+  build_cet larcore v1_00_05 ${bqual}
+  build_cet lardata ${larsoft_version} ${bqual}
+  build_cet larevt ${larsoft_version} ${bqual}
+  build_cet larsim ${larsoft_version} ${bqual}
+  build_cet larreco ${larsoft_version} ${bqual}
+  build_cet larana ${larsoft_version} ${bqual}
+  build_cet larexamples ${larsoft_version} ${bqual}
+  build_cet lareventdisplay ${larsoft_version} ${bqual}
+  build_cet larpandora ${larsoft_version} ${bqual}
+  build_cet larsoft ${larsoft_version} ${bqual}:noifdh
+  if ! (( ${darwin:-0} )); then # No ifdhc for Darwin
+     build_cet larsoft ${larsoft_version} ${bqual}
+  fi
+
+echo "INFO: larsoft  ${larsoft_version} complete."
+
+
+exit $?
