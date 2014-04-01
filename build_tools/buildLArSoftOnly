@@ -457,8 +457,8 @@ case ${build_type} in
     exit 1
 esac
 
-larsoft_version=v1_00_06
-larsoft_dot_version=1.00.06
+larsoft_version=v1_00_07
+larsoft_dot_version=1.00.07
 
 if (( ${darwin:-0} )) && \
    { [[ -x /usr/local/bin/homebrew ]] || \
