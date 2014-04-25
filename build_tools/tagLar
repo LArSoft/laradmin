@@ -1,0 +1,147 @@
+#!/usr/bin/env bash
+
+# This script allows us to mimic git flow, but do the steps in a set order
+
+# work flow
+# mrb newDev ...
+# mrb g larsoft_suite, lbnecode, uboonecode
+# tagLar start <tag>
+# tagLar update <tag>
+# mrb uv other products if necessary
+# verify build, test, and install 
+# tagLar tag <tag>
+# now do the official build and distribution
+# tagLar merge <tag>
+# this is the final step to merge the changes with the develop branch
+
+
+# Determine this command name
+thisComFull=$(basename $0)
+##thisCom=${thisComFull%.*}
+fullCom="${thisComFull%.*}"
+
+# Usage function
+function usage() {
+    echo "Usage: $fullCom <start|update|tag|merge> <tag>"
+    echo "   start - create release/<tag> branch"
+    echo "   update - modify product_deps to use <tag>"
+    echo "   tag - merge changes with master and tag"
+    echo "   merge - merge changes with develop"
+    echo
+    echo "FOR EXPERT USE ONLY"
+
+}
+
+# Determine command options (just -h for help)
+while getopts ":h" OPTION
+do
+    case $OPTION in
+        h   ) usage ; exit 0 ;;
+        *   ) echo "ERROR: Unknown option" ; usage ; exit 1 ;;
+    esac
+done
+
+# Capture the tag
+flow=$1
+tag=$2
+if [ -z "${flow}" ]
+then
+    echo 'ERROR: no options specified'
+    usage
+    exit 1
+fi
+if [ -z "${tag}" ]
+then
+    echo 'ERROR: no tag specified'
+    usage
+    exit 1
+fi
+
+if [ -z "${MRB_SOURCE}" ]
+then
+    echo 'ERROR: MRB_SOURCE must be defined'
+    echo '       source the appropriate localProductsXXX/setup'
+    exit 1
+fi
+
+if [ ! -r $MRB_SOURCE/CMakeLists.txt ]; then
+    echo "$MRB_SOURCE/CMakeLists.txt not found"
+    exit 1
+fi
+
+# find the directories
+# ignore any directory that does not contain ups/product_deps
+list=`ls $MRB_SOURCE -1`
+for file in $list
+do
+   if [ -d $file ]
+   then
+     if [ -r $file/ups/product_deps ]
+     then
+       pkglist="$file $pkglist"
+     fi
+   fi
+done
+
+if [ "${flow}" = "start" ]
+then
+  for REP in $pkglist
+  do
+     cd ${MRB_SOURCE}/${REP}
+     git checkout develop
+     git checkout -b release/${tag}
+     okflow=$?
+     if [ ! ${okflow} ]
+     then
+	echo "${REP} git flow failure: ${okflow}"
+	exit 1
+     fi
+  done
+fi
+
+if [ "${flow}" = "update" ]
+then
+  for REP in $pkglist
+  do
+     mrb uv ${REP} ${tag}
+  done
+fi
+
+if [ "${flow}" = "tag" ]
+then
+  for REP in $pkglist
+  do
+     cd ${MRB_SOURCE}/${REP}
+     echo "begin ${REP}"
+     ##rm -f ups/product_deps.bak
+     git commit -m"for larsoft ${tag}" ups/product_deps  || exit 1
+     git co master  || exit 1
+     ##git diff release/${tag}   || exit 1
+     git merge -m"larsoft ${tag}" release/${tag}   || exit 1
+     git tag -a -m"larsoft ${tag}" ${tag}  || exit 1
+     git push origin master  || exit 1
+     git push --tags  || exit 1
+     ##git branch -d release/${tag}   || exit 1
+  done
+fi
+
+if [ "${flow}" = "merge" ]
+then
+  for REP in $pkglist
+  do
+     set -x 
+     cd ${MRB_SOURCE}/${REP}
+     echo "begin ${REP}"
+     git co master  || exit 1
+     git pull  || exit 1
+     git co develop  || exit 1
+     git pull  || exit 1
+     ##git diff master   || exit 1
+     git merge -m"larsoft ${tag}" master   || exit 1
+     git push origin develop  || exit 1
+     ##git branch -d release/${tag}   || exit 1
+  done
+fi
+
+
+exit 0
