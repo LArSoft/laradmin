@@ -61,7 +61,7 @@ cd $MRB_BUILDDIR  || exit 1
 mrb z  || exit 1
 set +x
 
-source mrb s  || exit 1
+mrbsetenv  || exit 1
 
 set -x
 mrb i -j4  || exit 1
