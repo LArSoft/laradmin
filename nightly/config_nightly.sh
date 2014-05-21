@@ -9,9 +9,14 @@ BASESCRIPT="$(basename $0)"
 # The default is to checkout an existing nightly tag.
 # only the official larsoft nightly update should use the -t (tag) option
 NIGHTLYDEVELOPMODE=
+FORCE=
 case "$1" in
   -d)
     NIGHTLYDEVELOPMODE=true
+    shift
+    ;;
+  -f)
+    FORCE=true
     shift
     ;;
   -t)
@@ -40,7 +45,7 @@ declare -a OSES="(slf5 slf6)"
 LARSOFT_SCRIPTS="$(cd $(dirname $0);pwd)"
 NIGHTLY_DIR="$(dirname $(dirname $LARSOFT_SCRIPTS))/${PROJECT}_nightly_build"
 PROJ_PRODUCTS="/grid/fermiapp/products/$PROJECT"
-SETUPS="$PROJ_PRODUCTS/setups"
+SETUPS="$PROJ_PRODUCTS/setup"
 case "$PROJECT" in
   "")
     usage
