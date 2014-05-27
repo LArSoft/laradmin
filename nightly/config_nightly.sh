@@ -56,8 +56,8 @@ case "$PROJECT" in
     ;;
   uboone|lbne)
     PKGLIST="${PROJECT}code"
-    PROJ_PRODUCTS="/grid/fermiapp/$PROJECT/products"
-    SETUPS="/grid/fermiapp/$PROJECT/setup_${PROJECT}.sh"
+    PROJ_PRODUCTS="/grid/fermiapp/products/$PROJECT"
+    SETUPS="/grid/fermiapp/products/$PROJECT/setup_${PROJECT}.sh"
     if [ $PROJECT = lbne ]
     then
       MACHINES[0]="lbnegpvm01"
