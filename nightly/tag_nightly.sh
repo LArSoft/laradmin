@@ -69,11 +69,11 @@ do
   fi
   if [ -z "$NIGHTLYTAG" ]
   then
-    mrb g $pkg nightly || exit 1
+    mrb g -r $pkg nightly || exit 1
     cd $pkg || exit 1
     modify_product_deps $pkg
   else
-    mrb g $pkg develop || exit 1
+    mrb g -r $pkg develop || exit 1
     cd $pkg || exit 1
     update_tag $pkg
   fi
