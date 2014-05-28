@@ -61,8 +61,10 @@ case "$PROJECT" in
   lbne)
     PKGLIST="${PROJECT}code"
     NIGHTLY_DIR="$(dirname $(dirname $LARSOFT_SCRIPTS))/${PROJECT}_nightly_build"
-    declare -a MACHINES="(lbnegpvm01 lbnesl6test)"
-    declare -a OSES="(slf5 slf6)"
+    ##declare -a MACHINES="(lbnegpvm01 lbnesl6test)"
+    ##declare -a OSES="(slf5 slf6)"
+    declare -a MACHINES="(lbnegpvm01)"
+    declare -a OSES="(slf5)"
     PROJ_PRODUCTS="/grid/fermiapp/$PROJECT/software/products"
     SETUPS="/grid/fermiapp/$PROJECT/software/setup_${PROJECT}.sh"
     ;;
