@@ -13,6 +13,20 @@ source $(dirname $0)/config_nightly.sh "$@"
 
 export MRB_SOURCE=$NIGHTLY_DIR/srcs
 
+modify_product_deps()
+{
+  pkg=$1
+  # modify this copy of product_deps
+  version="`grep ^parent ups/product_deps | grep -v \# | awk '{print $3}'`" || exit 1
+  if [ -z "${version}" ]
+  then
+    echo "ERROR: failed to find existing version for ${pkg}" >&2
+    exit 1
+  fi
+  mv ups/product_deps ups/product_deps.bak || exit 1
+  sed -e "s%$version%nightly%g" ups/product_deps.bak > ups/product_deps || exit 1
+}
+
 update_tag()
 {
   pkg=$1
@@ -23,16 +37,7 @@ update_tag()
     # push the tags back to the git develop branch
     git push --tags
   fi
-  # modify this copy of product_deps
-  version="`grep ^parent ups/product_deps | grep -v \# | awk '{print $3}'`" || exit 1
-  if [ -z "${version}" ]
-  then
-    echo "ERROR: failed to find existing version for ${pkg}" >&2
-    exit 1
-  fi
-  # from now on, all releases of cetbuildtools should properly support the nightly updates
-  mv ups/product_deps ups/product_deps.bak || exit 1
-  sed -e "s%$version%nightly%g" ups/product_deps.bak > ups/product_deps || exit 1
+  modify_product_deps $pkg
 }
 
 
@@ -62,9 +67,16 @@ do
   then
     rm -rf $pkg
   fi
-  mrb g $pkg develop || exit 1
-  cd $pkg || exit 1
-  update_tag $pkg
+  if [ -z "$NIGHTLYTAG" ]
+  then
+    mrb g $pkg nightly || exit 1
+    cd $pkg || exit 1
+    modify_product_deps $pkg
+  else
+    mrb g $pkg develop || exit 1
+    cd $pkg || exit 1
+    update_tag $pkg
+  fi
   rm -rf ${NIGHTLY_DIR}/install/$pkg
   set +x
 done

@@ -6,10 +6,21 @@
 
 BASESCRIPT="$(basename $0)"
 
+# The default is to checkout an existing nightly tag.
+# only the official larsoft nightly update should use the -t (tag) option
 NIGHTLYDEVELOPMODE=
+FORCE=
 case "$1" in
   -d)
     NIGHTLYDEVELOPMODE=true
+    shift
+    ;;
+  -f)
+    FORCE=true
+    shift
+    ;;
+  -t)
+    NIGHTLYTAG=true
     shift
     ;;
   -*)
@@ -22,13 +33,18 @@ esac
 PROJECT="$1"
 
 # MACHINES and OSES have to be corresponding and in the same order
-declare -a MACHINES="(uboonegpvm01 uboonegpvm04)"
-declare -a OSES="(slf5 slf6)"
+# these lines are for the standard nightly build
+# edit them for your own build
+# if you just want to build on a single machine, the machine name should be "no_ssh"
+#declare -a MACHINES="(no_ssh)"
+#declare -a OSES="(slf6)"
+
+# edit NIGHTLY_DIR and PROJ_PRODUCTS for your machine(s)
+
+# if you are not using this script for the official larsoft, uboone, or lbne nightly builds,
+# edit the "local" project for your nightly build
 
 LARSOFT_SCRIPTS="$(cd $(dirname $0);pwd)"
-NIGHTLY_DIR="$(dirname $(dirname $LARSOFT_SCRIPTS))/${PROJECT}_nightly_build"
-PROJ_PRODUCTS="/grid/fermiapp/products/$PROJECT"
-SETUPS="$PROJ_PRODUCTS/setups"
 case "$PROJECT" in
   "")
     usage
@@ -36,15 +52,37 @@ case "$PROJECT" in
     ;;
   larsoft)
     PKGLIST="larana lardata larevt larpandora larsim larcore lareventdisplay larexamples larreco larsoft"
+    NIGHTLY_DIR="$(dirname $(dirname $LARSOFT_SCRIPTS))/${PROJECT}_nightly_build"
+    declare -a MACHINES="(uboonegpvm01 uboonegpvm04)"
+    declare -a OSES="(slf5 slf6)"
+    PROJ_PRODUCTS="/grid/fermiapp/products/$PROJECT"
+    SETUPS="$PROJ_PRODUCTS/setup"
     ;;
-  uboone|lbne)
+  lbne)
     PKGLIST="${PROJECT}code"
+    NIGHTLY_DIR="$(dirname $(dirname $LARSOFT_SCRIPTS))/${PROJECT}_nightly_build"
+    ##declare -a MACHINES="(lbnegpvm01 lbnesl6test)"
+    ##declare -a OSES="(slf5 slf6)"
+    declare -a MACHINES="(lbnegpvm01)"
+    declare -a OSES="(slf5)"
     PROJ_PRODUCTS="/grid/fermiapp/$PROJECT/software/products"
     SETUPS="/grid/fermiapp/$PROJECT/software/setup_${PROJECT}.sh"
-    if [ $PROJECT = lbne ]
-    then
-      MACHINES[0]="lbnegpvm01"
-    fi
+    ;;
+  uboone)
+    PKGLIST="${PROJECT}code"
+    NIGHTLY_DIR="$(dirname $(dirname $LARSOFT_SCRIPTS))/${PROJECT}_nightly_build"
+    declare -a MACHINES="(uboonegpvm01 uboonegpvm04)"
+    declare -a OSES="(slf5 slf6)"
+    PROJ_PRODUCTS="/grid/fermiapp/products/$PROJECT"
+    SETUPS="/grid/fermiapp/products/$PROJECT/setup_${PROJECT}.sh"
+    ;;
+  local)
+    PKGLIST="pleaseDefine"
+    NIGHTLY_DIR="$(dirname $(dirname $LARSOFT_SCRIPTS))/${PROJECT}_nightly_build"
+    declare -a MACHINES="(no_ssh)"
+    declare -a OSES="(slf6)"
+    PROJ_PRODUCTS="/grid/fermiapp/products/$PROJECT"
+    SETUPS="/grid/fermiapp/products/$PROJECT/setup_${PROJECT}.sh"
     ;;
   *)
     echo "$BASESCRIPT: unrecognized project $PROJECT" >&2

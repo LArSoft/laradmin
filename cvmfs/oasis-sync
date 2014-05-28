@@ -139,6 +139,10 @@ if $DORSYNC; then
     if [ "$RET" != 0 ]; then
 	DOPUBLISH=false
     fi
+    # source setups - except that this path does NOT start with /cvmfs
+##    if $GSISSH $HOST test -e $DESTDIR$DESTPRODUCT/setups; then
+##        $GSISSH $HOST source $DESTDIR$DESTPRODUCT/setups
+##    fi
 fi
 
 if $DOPUBLISH; then
