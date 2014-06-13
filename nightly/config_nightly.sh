@@ -84,7 +84,10 @@ case "$PROJECT" in
     NIGHTLY_DIR="$(dirname $(dirname $LARSOFT_SCRIPTS))/${PROJECT}_nightly_build"
     fi
     declare -a MACHINES="(no_ssh)"
+    declare -a GITREADONLY="-r"
+    if test "X$OSES" = X ; then
     declare -a OSES="(slf6)"
+    fi
     if test "X$PROJ_PRODUCTS" = X; then
     PROJ_PRODUCTS="/grid/fermiapp/products/$PROJECT"
     fi
