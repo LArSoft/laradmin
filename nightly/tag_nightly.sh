@@ -75,7 +75,7 @@ do
   else
     mrb g -r $pkg develop || exit 1
     cd $pkg || exit 1
-    update_tag $pkg
+#    update_tag $pkg
   fi
   rm -rf ${NIGHTLY_DIR}/install/$pkg
   set +x
