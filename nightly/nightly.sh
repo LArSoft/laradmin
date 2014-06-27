@@ -21,11 +21,15 @@ then
    exit 1
 fi
 
+if [ "${machine}" = "no_ssh" ]
+then
+echo "No tagging on no_ssh machine"
+else
 LOGFILE=$NIGHTLY_DIR/logs/tag_nightly_$TODAY.log
 echo "Tagging $PROJECT, output in $LOGFILE"
 ${LARSOFT_SCRIPTS}/tag_nightly.sh "$@" >> $LOGFILE 2>&1 || \
     { echo "ERROR: tag_nightly failed" >&2; exit 1; }
-
+fi
 qual=e5
 
 M=0
@@ -58,9 +62,13 @@ do
 done
 
 
+if [ "${machine}" = "no_ssh" ]
+then
+echo "No copy on no_ssh machine"
+else
 LOGFILE=${NIGHTLY_DIR}/logs/copy_nightly_$TODAY.log
 echo "Beginning copy, output in $LOGFILE"
 ${LARSOFT_SCRIPTS}/copy_build.sh "$@" >> $LOGFILE 2>&1 || \
      { echo "ERROR: copy_nightly failed" >&2; exit 1; }
-
+fi
 exit 0
