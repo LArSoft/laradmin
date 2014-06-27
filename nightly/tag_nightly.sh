@@ -70,7 +70,7 @@ do
   fi
   if [ -z "$NIGHTLYTAG" ]
   then
-    mrb g $READONLY $pkg nightly || exit 1
+    mrb g $GITREADONLY $pkg nightly || exit 1
     cd $pkg || exit 1
     modify_product_deps $pkg
   else
