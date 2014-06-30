@@ -64,7 +64,7 @@ set +x
 mrbsetenv  || exit 1
 
 set -x
-mrb build -i -p -j`grep -c ^processor /proc/cpuinfo`  || exit 1
+mrb i -j4  || exit 1
 set +x
 
 cd ${NIGHTLY_DIR} || exit 1

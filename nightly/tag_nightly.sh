@@ -58,7 +58,6 @@ then
   exit 0
 fi
 
-
 for pkg in ${PKGLIST}
 do
   echo "Checking out and tagging package $pkg"
@@ -70,15 +69,13 @@ do
   fi
   if [ -z "$NIGHTLYTAG" ]
   then
-    mrb g $GITREADONLY $pkg nightly || exit 1
+    mrb g $pkg nightly || exit 1
     cd $pkg || exit 1
     modify_product_deps $pkg
   else
-    mrb g $GITREADONLY $pkg develop || exit 1
+    mrb g $pkg develop || exit 1
     cd $pkg || exit 1
-    if [ ! -z $GITREADONLY ] ;then
     update_tag $pkg
-    fi
   fi
   rm -rf ${NIGHTLY_DIR}/install/$pkg
   set +x
