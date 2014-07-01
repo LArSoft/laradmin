@@ -1,0 +1,16 @@
+File    = table
+Product = @product@
+#*************************************************
+# Starting Group definition
+Group:
+Flavor     = ANY
+Qualifiers = ""
+
+Common:
+  Action = setup
+    prodDir()
+    setupEnv()
+
+End:
+# End Group definition
+#*************************************************
