@@ -82,7 +82,5 @@ make package
 
 ups list -aK+ ${package} ${pkgver}   -z ${product_dir}
 
-mv ${pkgdir}/${pkgver}/build/${package}-${pkgdotver}-noarch.tar.bz2 ${product_dir}/
-
 exit 0
 
