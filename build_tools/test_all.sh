@@ -47,9 +47,9 @@ cd ${work_dir} || exit 1
 mrb newDev -v ${newver} -q e5:prof || { echo "ERROR: mrb newDev failed"; exit 1; }
 source localProducts*/setup
 cd ${MRB_SOURCE}  || { echo "ERROR: cannot cd to ${MRB_SOURCE}"; exit 1; }
-mrb g larsoft_suite || { echo "ERROR: mrb g larsoft_suite failed"; exit 1; }
-mrb g lbnecode || { echo "ERROR: mrb g lbnecode failed"; exit 1; }
-mrb g uboonecode || { echo "ERROR: mrb g uboonecode failed"; exit 1; }
+mrb g -r larsoft_suite || { echo "ERROR: mrb g -r larsoft_suite failed"; exit 1; }
+mrb g -r lbnecode || { echo "ERROR: mrb g -r lbnecode failed"; exit 1; }
+mrb g -r uboonecode || { echo "ERROR: mrb g -r uboonecode failed"; exit 1; }
 
 cd ${MRB_BUILDDIR}  || { echo "ERROR: cannot cd to ${MRB_BUILDDIR}"; exit 1; }
 mrbsetenv || { echo "ERROR: mrbsetenv failed"; exit 1; }
