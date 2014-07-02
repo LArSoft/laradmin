@@ -38,3 +38,4 @@ update releaseDB BEFORE calling tagLAr tag
 curl  http://buildmaster.fnal.gov:8080/view/Larsoft/job/LArSoft-release-test-build/buildWithParameters?token=02345&LARVER=v02_02_00
 
 
+JENKINS_URL/job/LArSoft-release-multi-test-build/build?token=TOKEN_NAME or /buildWithParameters?token=TOKEN_NAME
