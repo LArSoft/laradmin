@@ -3,6 +3,7 @@ These scripts are used to create the larsoft suite tarballs.
 Steps to creating a release:
 
 1. update the products area
+   - use pullProductsLAr for the release that is used by develop
 2. test build 
    - everything together
    - each package separately
@@ -32,9 +33,8 @@ Steps to creating a release:
 20. by hand, install lbnecode
 
 Notes:
-Create the build and pull scripts first?
-Use the new pullProducts to pull required packages?
--- have to pull nu, not larsoft, so some packages may be missing
-Use the previous pullProducts to pull required packages?
--- again, some packages may be missing
 update releaseDB BEFORE calling tagLAr tag
+
+curl  http://buildmaster.fnal.gov:8080/view/Larsoft/job/LArSoft-release-test-build/buildWithParameters?token=02345&LARVER=v02_02_00
+
+
