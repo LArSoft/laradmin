@@ -32,12 +32,7 @@ then
 fi
 
 # make sure we can use the setup alias
-if [ -z ${UPS_DIR} ]
-then
-   echo "ERROR: please setup ups"
-   exit 1
-fi
-source `${UPS_DIR}/bin/ups setup ${SETUP_UPS}`
+source /grid/fermiapp/products/larsoft/setup
 
 mkdir -p ${work_dir} || { echo "ERROR: cannot create  ${work_dir}"; exit 1; }
 
