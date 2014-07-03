@@ -2,6 +2,7 @@
 
 work_dir=${1}
 version=${2}
+build_type=${3}
 dotver=`echo ${version} | sed -e 's/_/./g' | sed -e 's/^v//'`
 
 echo "working directory: ${work_dir}"
@@ -23,12 +24,10 @@ chmod +x pullProductsLAr-${version}
 ##chmod +x buildLAr-${version}
 ./pullProductsLAr-${version} ${working_dir} source larsoft || exit 1
 # pulling binaries is allowed to fail
-./pullProductsLAr-${version} ${working_dir} ${flvr} nu e5 debug 
-./pullProductsLAr-${version} ${working_dir} ${flvr} nu e5 prof 
+./pullProductsLAr-${version} ${working_dir} ${flvr} nu e5 ${build_type} 
 echo
 echo "begin build"
 echo
-./buildLAr-${version} -t ${working_dir} debug larsoft || exit 1
-./buildLAr-${version} -t ${working_dir} prof larsoft || exit 1
+./buildLAr-${version} -t ${working_dir} ${build_type} larsoft || exit 1
 
 exit 0
