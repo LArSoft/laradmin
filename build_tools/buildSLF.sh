@@ -11,7 +11,7 @@ echo "version is ${version} ${dotver}"
 flvr=slf`lsb_release -r | sed -e 's/[[:space:]]//g' | cut -f2 -d":" | cut -f1 -d"."`
 echo "flavor is ${flvr}"
 
-working_dir=/data/build/larsoft-${dotver}
+working_dir=/data/build/larsoft-${dotver}/${build_type}
 if [ ! -d ${working_dir} ]
 then
  mkdir -p ${working_dir}
