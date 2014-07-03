@@ -17,8 +17,9 @@ ls
 chmod +x pullProductsLAr-${version}
 chmod +x buildLAr-${version}
 ./pullProductsLAr-${version} ${work_dir} source larsoft || exit 1
-./pullProductsLAr-${version} ${work_dir} d12 nu e5 debug || exit 1
-./pullProductsLAr-${version} ${work_dir} d12 nu e5 prof || exit 1
+# pulling binaries is allowed to fail
+./pullProductsLAr-${version} ${work_dir} d12 nu e5 debug 
+./pullProductsLAr-${version} ${work_dir} d12 nu e5 prof 
 echo
 echo "begin build"
 echo
