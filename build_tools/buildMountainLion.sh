@@ -12,8 +12,8 @@ curl --fail --silent --location --insecure -O http://oink.fnal.gov/distro/larsof
 ls
 chmod +x pullProductsLAr-${version}
 chmod +x buildLAr-${version}
-./pullProductsLAr-${version} ${work_dir} source larsoft
-./pullProductsLAr-${version} ${work_dir} d12 larsoft e5 debug
-./pullProductsLAr-${version} ${work_dir} d12 larsoft e5 prof
-ls
+./pullProductsLAr-${version} ${work_dir} source larsoft || exit 1
+./pullProductsLAr-${version} ${work_dir} d12 nu e5 debug || exit 1
+./pullProductsLAr-${version} ${work_dir} d12 nu e5 prof || exit 1
 
+exit 0
