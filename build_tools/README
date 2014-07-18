@@ -35,10 +35,11 @@ Steps to creating a release:
 Notes:
 update releaseDB BEFORE calling tagLAr tag
 
-curl  http://buildmaster.fnal.gov:8080/view/Larsoft/job/LArSoft-release-test-build/buildWithParameters?token=02345&LARVER=v02_02_00
+curl --data "LARVER=v02_02_01"  http://buildmaster.fnal.gov:8080/job/LArSoft-release-test-build/buildWithParameters?token=02345
+invokes ./test_all.sh $WORKSPACE/test$BUILD_NUMBER $LARVER
 
-curl  http://buildmaster.fnal.gov:8080/view/Larsoft/job/LArSoft-release-multi-test-build/buildWithParameters?token=02345&LARVER=v02_02_01
-
+curl --data "LARVER=v02_02_01"  http://buildmaster.fnal.gov:8080/job/LArSoft-release-multi-test-build/buildWithParameters?token=02345
+invokes ./build_one_jenkins.sh $WORKSPACE/one$BUILD_NUMBER $PACKAGE $LARVER
 
 Launching slave on larsoftdev:
 larsoftdev5:
@@ -54,3 +55,6 @@ http://buildmaster.fnal.gov:8080/job/LArSoft-release-build/build?token=02345 or 
 
 
  curl --data "LARVER=v02_02_01" http://buildmaster.fnal.gov:8080/job/LArSoft-release-build/buildWithParameters?token=02345
+
+
+curl --data "LARVER=develop" ...
