@@ -25,7 +25,7 @@ function usage() {
     echo "Usage: $fullCom <start|update|tag|merge> <tag>"
     echo "Usage: $fullCom <patch> <new tag> <existing tag>"
     echo "Usage: $fullCom <mkdir> <new tag> <working_dir>"
-    echo "   mkdir  - mkdir <working_dir>/<tag> and run newDev"
+    echo "   mkdir  - mkdir <working_dir>/<tag>, run newDev, and checkout larsoft_suite, uboonecode, and lbnecode"
     echo "   start - create release/<tag> branch"
     echo "   start - create release/<tag> branch"
     echo "   patch - create release/<tag> branch based on existing tag"
@@ -42,16 +42,31 @@ create_working_directory() {
   if [ -z "${working_dir}" ]
   then
       echo 'ERROR: the working directory was not specified'
+      echo
+      usage
+      exit 1
+  fi
+  if [ -d ${working_dir}/${tag} ]
+  then
+      echo 'ERROR:  ${working_dir}/${tag} already exists!'
       usage
       exit 1
   fi
   mkdir -p ${working_dir}/${tag} || { echo "ERROR: failed to create ${working_dir}/${tag}"; exit 1; }
   mkdir -p ${working_dir}/${tag}/p  ${working_dir}/${tag}/d || { echo "ERROR: failed to create ${working_dir}/${tag}/p"; exit 1; }
   cd ${working_dir}/${tag}
-  set -x
+  echo "run mrb newDev"
   mrb newDev -f -v ${tag} -q e5:prof -T p || exit 1
   mrb newDev -f -v ${tag} -q e5:debug -T d || exit 1
-  set +x
+  echo "source localProductsXXX/setup"
+  source p/localProducts*/setup
+  cd $MRB_SOURCE
+  echo "checkout larsoft_suite"
+  mrb g larsoft_suite
+  echo "checkout lbnecode"
+  mrb g lbnecode
+  echo "checkout uboonecode"
+  mrb g uboonecode
 }
 
 # Determine command options (just -h for help)
