@@ -23,7 +23,9 @@ fullCom="${thisComFull%.*}"
 # Usage function
 function usage() {
     echo "Usage: $fullCom <start|update|tag|merge> <tag>"
+    echo "Usage: $fullCom <patch> <new tag> <existing tag>"
     echo "   start - create release/<tag> branch"
+    echo "   patch - create release/<tag> branch based on existing tag"
     echo "   update - modify product_deps to use <tag>"
     echo "   tag - merge changes with master and tag"
     echo "   merge - merge changes with develop"
@@ -89,6 +91,23 @@ then
   do
      cd ${MRB_SOURCE}/${REP}
      git checkout develop
+     git checkout -b release/${tag}
+     okflow=$?
+     if [ ! ${okflow} ]
+     then
+	echo "${REP} git flow failure: ${okflow}"
+	exit 1
+     fi
+  done
+fi
+
+if [ "${flow}" = "patch" ]
+then
+  oldtag=$3
+  for REP in $pkglist
+  do
+     cd ${MRB_SOURCE}/${REP}
+     git checkout ${oldtag}
      git checkout -b release/${tag}
      okflow=$?
      if [ ! ${okflow} ]

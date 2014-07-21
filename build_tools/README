@@ -1,2 +1,60 @@
 These scripts are used to create the larsoft suite tarballs.
 
+Steps to creating a release:
+
+1. update the products area
+   - use pullProductsLAr for the release that is used by develop
+2. test build 
+   - everything together
+   - each package separately
+3. fix or request a fix as necessary
+4. determine which packages to tag
+   - e.g., larcore seldom changes
+5. send email to larsoft@fnal.gov
+6. tagLAr start
+   - use only those packages that will get the new tag
+7. tagLAr update
+8. build now to make sure nothing strange happened
+9. tagLAr tag (tag is now on the master branch)
+10. build for releaseDB
+   - larsoft_suite
+   - larsoft_suite with lbnecode
+   - larsoft_suite with uboonecode
+   - copy .dependency_database to the relevant releaseDB/base_dependency_database
+11. retag larsoft, lbnecode, and uboonecode
+12. create new build and pull scripts
+13. build release on larsoftdev5 and larsoftdev6
+14. copy tarballs to oink
+15. use pullProductsLAr to install on /grid/fermiapp/products/larsoft
+16. update cvmfs
+17. tagLAr merge (final merge with develop)
+18. send email to larsoft@fnal.gov
+19. update wiki release page
+20. by hand, install lbnecode
+
+Notes:
+update releaseDB BEFORE calling tagLAr tag
+
+curl --data "LARVER=v02_02_01"  http://buildmaster.fnal.gov:8080/job/LArSoft-release-test-build/buildWithParameters?token=02345
+invokes ./test_all.sh $WORKSPACE/test$BUILD_NUMBER $LARVER
+
+curl --data "LARVER=v02_02_01"  http://buildmaster.fnal.gov:8080/job/LArSoft-release-multi-test-build/buildWithParameters?token=02345
+invokes ./build_one_jenkins.sh $WORKSPACE/one$BUILD_NUMBER $PACKAGE $LARVER
+
+Launching slave on larsoftdev:
+larsoftdev5:
+curl -O http://buildmaster.fnal.gov:8080/jnlpJars/slave.jar
+java -jar slave.jar -jnlpUrl http://buildmaster.fnal.gov:8080/computer/larsoftdev5.fnal.gov/slave-agent.jnlp -secret a56a33fbde0cecd36e97fc6865fb838e101de3518c0c31b70a92c9621cbd625d
+
+larsoftdev6:
+http://buildmaster.fnal.gov:8080/jnlpJars/slave.jar
+java -jar slave.jar -jnlpUrl http://buildmaster.fnal.gov:8080/computer/larsoftdev6.fnal.gov/slave-agent.jnlp -secret 8498082c327b56f8e1fd0f9449fae088e00ed5350e6a8ff1aeae428dbfe68dff
+
+Build on larsoftdev:
+http://buildmaster.fnal.gov:8080/job/LArSoft-release-build/build?token=02345 or /buildWithParameters?token=TOKEN_NAME
+invokes buildSLF.sh
+
+ curl --data "LARVER=v02_02_01" http://buildmaster.fnal.gov:8080/job/LArSoft-release-build/buildWithParameters?token=02345
+
+
+curl --data "LARVER=develop" ...
