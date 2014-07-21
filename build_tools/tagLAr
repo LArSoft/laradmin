@@ -24,6 +24,9 @@ fullCom="${thisComFull%.*}"
 function usage() {
     echo "Usage: $fullCom <start|update|tag|merge> <tag>"
     echo "Usage: $fullCom <patch> <new tag> <existing tag>"
+    echo "Usage: $fullCom <mkdir> <new tag> <working_dir>"
+    echo "   mkdir  - mkdir <working_dir>/<tag> and run newDev"
+    echo "   start - create release/<tag> branch"
     echo "   start - create release/<tag> branch"
     echo "   patch - create release/<tag> branch based on existing tag"
     echo "   update - modify product_deps to use <tag>"
@@ -32,6 +35,23 @@ function usage() {
     echo
     echo "FOR EXPERT USE ONLY"
 
+}
+
+# mkdir is a special case
+create_working_directory() {
+  if [ -z "${working_dir}" ]
+  then
+      echo 'ERROR: the working directory was not specified'
+      usage
+      exit 1
+  fi
+  mkdir -p ${working_dir}/${tag} || { echo "ERROR: failed to create ${working_dir}/${tag}"; exit 1; }
+  mkdir -p ${working_dir}/${tag}/p  ${working_dir}/${tag}/d || { echo "ERROR: failed to create ${working_dir}/${tag}/p"; exit 1; }
+  cd ${working_dir}/${tag}
+  set -x
+  mrb newDev -f -v ${tag} -q e5:prof -T p || exit 1
+  mrb newDev -f -v ${tag} -q e5:debug -T d || exit 1
+  set +x
 }
 
 # Determine command options (just -h for help)
@@ -57,6 +77,13 @@ then
     echo 'ERROR: no tag specified'
     usage
     exit 1
+fi
+
+if [ "${flow}" = "mkdir" ]
+then
+  working_dir=$3
+  create_working_directory 
+  exit 0
 fi
 
 if [ -z "${MRB_SOURCE}" ]
