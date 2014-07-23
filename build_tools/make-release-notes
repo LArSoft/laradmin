@@ -102,6 +102,8 @@ relnote=${my_working_dir}/ReleaseNotes-${larsoft_version}
 rm -f ${relnote}
 echo "h1. LArSoft ${larsoft_version} Release Notes" > ${relnote}
 echo >> ${relnote}
+echo "[[LArSoft_release_list|list of LArSoft releases]]" >> ${relnote}
+echo >> ${relnote}
 
 set -x
 cd ${my_working_dir}
