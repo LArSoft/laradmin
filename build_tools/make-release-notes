@@ -35,7 +35,10 @@ function get_package_release()
   cd ${my_working_dir}/${pkg}
   git co ${pv}
   relver=`grep '^[  ]*parent' ${my_working_dir}/${pkg}/ups/product_deps | tr "\t" " " | cut -f3 -d" "`
+  echo >> ${relnote}
   echo "h2. ${pkg} ${relver}" >> ${relnote}
+  echo >> ${relnote}
+  git log --pretty=format:"* %ad  %an : %s" --date=short ${previous_version}..${relver} >> ${relnote}
   echo >> ${relnote}
   cd ${my_working_dir}
   set +x
@@ -46,7 +49,7 @@ prog=${0##*/}
 function usage() {
     cat 1>&2 <<EOF
 ${prog} --help|-h|-\?
-${prog} <working_directory> <tag>
+${prog} <working_directory> <tag> <previous tag>
 EOF
 }
 
@@ -80,9 +83,11 @@ done
 [[ -z "$1" ]] && { 
   echo "Require working directory as non-option argument" 1>&2; usage; exit 1; }
 [[ -z "$2" ]] && { echo "Require existing LArSoft tag as non-option argument" 1>&2; usage; exit 1; }
+[[ -z "$3" ]] && { echo "Require previous LArSoft tag as non-option argument" 1>&2; usage; exit 1; }
 
 working_dir=$1
 larsoft_version=$2
+previous_version=$3
 
 # create ${working_dir}/${larsoft_version}
 cd ${currentDir}
@@ -100,12 +105,14 @@ echo >> ${relnote}
 
 set -x
 cd ${my_working_dir}
-git clone http://cdcvs.fnal.gov/projects/larsoft || { echo "ERROR: failed to clone larsoft"; exit 1; }
-cd ${my_working_dir}/larsoft
-git co ${larsoft_version}
 pkg=larsoft
+git clone http://cdcvs.fnal.gov/projects/${pkg} || { echo "ERROR: failed to clone ${pkg}"; exit 1; }
+cd ${my_working_dir}/${pkg}
+git co ${larsoft_version}
 relver=`grep '^[  ]*parent' ${my_working_dir}/${pkg}/ups/product_deps | tr "\t" " " | cut -f3 -d" "`
 echo "h2. ${pkg} ${relver}" >> ${relnote}
+echo >> ${relnote}
+git log --pretty=format:"* %ad  %an : %s" --date=short ${previous_version}..${larsoft_version} >> ${relnote}
 echo >> ${relnote}
 cd ${my_working_dir}
 set +x
