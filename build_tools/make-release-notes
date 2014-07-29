@@ -8,14 +8,18 @@ declare -a extra_packages=(lareventdisplay larexamples larpandora)
 
 function get_working_dir() 
 {
+    cd ${currentDir}
+    if [ -d ${working_dir}/${larsoft_version} ]; then
+            echo "ERROR: ${working_dir}/${larsoft_version} already exists!"
+            exit 5
+    fi
+    mkdir -p ${working_dir}/${larsoft_version}
+    # git the full path
     ( cd / ; /bin/pwd -P ) >/dev/null 2>&1
     if (( $? == 0 )); then
       pwd_P_arg="-P"
     fi
-    cd ${currentDir}
-    cd ${working_dir}/${larsoft_version}
-    reldir=`dirname ${0}`
-    my_working_dir=`cd ${reldir} && /bin/pwd ${pwd_P_arg}`
+    my_working_dir=`cd ${working_dir}/${larsoft_version} && /bin/pwd ${pwd_P_arg}`
 }
 
 function get_package_release()
@@ -90,12 +94,6 @@ larsoft_version=$2
 previous_version=$3
 
 # create ${working_dir}/${larsoft_version}
-cd ${currentDir}
-if [ -d ${working_dir}/${larsoft_version} ]; then
-        echo "ERROR: ${working_dir}/${larsoft_version} already exists!"
-        exit 5
-fi
-mkdir -p ${working_dir}/${larsoft_version}
 get_working_dir
 
 relnote=${my_working_dir}/ReleaseNotes-${larsoft_version}
