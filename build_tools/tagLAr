@@ -23,8 +23,8 @@ fullCom="${thisComFull%.*}"
 # Usage function
 function usage() {
     echo "Usage: $fullCom <start|update|tag|merge> <tag>"
-    echo "Usage: $fullCom <patch> <new tag> <existing tag>"
-    echo "Usage: $fullCom <mkdir> <new tag> <working_dir>"
+    echo "Usage: $fullCom patch <new tag> <existing tag>"
+    echo "Usage: $fullCom mkdir <new tag> <working_dir>"
     echo "   mkdir  - mkdir <working_dir>/<tag>, run newDev, and checkout larsoft_suite, uboonecode, and lbnecode"
     echo "   start - create release/<tag> branch"
     echo "   patch - create release/<tag> branch based on existing tag"
