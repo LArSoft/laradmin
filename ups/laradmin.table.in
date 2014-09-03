@@ -10,6 +10,8 @@ Common:
   Action = setup
     prodDir()
     setupEnv()
+    envSet(LARADMIN_VERSION, ${UPS_PROD_VERSION})
+    pathPrepend(PATH, ${UPS_PROD_DIR}/build_tools )
 
 End:
 # End Group definition
