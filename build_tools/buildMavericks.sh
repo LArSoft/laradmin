@@ -14,7 +14,7 @@ then
  mkdir -p ${work_dir}
 fi
 cd ${work_dir} || exit 1
-curl --fail --silent --location --insecure -O http://oink.fnal.gov/distro/larsoft/pullProductsLAr-${version} || exit 1
+curl --fail --silent --location --insecure -O http://scisoft.fnal.gov/scisoft/projects/larsoft/${version}/pullProductsLAr-${version}
 chmod +x pullProductsLAr-${version} || exit 1
 ./pullProductsLAr-${version} ${working_dir} source larsoft || exit 1
 # pulling binaries is allowed to fail
