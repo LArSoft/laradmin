@@ -49,7 +49,7 @@ source localProducts*/setup
 cd ${MRB_SOURCE}  || { echo "ERROR: cannot cd to ${MRB_SOURCE}"; exit 1; }
 mrb g -r ${package} || { echo "ERROR: mrb g -r ${package} failed"; exit 1; }
 if [ "${package}" = "uboonecode" ]; then
-  mrb g -r ubutils || { echo "ERROR: mrb g -r ubutils failed"; exit 1; }
+  mrb g -r ubutil || { echo "ERROR: mrb g -r ubutil failed"; exit 1; }
 fi
 cd ${MRB_BUILDDIR}  || { echo "ERROR: cannot cd to ${MRB_BUILDDIR}"; exit 1; }
 mrbsetenv || { echo "ERROR: mrbsetenv failed for ${package}"; exit 1; }
