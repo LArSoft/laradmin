@@ -42,7 +42,7 @@ function get_package_release()
   echo >> ${relnote}
   echo "h2. ${pkg} ${relver}" >> ${relnote}
   echo >> ${relnote}
-  git log --pretty=format:"* %ad  %an : %s" --date=short ${previous_version}..${relver} >> ${relnote}
+  git log --pretty=format:"* %ad  %an : %s" --date=short LARSOFT_SUITE_${previous_version}..${relver} >> ${relnote}
   echo >> ${relnote}
   cd ${my_working_dir}
   set +x
@@ -101,6 +101,17 @@ rm -f ${relnote}
 echo "h1. LArSoft ${larsoft_version} Release Notes" > ${relnote}
 echo >> ${relnote}
 echo "[[LArSoft_release_list|list of LArSoft releases]]" >> ${relnote}
+echo "\"Download instructions\":http://scisoft.fnal.gov/projects/larsoft/larsoft-${larsoft_version}.html" >> ${relnote}
+echo >> ${relnote}
+echo "h3. Purpose" >> ${relnote}
+echo >> ${relnote}
+echo "h3. New features" >> ${relnote}
+echo >> ${relnote}
+echo "h3. Bug fixes" >> ${relnote}
+echo >> ${relnote}
+echo "h3. Known issues" >> ${relnote}
+echo >> ${relnote}
+echo "h1. Change List" >> ${relnote}
 echo >> ${relnote}
 
 set -x
@@ -112,7 +123,7 @@ git co ${larsoft_version}
 relver=`grep '^[  ]*parent' ${my_working_dir}/${pkg}/ups/product_deps | tr "\t" " " | cut -f3 -d" "`
 echo "h2. ${pkg} ${relver}" >> ${relnote}
 echo >> ${relnote}
-git log --pretty=format:"* %ad  %an : %s" --date=short ${previous_version}..${larsoft_version} >> ${relnote}
+git log --pretty=format:"* %ad  %an : %s" --date=short LARSOFT_SUITE_${previous_version}..${larsoft_version} >> ${relnote}
 echo >> ${relnote}
 cd ${my_working_dir}
 set +x
