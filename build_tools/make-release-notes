@@ -101,7 +101,7 @@ rm -f ${relnote}
 echo "h1. LArSoft ${larsoft_version} Release Notes" > ${relnote}
 echo >> ${relnote}
 echo "[[LArSoft_release_list|list of LArSoft releases]]" >> ${relnote}
-echo "\"Download instructions\":http://scisoft.fnal.gov/projects/larsoft/larsoft-${larsoft_version}.html" >> ${relnote}
+echo "\"Download instructions\":http://scisoft.fnal.gov/scisoft/projects/larsoft/${larsoft_version}/larsoft-${larsoft_version}.html" >> ${relnote}
 echo >> ${relnote}
 echo "h3. Purpose" >> ${relnote}
 echo >> ${relnote}
