@@ -21,7 +21,7 @@ curl --fail --silent --location --insecure -O http://scisoft.fnal.gov/scisoft/pr
 chmod +x pullProductsLAr-${version}
 ./pullProductsLAr-${version} ${working_dir} source larsoft || exit 1
 # pulling binaries is allowed to fail
-./pullProductsLAr-${version} ${working_dir} ${flvr} nu e5 ${build_type} 
+./pullProductsLAr-${version} ${working_dir} ${flvr} nu e6 ${build_type} 
 echo
 echo "begin build"
 echo

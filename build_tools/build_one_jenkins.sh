@@ -43,7 +43,7 @@ setup gitflow
 export MRB_PROJECT=larsoft
 
 cd ${pkg_dir} || exit 1
-mrb newDev -v ${newver} -q e5:prof || { echo "ERROR: mrb newDev failed"; exit 1; }
+mrb newDev -v ${newver} -q e6:prof || { echo "ERROR: mrb newDev failed"; exit 1; }
 source localProducts*/setup
 
 cd ${MRB_SOURCE}  || { echo "ERROR: cannot cd to ${MRB_SOURCE}"; exit 1; }
