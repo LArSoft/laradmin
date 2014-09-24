@@ -22,7 +22,7 @@ chmod +x pullProductsLAr-${version}
 echo
 echo "begin build"
 echo
-./buildLAr-${version} -t ${working_dir} debug larsoft || exit 1
-./buildLAr-${version} -t ${working_dir} prof larsoft || exit 1
+./buildLAr-${version} -b e6 -s s5 -t ${working_dir} debug larsoft || exit 1
+./buildLAr-${version} -b e6 -s s5 -t ${working_dir} prof larsoft || exit 1
 
 exit 0
