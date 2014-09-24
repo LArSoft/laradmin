@@ -17,13 +17,11 @@ then
  mkdir -p ${working_dir}
 fi
 cd ${working_dir} || exit 1
-##curl --fail --silent --location --insecure -O http://oink.fnal.gov/distro/larsoft/buildLAr-${version}
-curl --fail --silent --location --insecure -O http://oink.fnal.gov/distro/larsoft/pullProductsLAr-${version}
+curl --fail --silent --location --insecure -O http://scisoft.fnal.gov/scisoft/projects/larsoft/${version}/pullProductsLAr-${version}
 chmod +x pullProductsLAr-${version}
-##chmod +x buildLAr-${version}
 ./pullProductsLAr-${version} ${working_dir} source larsoft || exit 1
 # pulling binaries is allowed to fail
-./pullProductsLAr-${version} ${working_dir} ${flvr} nu e5 ${build_type} 
+./pullProductsLAr-${version} ${working_dir} ${flvr} nu e6 ${build_type} 
 echo
 echo "begin build"
 echo
