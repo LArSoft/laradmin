@@ -96,20 +96,31 @@ previous_version=$3
 # create ${working_dir}/${larsoft_version}
 get_working_dir
 
+today=`date +%m/%d/%Y`
+dotver=`echo ${larsoft_version} | sed -e 's%_%.%g'`
+version_string=`echo ${larsoft_version} | sed -e 's/_//g' | sed -e 's/^v//'`
+
 relnote=${my_working_dir}/ReleaseNotes-${larsoft_version}
 rm -f ${relnote}
-echo "h1. LArSoft ${larsoft_version} Release Notes" > ${relnote}
+echo > ${relnote}
+echo "| ${dotver} | ${today} |  |  | [[ReleaseNotes${version_string}|Release Notes]] |">> ${relnote}
+echo >> ${relnote}
+echo "h1. LArSoft ${larsoft_version} Release Notes" >> ${relnote}
+echo >> ${relnote}
+echo "{{>TOC}}" >> ${relnote}
 echo >> ${relnote}
 echo "[[LArSoft_release_list|list of LArSoft releases]]" >> ${relnote}
 echo "\"Download instructions\":http://scisoft.fnal.gov/scisoft/projects/larsoft/${larsoft_version}/larsoft-${larsoft_version}.html" >> ${relnote}
 echo >> ${relnote}
-echo "h3. Purpose" >> ${relnote}
+echo "h2. Purpose" >> ${relnote}
 echo >> ${relnote}
-echo "h3. New features" >> ${relnote}
+echo "h2. New features" >> ${relnote}
 echo >> ${relnote}
-echo "h3. Bug fixes" >> ${relnote}
+echo "h2. New features" >> ${relnote}
 echo >> ${relnote}
-echo "h3. Known issues" >> ${relnote}
+echo "h2. Bug fixes" >> ${relnote}
+echo >> ${relnote}
+echo "h2. Updated dependencies" >> ${relnote}
 echo >> ${relnote}
 echo "h1. Change List" >> ${relnote}
 echo >> ${relnote}
