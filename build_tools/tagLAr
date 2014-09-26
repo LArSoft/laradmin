@@ -4,7 +4,7 @@
 
 # work flow
 # mrb newDev ...
-# mrb g larsoft_suite, lbnecode, uboonecode
+# mrb g larsoft_suite, lbnecode, uboonecode, ubutil
 # tagLar start <tag>
 # tagLar update <tag>
 # mrb uv other products if necessary
@@ -25,7 +25,7 @@ function usage() {
     echo "Usage: $fullCom <start|update|tag|merge> <tag>"
     echo "Usage: $fullCom patch <new tag> <existing tag>"
     echo "Usage: $fullCom mkdir <new tag> <working_dir>"
-    echo "   mkdir  - mkdir <working_dir>/<tag>, run newDev, and checkout larsoft_suite, uboonecode, and lbnecode"
+    echo "   mkdir  - mkdir <working_dir>/<tag>, run newDev, and checkout larsoft_suite, uboone, and lbnecode"
     echo "   start - create release/<tag> branch"
     echo "   patch - create release/<tag> branch based on existing tag"
     echo "   update - modify product_deps to use <tag>"
@@ -66,6 +66,8 @@ create_working_directory() {
   mrb g lbnecode
   echo "checkout uboonecode"
   mrb g uboonecode
+  echo "checkout ubutil"
+  mrb g ubutil
 }
 
 # Determine command options (just -h for help)
