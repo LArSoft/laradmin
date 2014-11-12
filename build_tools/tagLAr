@@ -194,12 +194,11 @@ then
      set -x 
      cd ${MRB_SOURCE}/${REP}
      echo "begin ${REP}"
-     git co master  || exit 1
-     git pull  || exit 1
+     ##git co master  || exit 1
+     ##git pull  || exit 1
      git co develop  || exit 1
      git pull  || exit 1
-     ##git diff master   || exit 1
-     git merge -m"larsoft ${tag}" master   || exit 1
+     git merge -m"larsoft ${tag}" release/${tag}  || exit 1
      git push origin develop  || exit 1
      ##git branch -d release/${tag}   || exit 1
   done
