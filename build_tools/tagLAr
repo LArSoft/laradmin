@@ -174,13 +174,14 @@ then
   for REP in $pkglist
   do
      cd ${MRB_SOURCE}/${REP}
-     echo "begin ${REP}"
+     version=`grep ${REP} ups/product_deps | grep parent | sed -e 's/[[:space:]]/ /g' | cut -f3 -d " "`
+     echo "begin ${REP} ${version}"
      ##rm -f ups/product_deps.bak
-     git commit -m"for larsoft ${tag}" ups/product_deps  || exit 1
+     git commit -m"${REP} ${version} for larsoft ${tag}" ups/product_deps  || exit 1
      git co master  || exit 1
      ##git diff release/${tag}   || exit 1
-     git merge -m"larsoft ${tag}" release/${tag}   || exit 1
-     git tag -a -m"larsoft ${tag}" ${tag}  || exit 1
+     git merge -m"${REP} ${version} for larsoft ${tag}" release/${tag}   || exit 1
+     git tag -a -m"${REP} ${version} for larsoft ${tag}" ${version}  || exit 1
      git push origin master  || exit 1
      git push --tags  || exit 1
      ##git branch -d release/${tag}   || exit 1
