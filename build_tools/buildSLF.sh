@@ -18,7 +18,7 @@ then
 fi
 cd ${working_dir} || exit 1
 curl --fail --silent --location --insecure -O http://scisoft.fnal.gov/scisoft/bundles/tools/pullProducts
-chmod +x pullProductsLAr-${version}
+chmod +x pullProducts
 ./pullProducts ${working_dir} source larsoft-${version} || exit 1
 # pulling binaries is allowed to fail
 ./pullProducts ${working_dir} ${flvr} nu-v1_07_00 s5-e6 ${build_type} 
