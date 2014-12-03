@@ -110,7 +110,7 @@ echo >> ${relnote}
 echo "{{>TOC}}" >> ${relnote}
 echo >> ${relnote}
 echo "[[LArSoft_release_list|list of LArSoft releases]]" >> ${relnote}
-echo "\"Download instructions\":http://scisoft.fnal.gov/scisoft/projects/larsoft/${larsoft_version}/larsoft-${larsoft_version}.html" >> ${relnote}
+echo "\"Download instructions\":http://scisoft.fnal.gov/scisoft/bundles/larsoft/${larsoft_version}/larsoft-${larsoft_version}.html" >> ${relnote}
 echo >> ${relnote}
 echo "h2. Purpose" >> ${relnote}
 echo >> ${relnote}
