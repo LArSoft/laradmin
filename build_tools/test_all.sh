@@ -33,6 +33,10 @@ fi
 
 # make sure we can use the setup alias
 source /grid/fermiapp/products/larsoft/setup
+# we also need to find some uboone products,
+# but we want to make sure we use our install of ups
+export PRODUCTS=/grid/fermiapp/products/uboone:${PRODUCTS}
+
 
 mkdir -p ${work_dir} || { echo "ERROR: cannot create  ${work_dir}"; exit 1; }
 
