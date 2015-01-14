@@ -4,7 +4,7 @@
 
 # work flow
 # mrb newDev ...
-# mrb g larsoft_suite, lbnecode, uboonecode, ubutil
+# mrb g larsoft_suite, larbatch, lbnecode, lbneutil, uboonecode, ubutil
 # tagLar start <tag>
 # tagLar update <tag>
 # mrb uv other products if necessary
@@ -62,8 +62,12 @@ create_working_directory() {
   cd $MRB_SOURCE
   echo "checkout larsoft_suite"
   mrb g larsoft_suite
+  echo "checkout larbatch"
+  mrb g larbatch
   echo "checkout lbnecode"
   mrb g lbnecode
+  echo "checkout lbneutil"
+  mrb g lbneutil
   echo "checkout uboonecode"
   mrb g uboonecode
   echo "checkout ubutil"
