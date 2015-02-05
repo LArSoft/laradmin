@@ -4,7 +4,7 @@
 
 # work flow
 # mrb newDev ...
-# mrb g larsoft_suite, larbatch, lbnecode, lbneutil, uboonecode, ubutil
+# mrb g larsoft_suite, larbatch, larutils, lbnecode, lbneutil, uboonecode, ubutil
 # tagLar start <tag>
 # tagLar update <tag>
 # mrb uv other products if necessary
@@ -64,6 +64,8 @@ create_working_directory() {
   mrb g larsoft_suite
   echo "checkout larbatch"
   mrb g larbatch
+  echo "checkout larutils"
+  mrb g larutils
   echo "checkout lbnecode"
   mrb g lbnecode
   echo "checkout lbneutil"
@@ -182,7 +184,7 @@ then
      echo "begin ${REP} ${version}"
      ##rm -f ups/product_deps.bak
      git commit -m"${REP} ${version} for larsoft ${tag}" ups/product_deps  || exit 1
-     git co master  || exit 1
+     git checkout master  || exit 1
      ##git diff release/${tag}   || exit 1
      git merge -m"${REP} ${version} for larsoft ${tag}" release/${tag}   || exit 1
      git tag -a -m"${REP} ${version} for larsoft ${tag}" ${version}  || exit 1
@@ -199,9 +201,9 @@ then
      set -x 
      cd ${MRB_SOURCE}/${REP}
      echo "begin ${REP}"
-     ##git co master  || exit 1
+     ##git checkout master  || exit 1
      ##git pull  || exit 1
-     git co develop  || exit 1
+     git checkout develop  || exit 1
      git pull  || exit 1
      git merge -m"larsoft ${tag}" release/${tag}  || exit 1
      git push origin develop  || exit 1
