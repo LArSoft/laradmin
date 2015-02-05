@@ -5,6 +5,7 @@
 # Subsidiary packages to be checkedc, These must be in order.
 declare -a packages=(larana larreco larsim  larevt lardata larcore)
 declare -a extra_packages=(lareventdisplay larexamples larpandora)
+declare -a util_packages=(larbatch larutils)
 
 function get_working_dir() 
 {
@@ -38,6 +39,25 @@ function get_package_release()
   git clone http://cdcvs.fnal.gov/projects/${pkg} || { echo "ERROR: failed to clone ${pkg}"; exit 1; }
   cd ${my_working_dir}/${pkg}
   git co ${pv}
+  relver=`grep '^[  ]*parent' ${my_working_dir}/${pkg}/ups/product_deps | tr "\t" " " | cut -f3 -d" "`
+  echo >> ${relnote}
+  echo "h2. ${pkg} ${relver}" >> ${relnote}
+  echo >> ${relnote}
+  git log --pretty=format:"* %ad  %an : %s" --date=short LARSOFT_SUITE_${previous_version}..${relver} >> ${relnote}
+  echo >> ${relnote}
+  cd ${my_working_dir}
+  set +x
+}
+
+function get_util_release()
+{
+  local pkg=$1
+  set -x
+  cd ${my_working_dir}
+  git clone http://cdcvs.fnal.gov/projects/${pkg} || { echo "ERROR: failed to clone ${pkg}"; exit 1; }
+  cd ${my_working_dir}/${pkg}
+  git co LARSOFT_SUITE_${larsoft_version} || \
+     { echo "EEROR: could not find LARSOFT_SUITE_${larsoft_version} tag"; exit 1; }
   relver=`grep '^[  ]*parent' ${my_working_dir}/${pkg}/ups/product_deps | tr "\t" " " | cut -f3 -d" "`
   echo >> ${relnote}
   echo "h2. ${pkg} ${relver}" >> ${relnote}
@@ -147,4 +167,8 @@ last_pkg=larsoft
 for package in "${packages[@]}"; do
   get_package_release ${package}
   last_pkg=${package}
+done
+
+for package in "${util_packages[@]}"; do
+  get_util_release ${package}
 done
