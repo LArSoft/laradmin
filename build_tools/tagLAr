@@ -76,6 +76,8 @@ create_working_directory() {
   mrb g uboonecode
   echo "checkout ubutil"
   mrb g ubutil
+  echo "checkout argoneutcode"
+  mrb g argoneutcode
 }
 
 # Determine command options (just -h for help)
