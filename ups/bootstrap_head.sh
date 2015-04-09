@@ -55,13 +55,12 @@ fi
 source `${UPS_DIR}/bin/ups setup ${SETUP_UPS}`
 
 # now run cmake
-setup cmake
+setup cmake v3_0_1
 set -x
 mkdir -p ${pkgdir}/build
 cd ${pkgdir}/build
 cmake -DCMAKE_INSTALL_PREFIX=${product_dir} ${mydir}
 make install
-make package
 set +x
 
 ups list -aK+ ${package} ${pkgver}   -z ${product_dir}
