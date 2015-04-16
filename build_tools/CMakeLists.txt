@@ -2,6 +2,7 @@
 INSTALL ( PROGRAMS cp-tag
                    make-release-notes
                    tagLAr
+		   build-larsoft-products.sh
 		   buildMavericks.sh
 		   build_one_jenkins.sh
 		   build_one.sh
