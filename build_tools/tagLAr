@@ -4,7 +4,10 @@
 
 # work flow
 # mrb newDev ...
-# mrb g larsoft_suite, larbatch, larutils, lbnecode, lbneutil, uboonecode, ubutil
+# mrb g larsoft_suite, larbatch, larutils
+# mrb g lbnecode, lbneutil, lbne_raw_data
+# mrb g uboonecode, ubutil
+# mrb g argoneutcode
 # tagLar start <tag>
 # tagLar update <tag>
 # mrb uv other products if necessary
@@ -57,8 +60,8 @@ create_working_directory() {
   mkdir -p ${working_dir}/${tag}/p  ${working_dir}/${tag}/d || { echo "ERROR: failed to create ${working_dir}/${tag}/p"; exit 1; }
   cd ${working_dir}/${tag}
   echo "run mrb newDev"
-  mrb newDev -f -v ${tag} -q e6:prof -T p || exit 1
-  mrb newDev -f -v ${tag} -q e6:debug -T d || exit 1
+  mrb newDev -f -v ${tag} -q e7:prof -T p || exit 1
+  mrb newDev -f -v ${tag} -q e7:debug -T d || exit 1
   echo "source localProductsXXX/setup"
   source p/localProducts*/setup
   cd $MRB_SOURCE
@@ -72,6 +75,8 @@ create_working_directory() {
   mrb g lbnecode
   echo "checkout lbneutil"
   mrb g lbneutil
+  echo "checkout lbne_raw_data"
+  mrb g -d lbne_raw_data lbne-raw-data
   echo "checkout uboonecode"
   mrb g uboonecode
   echo "checkout ubutil"

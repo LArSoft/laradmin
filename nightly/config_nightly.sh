@@ -53,8 +53,8 @@ case "$PROJECT" in
   larsoft)
     PKGLIST="larana lardata larevt larpandora larsim larcore lareventdisplay larexamples larreco larsoft"
     NIGHTLY_DIR="$(dirname $(dirname $LARSOFT_SCRIPTS))/${PROJECT}_nightly_build"
-    declare -a MACHINES="(lbnegpvm01 uboonegpvm04)"
-    declare -a OSES="(slf5 slf6)"
+    declare -a MACHINES="(uboonegpvm04)"
+    declare -a OSES="(slf6)"
     PROJ_PRODUCTS="/grid/fermiapp/products/$PROJECT"
     SETUPS="$PROJ_PRODUCTS/setup"
     ;;
