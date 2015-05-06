@@ -4,7 +4,10 @@
 
 # work flow
 # mrb newDev ...
-# mrb g larsoft_suite, larbatch, larutils, lbnecode, lbneutil, uboonecode, ubutil
+# mrb g larsoft_suite, larbatch, larutils
+# mrb g lbnecode, lbneutil, lbne_raw_data
+# mrb g uboonecode, ubutil
+# mrb g argoneutcode
 # tagLar start <tag>
 # tagLar update <tag>
 # mrb uv other products if necessary
@@ -72,6 +75,8 @@ create_working_directory() {
   mrb g lbnecode
   echo "checkout lbneutil"
   mrb g lbneutil
+  echo "checkout lbne_raw_data"
+  mrb g -d lbne_raw_data lbne-raw-data
   echo "checkout uboonecode"
   mrb g uboonecode
   echo "checkout ubutil"
