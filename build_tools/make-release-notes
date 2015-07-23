@@ -38,7 +38,7 @@ function get_package_release()
   cd ${my_working_dir}
   git clone http://cdcvs.fnal.gov/projects/${pkg} || { echo "ERROR: failed to clone ${pkg}"; exit 1; }
   cd ${my_working_dir}/${pkg}
-  git co ${pv}
+  git checkout ${pv}
   relver=`grep '^[  ]*parent' ${my_working_dir}/${pkg}/ups/product_deps | tr "\t" " " | cut -f3 -d" "`
   echo >> ${relnote}
   echo "h2. ${pkg} ${relver}" >> ${relnote}
@@ -56,7 +56,7 @@ function get_util_release()
   cd ${my_working_dir}
   git clone http://cdcvs.fnal.gov/projects/${pkg} || { echo "ERROR: failed to clone ${pkg}"; exit 1; }
   cd ${my_working_dir}/${pkg}
-  git co LARSOFT_SUITE_${larsoft_version} || \
+  git checkout LARSOFT_SUITE_${larsoft_version} || \
      { echo "EEROR: could not find LARSOFT_SUITE_${larsoft_version} tag"; exit 1; }
   relver=`grep '^[  ]*parent' ${my_working_dir}/${pkg}/ups/product_deps | tr "\t" " " | cut -f3 -d" "`
   echo >> ${relnote}
@@ -148,7 +148,7 @@ cd ${my_working_dir}
 pkg=larsoft
 git clone http://cdcvs.fnal.gov/projects/${pkg} || { echo "ERROR: failed to clone ${pkg}"; exit 1; }
 cd ${my_working_dir}/${pkg}
-git co ${larsoft_version}
+git checkout ${larsoft_version}
 relver=`grep '^[  ]*parent' ${my_working_dir}/${pkg}/ups/product_deps | tr "\t" " " | cut -f3 -d" "`
 echo "h2. ${pkg} ${relver}" >> ${relnote}
 echo >> ${relnote}
