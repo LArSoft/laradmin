@@ -5,7 +5,7 @@
 # work flow
 # mrb newDev ...
 # mrb g larsoft_suite, larbatch, larutils
-# mrb g lbnecode, lbneutil, lbne_raw_data
+# mrb g dunetpc, duneutil, lbne_raw_data
 # mrb g uboonecode, ubutil
 # mrb g argoneutcode
 # tagLar start <tag>
@@ -29,7 +29,7 @@ function usage() {
     echo "Usage: $fullCom patch <new tag> <existing tag>"
     echo "Usage: $fullCom branch <new branch> <existing tag>"
     echo "Usage: $fullCom mkdir <new tag> <working_dir>"
-    echo "   mkdir  - mkdir <working_dir>/<tag>, run newDev, and checkout larsoft_suite, uboone, and lbnecode"
+    echo "   mkdir  - mkdir <working_dir>/<tag>, run newDev, and checkout larsoft_suite, uboone, and dunetpc"
     echo "   start - create release/<tag> branch"
     echo "   patch - create release/<tag> branch based on existing tag"
     echo "   branch - create <branch> branch based on existing tag"
@@ -72,10 +72,10 @@ create_working_directory() {
   mrb g larbatch
   echo "checkout larutils"
   mrb g larutils
-  echo "checkout lbnecode"
-  mrb g lbnecode
-  echo "checkout lbneutil"
-  mrb g lbneutil
+  echo "checkout dunetpc"
+  mrb g dunetpc
+  echo "checkout duneutil"
+  mrb g duneutil
   echo "checkout lbne_raw_data"
   mrb g -d lbne_raw_data lbne-raw-data
   echo "checkout uboonecode"
