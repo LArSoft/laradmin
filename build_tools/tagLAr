@@ -96,8 +96,9 @@ do
 done
 
 # Capture the tag
-flow=$1
-tag=$2
+flow=${1}
+tag=${2}
+extra=${3}
 if [ -z "${flow}" ]
 then
     echo 'ERROR: no options specified'
@@ -113,7 +114,7 @@ fi
 
 if [ "${flow}" = "mkdir" ]
 then
-  working_dir=$3
+  working_dir=${extra}
   create_working_directory 
   exit 0
 fi
@@ -162,7 +163,7 @@ fi
 
 if [ "${flow}" = "patch" ]
 then
-  oldtag=$3
+  oldtag=${extra}
   for REP in $pkglist
   do
      cd ${MRB_SOURCE}/${REP}
@@ -179,7 +180,7 @@ fi
 
 if [ "${flow}" = "branch" ]
 then
-  oldtag=$3
+  oldtag=${extra}
   for REP in $pkglist
   do
      cd ${MRB_SOURCE}/${REP}
