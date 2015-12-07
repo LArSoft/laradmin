@@ -17,6 +17,10 @@
 # tagLar merge <tag>
 # this is the final step to merge the changes with the develop branch
 
+# cetbuildtools: 
+#  increment-version -u --client-dir $MRB_SOURCE/lar*
+# relevant options are -M, -m, -u 
+
 
 # Determine this command name
 thisComFull=$(basename $0)
