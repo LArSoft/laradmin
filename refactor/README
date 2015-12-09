@@ -1,1 +1,20 @@
 The files in this directory are used to make and deal with the v05_00_00_rc branch.
+
+
+code fragments for header refactoring
+
+s&^(\s*#\s*include\s+[<"])(Geometry/)& ${1} $larcore/${2}&;
+
+perl -wapi.orig -f fixup.pl
+
+fixup.pl:
+
+BEGIN { @dirs=qw(D1 D2 ...) 
+foreach mydir (@dirs) { s& .. & .. &; }
+
+dirs=( larcore => [qw( d1 d2 ...)].
+       lardata => [qw(d3 d5 ...)].
+       ...
+       )
+
+see art/tools/migration/fix-header-locs.pl, for instance
