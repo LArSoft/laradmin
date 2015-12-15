@@ -30,11 +30,13 @@ fullCom="${thisComFull%.*}"
 # Usage function
 function usage() {
     echo "Usage: $fullCom <start|update|tag|merge> <tag>"
+    echo "Usage: $fullCom feature <new tag>"
     echo "Usage: $fullCom patch <new tag> <existing tag>"
     echo "Usage: $fullCom branch <new branch> <existing tag>"
     echo "Usage: $fullCom mkdir <new tag> <working_dir>"
     echo "   mkdir  - mkdir <working_dir>/<tag>, run newDev, and checkout larsoft_suite, uboone, and dunetpc"
     echo "   start - create release/<tag> branch"
+    echo "   feature - create feature/<tag> branch"
     echo "   patch - create release/<tag> branch based on existing tag"
     echo "   branch - create <branch> branch based on existing tag"
     echo "   update - modify product_deps to use <tag>"
@@ -159,7 +161,23 @@ then
      okflow=$?
      if [ ! ${okflow} ]
      then
-	echo "${REP} git flow failure: ${okflow}"
+	echo "${REP} git checkout -b release failure: ${okflow}"
+	exit 1
+     fi
+  done
+fi
+
+if [ "${flow}" = "feature" ]
+then
+  for REP in $pkglist
+  do
+     cd ${MRB_SOURCE}/${REP}
+     git checkout develop
+     git checkout -b feature/${tag}
+     okflow=$?
+     if [ ! ${okflow} ]
+     then
+	echo "${REP} git co -b feature failure: ${okflow}"
 	exit 1
      fi
   done
@@ -176,7 +194,7 @@ then
      okflow=$?
      if [ ! ${okflow} ]
      then
-	echo "${REP} git flow failure: ${okflow}"
+	echo "${REP} git checkout -b release failure: ${okflow}"
 	exit 1
      fi
   done
@@ -193,7 +211,7 @@ then
      okflow=$?
      if [ ! ${okflow} ]
      then
-	echo "${REP} git flow failure: ${okflow}"
+	echo "${REP} git checkout -b ${tag} failure: ${okflow}"
 	exit 1
      fi
   done
