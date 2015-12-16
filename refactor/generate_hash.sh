@@ -28,12 +28,15 @@ do
       if [ -d $subdir ]
       then
 	  reflist="$reflist $subdir"
+          echo "                        \"${subdir}\" => \"${REP}/${subdir}\"," >>  ${hash_file}
       fi
    done
-   echo "       ${REP} => [qw( ${reflist} )]"
-   echo "       ${REP} => [qw( ${reflist} )]" >>  ${hash_file}
+   #echo "       ${REP} => [qw( ${reflist} )]"
+   #echo "       ${REP} => [qw( ${reflist} )]" >>  ${hash_file}
 done
 echo "     )" >>  ${hash_file}
+
+echo "created ${hash_file}"
 
 exit 0
 

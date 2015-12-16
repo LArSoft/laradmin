@@ -16,7 +16,7 @@ pkglist="larcore lardata larevt larsim lareventdisplay larexamples larreco larpa
 for REP in $pkglist
 do
    echo
-   echo "begin ${REP} ${version}"
+   echo "begin ${REP}"
    cd $MRB_SOURCE/${REP} || exit 1
    reflist=""
    list=`ls -1`
@@ -43,6 +43,12 @@ do
    echo >> ${new_cmake}
    git add ${REP}/CMakeLists.txt
    git commit -m"add ${REP}/${REP}/CMakeLists.txt" ${REP}/CMakeLists.txt
+   # now remove BASENAME_ONLY
+   for F in `find ${REP} -name CMakeLists.txt | xargs grep -w BASENAME_ONLY | cut -d: -f1 | sort -u`
+   do 
+      sed -i.bak -e's%BASENAME_ONLY%%g' $F
+   done
+
 done
 
 exit 0
