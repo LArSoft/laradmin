@@ -31,12 +31,18 @@ do
       fi
    done
    mkdir ${REP}
+   new_cmake=${MRB_SOURCE}/${REP}/${REP}/CMakeLists.txt
+   echo > ${new_cmake}
    for refdir in $reflist
    do
       echo "git mv $refdir ${REP}/$refdir"
       git mv $refdir ${REP}/$refdir || exit 1
       git commit -m"move $refdir to ${REP}/$refdir"
+      echo "add_subdirectory($refdir)" >> ${new_cmake}
    done
+   echo >> ${new_cmake}
+   git add ${REP}/CMakeLists.txt
+   git commit -m"add ${REP}/${REP}/CMakeLists.txt" ${REP}/CMakeLists.txt
 done
 
 exit 0

@@ -19,7 +19,7 @@ echo "dirs = (" >>  ${hash_file}
 for REP in $larlist
 do
    echo
-   echo "begin ${REP} ${version}"
+   echo "begin ${REP}"
    cd ${MRB_SOURCE}/${REP}/${REP} || exit 1
    reflist=""
    list=`ls -1`
