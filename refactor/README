@@ -1,20 +1,26 @@
 The files in this directory are used to make and deal with the v05_00_00_rc branch.
 
+Start with v05:
 
-code fragments for header refactoring
+checkout_v05.sh <directory>
+cd <directory>
+source p/localProducts_larsoft_*/setup
+/home/garren/larsoft/laradmin/refactor/refactor_larsoft.sh
+/home/garren/larsoft/laradmin/refactor/change_cmake.sh
+-- not sure if change_cmake is needed
+/home/garren/larsoft/laradmin/refactor/update_sources.sh
 
-s&^(\s*#\s*include\s+[<"])(Geometry/)& ${1} $larcore/${2}&;
+nedit lar*/CMakeLists.txt
+-- e.g. larcore/CMakeLists.txt diff 
+ # source
+-add_subdirectory(Geometry)
+-add_subdirectory(SimpleTypesAndConstants)
+-add_subdirectory(SummaryData)
+-add_subdirectory(CoreUtils)
++add_subdirectory(larcore)
 
-perl -wapi.orig -f fixup.pl
-
-fixup.pl:
-
-BEGIN { @dirs=qw(D1 D2 ...) 
-foreach mydir (@dirs) { s& .. & .. &; }
-
-dirs=( larcore => [qw( d1 d2 ...)].
-       lardata => [qw(d3 d5 ...)].
-       ...
-       )
-
-see art/tools/migration/fix-header-locs.pl, for instance
+edit lardata/lardata/RecoBase/CMakeLists.txt by hand
+Remove this code from lardata/lardata/RecoBase/CMakeLists.txt:
+# temporary workaround until art v1_12_01 is available
+set_target_properties(RecoBase_dict RecoBase_map
+                      PROPERTIES COMPILE_FLAGS -fno-var-tracking)
