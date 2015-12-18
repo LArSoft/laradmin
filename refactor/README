@@ -27,3 +27,10 @@ Remove this code from lardata/lardata/RecoBase/CMakeLists.txt:
 # temporary workaround until art v1_12_01 is available
 set_target_properties(RecoBase_dict RecoBase_map
                       PROPERTIES COMPILE_FLAGS -fno-var-tracking)
+
+edit larsim/larsim/EventGenerator/CMakeLists.txt
+change
+art_make(
+to 
+art_make( LIBRARY_NAME EventGenerator
+
