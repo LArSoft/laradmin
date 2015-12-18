@@ -6,9 +6,9 @@ checkout_v05.sh <directory>
 cd <directory>
 source p/localProducts_larsoft_*/setup
 /home/garren/larsoft/laradmin/refactor/refactor_larsoft.sh
-/home/garren/larsoft/laradmin/refactor/change_cmake.sh
--- not sure if change_cmake is needed
 /home/garren/larsoft/laradmin/refactor/update_sources.sh
+#/home/garren/larsoft/laradmin/refactor/partial_cmake_update.sh
+mrb uv larsoft v05_00_00_rc
 
 nedit lar*/CMakeLists.txt
 -- e.g. larcore/CMakeLists.txt diff 
@@ -18,6 +18,9 @@ nedit lar*/CMakeLists.txt
 -add_subdirectory(SummaryData)
 -add_subdirectory(CoreUtils)
 +add_subdirectory(larcore)
+
+NOTE: Make sure lar*/lar*/CMakeLists.txt only includes the same directories as the original lar*/CMakeLists.txt
+--- not an issue
 
 edit lardata/lardata/RecoBase/CMakeLists.txt by hand
 Remove this code from lardata/lardata/RecoBase/CMakeLists.txt:
