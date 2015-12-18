@@ -29,6 +29,15 @@ function one_file() {
   perl -wapi\~ -f ${thisdir}/fix_headers.pl "${F}" >/dev/null 2>&1 && rm -f "${F}~"
 }
 
+function cmake_file() {
+  local F=$1
+  printf "$F ... "
+  # Optionally fix whitespace
+  (( ${fix_whitespace:-0} )) && ed "$F" < fix-whitespace.ed > /dev/null 2>&1
+  # Fix CMakeLists.txt 
+  perl -wapi\~ -f ${thisdir}/partial_cmake_fix.pl "${F}" >/dev/null 2>&1 && rm -f "${F}~"
+}
+
 # ======================================================================
 # Prepare:
 getopt -T >/dev/null 2>&1
@@ -79,7 +88,10 @@ if [[ -n "${file}" ]]; then
   fi
 else
   for F in `find $TOP \( -type d \( -name .git -o -name .svn -o -name CVS -o -name ups -o -path '*/tools/migration' -o -path '*/art/ParameterSet' \) \
-                       -prune \) -o -type f \! \( -name '*~' -o -name '*.bak' -o -name '*.orig' -o -name '*.new' -o -name '*.gdml' -o -name '*.py' -o -name '*.sh' -o -name '*.o' -o -name '*.so' -o -name '*.os' -o -name '*.root' -o -name 'SConscript' \) -print`; do
+                       -prune \) -o -type f \! \( -name '*~' -o -name '*.bak' -o -name '*.orig' -o -name '*.new' -o -name '*.gdml' -o -name '*.py' -o -name '*.sh' -o -name '*.o' -o -name '*.so' -o -name '*.os' -o -name '*.root' -o -name '*.txt'  -o -name '*.tex' -o -name 'SConscript' \) -print`; do
     one_file "$F"
+  done
+  for F in `find $TOP -name CMakeLists.txt -print`; do
+    cmake_file "$F"
   done
 fi
