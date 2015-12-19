@@ -80,5 +80,7 @@ if [[ -n "${file}" ]]; then
 else
   for F in `find $TOP -name CMakeLists.txt -print`; do
     one_file "$F"
+    # now undo DumpTracks_module.cc change
+    sed -i.bak -e's%larreco_TrackFinder_DumpTracks_module.cc%DumpTracks_module.cc%g' $F
   done
 fi
