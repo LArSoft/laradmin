@@ -35,8 +35,7 @@ mrb g -b ${branch} larsoft_suite
 echo "checkout lar1ndcode"
 mrb g -b ${branch} lar1ndcode
 echo "checkout lariatsoft"
-# git clone /home/garren/larsoft/lariatsoft for now
-mrb g -b ${branch} /home/garren/larsoft/lariatsoft
+mrb g -b ${branch} lariatsoft
 ##echo "checkout dunetpc"
 ##mrb g -b ${branch} dunetpc
 echo "checkout uboonecode"
