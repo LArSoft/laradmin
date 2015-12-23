@@ -2,6 +2,8 @@ The files in this directory are used to make and deal with the v05_00_00_rc bran
 
 Start with v05:
 
+---------- rc1 ---------------
+
 checkout_v05.sh <directory>
 cd <directory>
 source p/localProducts_larsoft_*/setup
@@ -34,3 +36,15 @@ art_make(
 to 
 art_make( LIBRARY_NAME EventGenerator
 
+
+------- rc2 ------------
+
+checkout_v05.sh <directory>
+cd <directory>
+source p/localProducts_larsoft_*/setup
+/home/garren/larsoft/laradmin/refactor/remove_library_name.sh
+
+Discover that we have multiple libraries in 3 directories.  Edit by hand.
+# larreco/HitFinder, larsim/LArG4, and larana/OpticalDetector have multiple libraries per directory
+# This breaks the convention of one library per directory.  
+# Therefore, we choose to combine all code into a single library

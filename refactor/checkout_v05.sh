@@ -36,8 +36,8 @@ echo "checkout lar1ndcode"
 mrb g -b ${branch} lar1ndcode
 echo "checkout lariatsoft"
 mrb g -b ${branch} lariatsoft
-##echo "checkout dunetpc"
-##mrb g -b ${branch} dunetpc
+echo "checkout dunetpc"
+mrb g -b ${branch} dunetpc
 echo "checkout uboonecode"
 mrb g -b ${branch} uboonecode
 echo "checkout argoneutcode"

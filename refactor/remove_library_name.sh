@@ -16,6 +16,13 @@ hash_file=${PWD}/lib_name.pl
 echo > ${hash_file}
 echo "dirs = (" >>  ${hash_file}
 
+
+# larreco/HitFinder, larsim/LArG4, and larana/OpticalDetector have multiple libraries per directory
+# This breaks the convention of one library per directory.  
+# The multiple libraries have been in place since larsoft was converted from svn.
+# Therefore, we choose to combine all code into a single library.
+# 
+
 for REP in $pkglist
 do
    echo
