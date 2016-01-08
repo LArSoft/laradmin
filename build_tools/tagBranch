@@ -1,0 +1,68 @@
+#!/usr/bin/env bash
+
+# Tag and push a branch.  DO NOT merge with master
+
+
+
+# Determine this command name
+thisComFull=$(basename $0)
+##thisCom=${thisComFull%.*}
+fullCom="${thisComFull%.*}"
+
+# Usage function
+function usage() {
+    echo "Usage: $fullCom <branch> <new tag>"
+    echo
+    echo "FOR EXPERT USE ONLY"
+}
+
+# Capture the tag
+branch=${1}
+tag=${2}
+if [ -z "${branch}" ]
+then
+    echo 'ERROR: no branch specified'
+    usage
+    exit 1
+fi
+if [ -z "${tag}" ]
+then
+    echo 'ERROR: no tag specified'
+    usage
+    exit 1
+fi
+
+if [ ! -r $MRB_SOURCE/CMakeLists.txt ]; then
+    echo "$MRB_SOURCE/CMakeLists.txt not found"
+    exit 1
+fi
+
+# find the directories
+# ignore any directory that does not contain ups/product_deps
+list=`ls $MRB_SOURCE -1`
+for file in $list
+do
+   if [ -d $file ]
+   then
+     if [ -r $file/ups/product_deps ]
+     then
+       pkglist="$file $pkglist"
+     fi
+   fi
+done
+
+for REP in $pkglist
+do
+   echo
+   echo "begin ${REP} ${version}"
+   cd ${MRB_SOURCE}/${REP}
+   git co ${branch}  || exit 1
+   version=`grep ${REP} ups/product_deps | grep parent | sed -e 's/[[:space:]]/ /g' | cut -f3 -d " "`
+   ##rm -f ups/product_deps.bak
+   git commit -m"${REP} ${version} for larsoft ${tag}" ups/product_deps  || exit 1
+   git tag -a -m"${REP} ${version} for larsoft ${tag}" ${version}  || exit 1
+   git push origin ${branch}  || exit 1
+   git push --tags  || exit 1
+done
+
+exit 0

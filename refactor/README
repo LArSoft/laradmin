@@ -1,0 +1,50 @@
+The files in this directory are used to make and deal with the v05_00_00_rc branch.
+
+Start with v05:
+
+---------- rc1 ---------------
+
+checkout_v05.sh <directory>
+cd <directory>
+source p/localProducts_larsoft_*/setup
+/home/garren/larsoft/laradmin/refactor/refactor_larsoft.sh
+/home/garren/larsoft/laradmin/refactor/update_sources.sh
+#/home/garren/larsoft/laradmin/refactor/partial_cmake_update.sh
+mrb uv larsoft v05_00_00_rc
+
+nedit lar*/CMakeLists.txt
+-- e.g. larcore/CMakeLists.txt diff 
+ # source
+-add_subdirectory(Geometry)
+-add_subdirectory(SimpleTypesAndConstants)
+-add_subdirectory(SummaryData)
+-add_subdirectory(CoreUtils)
++add_subdirectory(larcore)
+
+NOTE: Make sure lar*/lar*/CMakeLists.txt only includes the same directories as the original lar*/CMakeLists.txt
+--- not an issue
+
+edit lardata/lardata/RecoBase/CMakeLists.txt by hand
+Remove this code from lardata/lardata/RecoBase/CMakeLists.txt:
+# temporary workaround until art v1_12_01 is available
+set_target_properties(RecoBase_dict RecoBase_map
+                      PROPERTIES COMPILE_FLAGS -fno-var-tracking)
+
+edit larsim/larsim/EventGenerator/CMakeLists.txt
+change
+art_make(
+to 
+art_make( LIBRARY_NAME EventGenerator
+
+
+------- rc2 ------------
+
+checkout_v05.sh <directory>
+cd <directory>
+source p/localProducts_larsoft_*/setup
+/home/garren/larsoft/laradmin/refactor/remove_library_name.sh
+
+Discover that we have multiple libraries in 3 directories.  Edit by hand.
+# larreco/HitFinder, larsim/LArG4, and larana/OpticalDetector have multiple libraries per directory
+# This breaks the convention of one library per directory.  
+# Therefore, we choose to combine all code into a single library

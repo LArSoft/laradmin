@@ -30,7 +30,7 @@ echo "Tagging $PROJECT, output in $LOGFILE"
 ${LARSOFT_SCRIPTS}/tag_nightly.sh "$@" >> $LOGFILE 2>&1 || \
     { echo "ERROR: tag_nightly failed" >&2; exit 1; }
 fi
-qual=e5
+qual=e6
 
 M=0
 while [ $M -lt ${#MACHINES[@]} ]

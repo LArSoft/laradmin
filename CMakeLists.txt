@@ -15,7 +15,7 @@ CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
 
 PROJECT (laradmin)
 set (product laradmin)
-set (version v1_00_06)
+set (version v1_07_00)
 
 # Throw a fatal error if cmake is invoked from within the source code directory tree
 string(COMPARE EQUAL "${CMAKE_SOURCE_DIR}" "${CMAKE_BINARY_DIR}" in_source)
@@ -41,7 +41,6 @@ set( UPSFLAVOR NULL )
 
 # source code
 add_subdirectory(build_tools)
-add_subdirectory(cvmfs)
 add_subdirectory(nightly)
 add_subdirectory(ups)
 

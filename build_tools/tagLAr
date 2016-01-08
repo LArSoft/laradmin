@@ -4,7 +4,10 @@
 
 # work flow
 # mrb newDev ...
-# mrb g larsoft_suite, lbnecode, uboonecode
+# mrb g larsoft_suite, larbatch, larutils
+# mrb g dunetpc, duneutil, lbne_raw_data
+# mrb g uboonecode, ubutil
+# mrb g argoneutcode
 # tagLar start <tag>
 # tagLar update <tag>
 # mrb uv other products if necessary
@@ -13,6 +16,10 @@
 # now do the official build and distribution
 # tagLar merge <tag>
 # this is the final step to merge the changes with the develop branch
+
+# cetbuildtools: 
+#  increment-version -u --client-dir $MRB_SOURCE/lar*
+# relevant options are -M, -m, -u 
 
 
 # Determine this command name
@@ -23,13 +30,67 @@ fullCom="${thisComFull%.*}"
 # Usage function
 function usage() {
     echo "Usage: $fullCom <start|update|tag|merge> <tag>"
+    echo "Usage: $fullCom feature <new tag>"
+    echo "Usage: $fullCom patch <new tag> <existing tag>"
+    echo "Usage: $fullCom branch <new branch> <existing tag>"
+    echo "Usage: $fullCom mkdir <new tag> <working_dir>"
+    echo "   mkdir  - mkdir <working_dir>/<tag>, run newDev, and checkout larsoft_suite, uboone, and dunetpc"
     echo "   start - create release/<tag> branch"
+    echo "   feature - create feature/<tag> branch"
+    echo "   patch - create release/<tag> branch based on existing tag"
+    echo "   branch - create <branch> branch based on existing tag"
+    echo "   use - use existing <branch> branch"
     echo "   update - modify product_deps to use <tag>"
     echo "   tag - merge changes with master and tag"
+    echo "   force - merge changes with master and force update of existing tag"
     echo "   merge - merge changes with develop"
     echo
     echo "FOR EXPERT USE ONLY"
 
+}
+
+# mkdir is a special case
+create_working_directory() {
+  if [ -z "${working_dir}" ]
+  then
+      echo 'ERROR: the working directory was not specified'
+      echo
+      usage
+      exit 1
+  fi
+  if [ -d ${working_dir}/${tag} ]
+  then
+      echo 'ERROR:  ${working_dir}/${tag} already exists!'
+      usage
+      exit 1
+  fi
+  mkdir -p ${working_dir}/${tag} || { echo "ERROR: failed to create ${working_dir}/${tag}"; exit 1; }
+  mkdir -p ${working_dir}/${tag}/p  ${working_dir}/${tag}/d || { echo "ERROR: failed to create ${working_dir}/${tag}/p"; exit 1; }
+  cd ${working_dir}/${tag}
+  echo "run mrb newDev"
+  mrb newDev -f -v ${tag} -q e9:prof -T p || exit 1
+  mrb newDev -f -v ${tag} -q e9:debug -T d || exit 1
+  echo "source localProductsXXX/setup"
+  source p/localProducts*/setup
+  cd $MRB_SOURCE
+  echo "checkout larsoft_suite"
+  mrb g larsoft_suite
+  echo "checkout larbatch"
+  mrb g larbatch
+  echo "checkout larutils"
+  mrb g larutils
+  echo "checkout dunetpc"
+  mrb g dunetpc
+  echo "checkout duneutil"
+  mrb g duneutil
+  echo "checkout lbne_raw_data"
+  mrb g -d lbne_raw_data lbne-raw-data
+  echo "checkout uboonecode"
+  mrb g uboonecode
+  echo "checkout ubutil"
+  mrb g ubutil
+  echo "checkout argoneutcode"
+  mrb g argoneutcode
 }
 
 # Determine command options (just -h for help)
@@ -42,8 +103,9 @@ do
 done
 
 # Capture the tag
-flow=$1
-tag=$2
+flow=${1}
+tag=${2}
+extra=${3}
 if [ -z "${flow}" ]
 then
     echo 'ERROR: no options specified'
@@ -55,6 +117,13 @@ then
     echo 'ERROR: no tag specified'
     usage
     exit 1
+fi
+
+if [ "${flow}" = "mkdir" ]
+then
+  working_dir=${extra}
+  create_working_directory 
+  exit 0
 fi
 
 if [ -z "${MRB_SOURCE}" ]
@@ -93,7 +162,72 @@ then
      okflow=$?
      if [ ! ${okflow} ]
      then
-	echo "${REP} git flow failure: ${okflow}"
+	echo "${REP} git checkout -b release failure: ${okflow}"
+	exit 1
+     fi
+  done
+fi
+
+if [ "${flow}" = "feature" ]
+then
+  for REP in $pkglist
+  do
+     cd ${MRB_SOURCE}/${REP}
+     git checkout develop
+     git checkout -b feature/${tag}
+     okflow=$?
+     if [ ! ${okflow} ]
+     then
+	echo "${REP} git co -b feature failure: ${okflow}"
+	exit 1
+     fi
+  done
+fi
+
+if [ "${flow}" = "patch" ]
+then
+  oldtag=${extra}
+  for REP in $pkglist
+  do
+     cd ${MRB_SOURCE}/${REP}
+     git checkout ${oldtag}
+     git checkout -b release/${tag}
+     okflow=$?
+     if [ ! ${okflow} ]
+     then
+	echo "${REP} git checkout -b release failure: ${okflow}"
+	exit 1
+     fi
+  done
+fi
+
+if [ "${flow}" = "branch" ]
+then
+  oldtag=${extra}
+  for REP in $pkglist
+  do
+     cd ${MRB_SOURCE}/${REP}
+     git checkout ${oldtag}
+     git checkout -b ${tag}
+     okflow=$?
+     if [ ! ${okflow} ]
+     then
+	echo "${REP} git checkout -b ${tag} failure: ${okflow}"
+	exit 1
+     fi
+  done
+fi
+
+if [ "${flow}" = "use" ]
+then
+  for REP in $pkglist
+  do
+     cd ${MRB_SOURCE}/${REP}
+     git checkout ${tag}
+     okflow=$?
+     if [ ! ${okflow} ]
+     then
+	echo "${REP} git checkout ${tag} failure: ${okflow}"
 	exit 1
      fi
   done
@@ -112,16 +246,34 @@ then
   for REP in $pkglist
   do
      cd ${MRB_SOURCE}/${REP}
-     echo "begin ${REP}"
+     version=`grep ${REP} ups/product_deps | grep parent | sed -e 's/[[:space:]]/ /g' | cut -f3 -d " "`
+     echo "begin ${REP} ${version}"
      ##rm -f ups/product_deps.bak
-     git commit -m"for larsoft ${tag}" ups/product_deps  || exit 1
-     git co master  || exit 1
+     git commit -m"${REP} ${version} for larsoft ${tag}" ups/product_deps  || exit 1
+     git checkout master  || exit 1
      ##git diff release/${tag}   || exit 1
-     git merge -m"larsoft ${tag}" release/${tag}   || exit 1
-     git tag -a -m"larsoft ${tag}" ${tag}  || exit 1
+     git merge -m"${REP} ${version} for larsoft ${tag}" release/${tag}   || exit 1
+     git tag -a -m"${REP} ${version} for larsoft ${tag}" ${version}  || exit 1
      git push origin master  || exit 1
      git push --tags  || exit 1
-     ##git branch -d release/${tag}   || exit 1
+  done
+fi
+
+if [ "${flow}" = "force" ]
+then
+  for REP in $pkglist
+  do
+     cd ${MRB_SOURCE}/${REP}
+     version=`grep ${REP} ups/product_deps | grep parent | sed -e 's/[[:space:]]/ /g' | cut -f3 -d " "`
+     echo "begin ${REP} ${version}"
+     ##rm -f ups/product_deps.bak
+     git commit -m"${REP} ${version} for larsoft ${tag}" ups/product_deps  || exit 1
+     git checkout master  || exit 1
+     ##git diff release/${tag}   || exit 1
+     git merge -m"${REP} ${version} for larsoft ${tag}" release/${tag}   || exit 1
+     git tag -a -f -m"${REP} ${version} for larsoft ${tag}" ${version}  || exit 1
+     git push origin master  || exit 1
+     git push --force --tags  || exit 1
   done
 fi
 
@@ -132,12 +284,11 @@ then
      set -x 
      cd ${MRB_SOURCE}/${REP}
      echo "begin ${REP}"
-     git co master  || exit 1
+     ##git checkout master  || exit 1
+     ##git pull  || exit 1
+     git checkout develop  || exit 1
      git pull  || exit 1
-     git co develop  || exit 1
-     git pull  || exit 1
-     ##git diff master   || exit 1
-     git merge -m"larsoft ${tag}" master   || exit 1
+     git merge -m"larsoft ${tag}" release/${tag}  || exit 1
      git push origin develop  || exit 1
      ##git branch -d release/${tag}   || exit 1
   done

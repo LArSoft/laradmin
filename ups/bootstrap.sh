@@ -57,12 +57,12 @@ fi
 
 set -x
 # pull the tagged release from git
+mkdir -p ${pkgdir}/${pkgver}/src
+cd ${pkgdir}/${pkgver}/src
 git archive --prefix=laradmin-${pkgver}/ \
             --remote ssh://p-${package}@cdcvs.fnal.gov/cvs/projects/${package} \
-            -o ${mydir}/${package}-${pkgver}.tar ${pkgver}
-mkdir -p ${pkgdir}/${pkgver}/source
-cd ${pkgdir}/${pkgver}/source
-tar xf ${mydir}/${package}-${pkgver}.tar
+            -o ${package}-${pkgver}.tar ${pkgver}
+tar xf ${package}-${pkgver}.tar
 set +x
 
 if [ -z ${UPS_DIR} ]
@@ -75,10 +75,11 @@ source `${UPS_DIR}/bin/ups setup ${SETUP_UPS}`
 # now run cmake
 mkdir -p ${pkgdir}/${pkgver}/build
 cd ${pkgdir}/${pkgver}/build
-setup cmake
-cmake -DCMAKE_INSTALL_PREFIX=${product_dir} ${pkgdir}/${pkgver}/source/laradmin-${pkgver}
+setup cmake v3_0_1
+cmake -DCMAKE_INSTALL_PREFIX=${product_dir} ${pkgdir}/${pkgver}/src/laradmin-${pkgver}
 make install
 make package
+mv laradmin-${pkgdotver}-noarch.tar.bz2 ${product_dir}/
 
 ups list -aK+ ${package} ${pkgver}   -z ${product_dir}
 
