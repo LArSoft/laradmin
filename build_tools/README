@@ -51,3 +51,9 @@ java -jar slave.jar -jnlpUrl http://buildmaster.fnal.gov:8080/computer/larsoftde
 
 Build on larsoftdev:
 http://buildmaster.fnal.gov:8080/job/LArSoft-release-build/build?token=02345 or /buildWithParameters?token=TOKEN_NAME
+
+
+passing parameters:
+escape the ampersand: \&LARVER=v02_02_01
+use --data "LARVER=v02_02_01&param2=value2"
+
