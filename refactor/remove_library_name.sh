@@ -43,7 +43,15 @@ done
 
 echo "     )" >>  ${hash_file}
 
+echo
 echo "created ${hash_file}"
+echo
+
+echo "You must edit the following files by hand to make a single library."
+echo "  larsim/larsim/LArG4/CMakeLists.txt"
+echo "  larreco/larreco/HitFinder/CMakeLists.txt"
+echo "  larana/larana/OpticalDetector/CMakeLists.txt"
+echo
 
 exit 0
 
