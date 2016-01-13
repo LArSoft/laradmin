@@ -59,14 +59,8 @@ BEGIN { %dir_list = (
 		       ); }
 
 foreach my $lib (sort keys %dir_list) {
-  s&^(\s*\.+\s+)\Q$lib\E(.*)&${1}$dir_list{$lib}${2}& and last;
-  s&^(\s*LIBRARY_NAME\s+)\Q$lib\E(.*)&${1}$dir_list{$lib}${2}& and last;
-  s&^(\s*art_make\.*LIBRARY_NAME\s+)\Q$lib\E(.*)&${1}$dir_list{$lib}${2}& and last;
-  s&^(\s*LIBRARIES\s+)\Q$lib\E(.*)&${1}$dir_list{$lib}${2}& and last;
-  s&^(\s*LIB_LIBRARIES\s+)\Q$lib\E(.*)&${1}$dir_list{$lib}${2}& and last;
-  s&^(\s*MODULE_LIBRARIES\s+)\Q$lib\E(.*)&${1}$dir_list{$lib}${2}& and last;
-  s&^(\s*SERVICE_LIBRARIES\s+)\Q$lib\E(.*)&${1}$dir_list{$lib}${2}& and last;
-  s&^(\s*DICT_LIBRARIES\s+)\Q$lib\E(.*)&${1}$dir_list{$lib}${2}& and last;
-  s&^(\s*SOURCE_LIBRARIES\s+)\Q$lib\E(.*)&${1}$dir_list{$lib}${2}& and last;
+   next if m&add_subdirectory&i;
+   next if m&simple_plugin&i;
+  #s&\b\Q${lib}\E([^\.\s]*\b)([^\.]|$)&$dir_list{$lib}${1}${2}&g and last;
+  s&\b\Q${lib}\E\b([^\.]|$)&$dir_list{$lib}${1}${2}&g and last;
 }
-###  s&^(\s*#include\s+["<])\Q$inc\E(/.*)&${1}$subdir_list{$inc}${2}& and last;
