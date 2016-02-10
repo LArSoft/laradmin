@@ -1,6 +1,5 @@
 
-INSTALL ( PROGRAMS change_cmake.sh
-                   checkout_v05.sh
+INSTALL ( PROGRAMS checkout_v05.sh
 		   generate_hash.sh
 		   generate_lib_list.sh
 		   make_branch.sh
