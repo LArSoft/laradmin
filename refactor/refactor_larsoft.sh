@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# use the gitMoveDirsDown script written by Erica
-
 get_this_dir() 
 {
     ( cd / ; /bin/pwd -P ) >/dev/null 2>&1
@@ -23,13 +21,6 @@ if [ ! -r $MRB_SOURCE/CMakeLists.txt ]; then
 fi
 
 get_this_dir
-
-if [[ ! -x ${thisdir}/../svnToGit/refactor/gitMoveDirsDown ]] ; then
-  echo "ERROR:  cannot find ${thisdir}/../svnToGit/refactor/gitMoveDirsDown"
-  exit 1
-fi
-
-MOVE_COMMAND=${thisdir}/../svnToGit/refactor/gitMoveDirsDown
 
 pkglist="larcore lardata larevt larsim lareventdisplay larexamples larreco larpandora larana"
 
@@ -54,14 +45,11 @@ do
    mkdir ${REP}
    new_cmake=${MRB_SOURCE}/${REP}/${REP}/CMakeLists.txt
    echo > ${new_cmake}
-   echo "calling gitMoveDirsDown in ${REP}"
-   echo "moving $reflist"
-   ${MOVE_COMMAND} -t ${REP} -s $reflist
    for refdir in $reflist
    do
-      ##echo "git mv $refdir ${REP}/$refdir"
-      ##git mv $refdir ${REP}/$refdir || exit 1
-      ##git commit -m"move $refdir to ${REP}/$refdir"
+      echo "git mv $refdir ${REP}/$refdir"
+      git mv $refdir ${REP}/$refdir || exit 1
+      git commit -m"move $refdir to ${REP}/$refdir"
       echo "add_subdirectory($refdir)" >> ${new_cmake}
    done
    echo >> ${new_cmake}
