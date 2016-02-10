@@ -42,6 +42,7 @@ set( UPSFLAVOR NULL )
 # source code
 add_subdirectory(build_tools)
 add_subdirectory(nightly)
+add_subdirectory(refactor)
 add_subdirectory(ups)
 
 # packaging utility
