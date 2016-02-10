@@ -9,30 +9,29 @@ if [ ! -r ${MRB_SOURCE}/CMakeLists.txt ]; then
     echo "${MRB_SOURCE}/CMakeLists.txt not found"
     exit 1
 fi
+if [ -z "${MRB_BUILDDIR}" ]
+then
+    echo 'ERROR: MRB_BUILDDIR is not defined'
+    exit 1
+fi
 
 larlist="larcore lardata larevt larsim lareventdisplay larexamples larreco larpandora larana"
 
-hash_file=${PWD}/header_hash.pl
+hash_file=${PWD}/lib_hash.pl
 echo > ${hash_file}
 echo "dirs = (" >>  ${hash_file}
 
 for REP in $larlist
 do
+   cd ${MRB_BUILDDIR}/${REP} || exit 1
    echo
    echo "begin ${REP}"
-   cd ${MRB_SOURCE}/${REP}/${REP} || exit 1
    reflist=""
-   list=`ls -1`
+   list=`find . -name "${REP}*.dir"`
    for subdir in $list
    do
-      if [ -d $subdir ]
-      then
-	  reflist="$reflist $subdir"
-          echo "                        \"${subdir}\" => \"${REP}/${subdir}\"," >>  ${hash_file}
-      fi
+      echo "                        \"\" => \"${subdir}\"," >>  ${hash_file}
    done
-   #echo "       ${REP} => [qw( ${reflist} )]"
-   #echo "       ${REP} => [qw( ${reflist} )]" >>  ${hash_file}
 done
 echo "     )" >>  ${hash_file}
 

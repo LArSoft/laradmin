@@ -65,17 +65,27 @@ git archive --prefix=laradmin-${pkgver}/ \
 tar xf ${package}-${pkgver}.tar
 set +x
 
-if [ -z ${UPS_DIR} ]
-then
-   echo "ERROR: please setup ups"
-   exit 1
-fi
-source `${UPS_DIR}/bin/ups setup ${SETUP_UPS}`
+    # make sure we can use the setup alias
+type setup
+    if [ -z ${UPS_DIR} ]
+    then
+       echo "ERROR: please setup ups"
+       exit 1
+    fi
+    source `${UPS_DIR}/bin/ups setup ${SETUP_UPS}`
 
+echo $SETUP_UPS
+echo $UPS_DIR/bin/ups
+which ups
+type setup
+echo $PRODUCTS
+set -x
+setup cmake v3_3_2
+set +x
+    
 # now run cmake
 mkdir -p ${pkgdir}/${pkgver}/build
 cd ${pkgdir}/${pkgver}/build
-setup cmake v3_0_1
 cmake -DCMAKE_INSTALL_PREFIX=${product_dir} ${pkgdir}/${pkgver}/src/laradmin-${pkgver}
 make install
 make package

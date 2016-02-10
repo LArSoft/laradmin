@@ -36,7 +36,7 @@ do
     if [ ! -d $d ]; then mkdir $d; fi
 done
 
-qual=e6
+qual=e7
 
 M=0
 while [ $M -lt ${#MACHINES[@]} ]
