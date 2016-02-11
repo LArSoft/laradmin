@@ -24,7 +24,7 @@ if [ ! -r ${MRB_SOURCE}/CMakeLists.txt ]; then
     exit 1
 fi
 
-larlist="larcore lardata larevt larsim lareventdisplay larexamples larreco larpandora larana"
+larlist="larcore lardata larevt larsim lareventdisplay larexamples larreco larpandora larana larsoft"
 
 cd ${MRB_SOURCE} || exit 1
 
