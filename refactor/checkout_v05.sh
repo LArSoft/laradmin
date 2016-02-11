@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
 
-# make a v05_00_00_rc working directory
+# make a v05 working directory
 function usage() {
     echo "Usage: basename(0) <working_directory>"
 }
 
 working_dir=${1}
-branch=v05_00_00_rc
+#branch=v05_00_00_rc
+branch=v05_00_branch
 
 if [ -z "${working_dir}" ]
 then
