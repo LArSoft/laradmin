@@ -31,6 +31,9 @@ do
    for subdir in $list
    do
       echo "                        \"\" => \"${subdir}\"," >>  ${hash_file}
+      thisdir=$(basename ${subdir})
+      thislib=`echo ${thisdir} | sed -e s'/\.dir//'`
+      echo "                        \"${thislib}\" => \"${thislib}\"," >>  ${hash_file}
    done
 done
 echo "     )" >>  ${hash_file}
