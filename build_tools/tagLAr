@@ -8,6 +8,7 @@
 # mrb g dunetpc, duneutil, lbne_raw_data
 # mrb g uboonecode, ubutil
 # mrb g argoneutcode
+# mrb g lariatsoft
 # tagLar start <tag>
 # tagLar update <tag>
 # mrb uv other products if necessary
@@ -34,7 +35,7 @@ function usage() {
     echo "Usage: $fullCom patch <new tag> <existing tag>"
     echo "Usage: $fullCom branch <new branch> <existing tag>"
     echo "Usage: $fullCom mkdir <new tag> <working_dir>"
-    echo "   mkdir  - mkdir <working_dir>/<tag>, run newDev, and checkout larsoft_suite, uboone, and dunetpc"
+    echo "   mkdir  - mkdir <working_dir>/<tag>, run newDev, then checkout larsoft_suite and experiment code"
     echo "   start - create release/<tag> branch"
     echo "   feature - create feature/<tag> branch"
     echo "   patch - create release/<tag> branch based on existing tag"
@@ -85,6 +86,10 @@ create_working_directory() {
   mrb g duneutil
   echo "checkout lbne_raw_data"
   mrb g -d lbne_raw_data lbne-raw-data
+  echo "checkout lariatsoft"
+  mrb g lariatsoft
+  mrb g -r -d lariatfragments lariat-online-lariatfragments
+  mrb g -r -d lariatutil lardbt-lariatutil
   echo "checkout uboonecode"
   mrb g uboonecode
   echo "checkout ubutil"
