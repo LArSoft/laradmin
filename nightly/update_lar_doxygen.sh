@@ -1,16 +1,19 @@
 #!/bin/sh
 
 export DOXVER=doxygen-1.7.5.1
-export LARNIGHTLY=/grid/fermiapp/larsoft/home/larsoft/code/nightly_build/srcs
+#export LARNIGHTLY=/grid/fermiapp/larsoft/home/larsoft/code/nightly_build/srcs
 export LARHOME=/grid/fermiapp/larsoft/home/larsoft
-export LARPRODUCTS=/grid/fermiapp/larsoft/products
+export LARPRODUCTS=/grid/fermiapp/products/larsoft
 export LAR_WWW=/nusoft/app/web/htdoc/larsoft/doxsvn
 
 source ${LARPRODUCTS}/setup
-LARVER=`ups list -aK version larsoft | sort | grep -v _rc | grep -v v1_0 | tail -1 | sed -e 's/"//g'`
+#export LARVER=`ups list -aK+ larsoft | grep -v v1_ | sort -r | head -n 1 | cut -f2 -d" " | cut -f2 -d"\""`
+export LARVER=`ups list -aK version larsoft | sort | grep -v _rc | grep -v v1_0 | tail -1 | sed -e 's/"//g'`
 setup larsoft ${LARVER} -q e9:debug
+status=$?
+if [[ ${status} != 0 ]]; then exit 1; fi
 
-echo Running Doxygen
+echo Running Doxygen for larsoft ${LARVER}
 cd ${LARHOME}/doxygen
 
 # remove the previous nights doxygen log
