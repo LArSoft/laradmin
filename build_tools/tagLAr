@@ -5,7 +5,7 @@
 # work flow
 # mrb newDev ...
 # mrb g larsoft_suite, larbatch, larutils
-# mrb g dunetpc, duneutil, lbne_raw_data
+# mrb g dunetpc, duneutil
 # mrb g uboonecode, ubutil
 # mrb g argoneutcode
 # mrb g lariatsoft
@@ -84,8 +84,6 @@ create_working_directory() {
   mrb g dunetpc
   echo "checkout duneutil"
   mrb g duneutil
-  echo "checkout lbne_raw_data"
-  mrb g -d lbne_raw_data lbne-raw-data
   echo "checkout lariatsoft"
   mrb g lariatsoft
   mrb g -r -d lariatfragments lariat-online-lariatfragments
