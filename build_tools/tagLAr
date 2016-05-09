@@ -80,6 +80,8 @@ create_working_directory() {
   mrb g larbatch
   echo "checkout larutils"
   mrb g larutils
+  echo "checkout larpandoracontent"
+  mrb g larpandoracontent
   echo "checkout dunetpc"
   mrb g dunetpc
   echo "checkout duneutil"
