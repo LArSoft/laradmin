@@ -43,7 +43,7 @@ function get_package_release()
   echo >> ${relnote}
   echo "h2. ${pkg} ${relver}" >> ${relnote}
   echo >> ${relnote}
-  git log --pretty=format:"* %ad  %an : %s" --date=short LARSOFT_SUITE_${previous_version}..${relver} >> ${relnote}
+  git log --pretty=format:"* %ad  %an : %s" --date=short ${previous_version_string}..${relver} >> ${relnote}
   echo >> ${relnote}
   cd ${my_working_dir}
   set +x
@@ -62,7 +62,7 @@ function get_util_release()
   echo >> ${relnote}
   echo "h2. ${pkg} ${relver}" >> ${relnote}
   echo >> ${relnote}
-  git log --pretty=format:"* %ad  %an : %s" --date=short LARSOFT_SUITE_${previous_version}..${relver} >> ${relnote}
+  git log --pretty=format:"* %ad  %an : %s" --date=short ${previous_version_string}..${relver} >> ${relnote}
   echo >> ${relnote}
   cd ${my_working_dir}
   set +x
@@ -120,6 +120,12 @@ today=`date +%m/%d/%Y`
 dotver=`echo ${larsoft_version} | sed -e 's%_%.%g'`
 version_string=`echo ${larsoft_version} | sed -e 's/_//g' | sed -e 's/^v//'`
 
+previous_version_string=LARSOFT_SUITE_${previous_version}
+if [[ ${previous_version} == *_rc* ]]; then
+  echo "${previous_version} is a release candidate"
+  previous_version_string=${previous_version}
+fi
+
 relnote=${my_working_dir}/ReleaseNotes-${larsoft_version}
 rm -f ${relnote}
 echo > ${relnote}
@@ -152,7 +158,7 @@ git checkout ${larsoft_version}
 relver=`grep '^[  ]*parent' ${my_working_dir}/${pkg}/ups/product_deps | tr "\t" " " | cut -f3 -d" "`
 echo "h2. ${pkg} ${relver}" >> ${relnote}
 echo >> ${relnote}
-git log --pretty=format:"* %ad  %an : %s" --date=short LARSOFT_SUITE_${previous_version}..${larsoft_version} >> ${relnote}
+git log --pretty=format:"* %ad  %an : %s" --date=short ${previous_version_string}..${larsoft_version} >> ${relnote}
 echo >> ${relnote}
 cd ${my_working_dir}
 set +x
