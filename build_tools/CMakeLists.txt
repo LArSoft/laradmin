@@ -1,5 +1,5 @@
 
-INSTALL ( PROGRAMS cp-tag
+INSTALL ( PROGRAMS cp-lar-tag
                    make-release-notes
                    tagLAr
 		   build-larsoft-products.sh
