@@ -88,8 +88,8 @@ create_working_directory() {
   mrb g duneutil
   echo "checkout lariatsoft"
   mrb g lariatsoft
-  mrb g -r -d lariatfragments lariat-online-lariatfragments
-  mrb g -r -d lariatutil lardbt-lariatutil
+  mrb g -d lariatfragments lariat-online-lariatfragments
+  mrb g -d lariatutil lardbt-lariatutil
   echo "checkout sbndcode"
   mrb g sbndcode
   echo "checkout uboonecode"
