@@ -4,8 +4,9 @@
 
 # Subsidiary packages to be checkedc, These must be in order.
 declare -a packages=(larana larreco larsim  larevt lardata larcore)
-declare -a extra_packages=(lareventdisplay larexamples larpandora)
+declare -a extra_packages=(lareventdisplay larexamples larpandora larpandoracontent)
 declare -a util_packages=(larbatch larutils)
+declare -a obj_packages=(larsimobj lardataobj larcoreobj)
 
 function get_working_dir() 
 {
@@ -176,5 +177,9 @@ for package in "${packages[@]}"; do
 done
 
 for package in "${util_packages[@]}"; do
+  get_util_release ${package}
+done
+
+for package in "${obj_packages[@]}"; do
   get_util_release ${package}
 done

@@ -76,6 +76,10 @@ create_working_directory() {
   cd $MRB_SOURCE
   echo "checkout larsoft_suite"
   mrb g larsoft_suite
+  echo "checkout larobj"
+  mrb g larcoreobj
+  mrb g lardataobj
+  mrb g larsimobj
   echo "checkout larbatch"
   mrb g larbatch
   echo "checkout larutils"
@@ -88,11 +92,12 @@ create_working_directory() {
   mrb g duneutil
   echo "checkout lariatsoft"
   mrb g lariatsoft
-  mrb g -r -d lariatfragments lariat-online-lariatfragments
-  mrb g -r -d lariatutil lardbt-lariatutil
+  mrb g -d lariatfragments lariat-online-lariatfragments
+  mrb g -d lariatutil lardbt-lariatutil
+  echo "checkout sbndcode"
+  mrb g sbndcode
   echo "checkout uboonecode"
   mrb g uboonecode
-  echo "checkout ubutil"
   mrb g ubutil
   echo "checkout argoneutcode"
   mrb g argoneutcode
