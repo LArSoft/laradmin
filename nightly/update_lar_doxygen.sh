@@ -1,6 +1,6 @@
 #!/bin/sh
 
-export DOXVER=doxygen-1.7.5.1
+export DOXVER=doxygen-1.8.11
 #export LARNIGHTLY=/grid/fermiapp/larsoft/home/larsoft/code/nightly_build/srcs
 export LARHOME=/grid/fermiapp/larsoft/home/larsoft
 export LARPRODUCTS=/grid/fermiapp/products/larsoft
