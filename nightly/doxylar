@@ -154,8 +154,10 @@ FULL_PATH_NAMES        = YES
 
 STRIP_FROM_PATH        = /grid/fermiapp/products/larsoft \
                          $(ART_DIR)/source \
+                         $(CANVAS_DIR)/source \
                          $(MESSAGEFACILITY_DIR)/source \
                          $(NUTOOLS_DIR)/source \
+                         $(NUSIMDATA_DIR)/source \
                          $(CETLIB_DIR)/include \
                          $(FHICLCPP_DIR)/source \
                          $(GEANT4_DIR)/source \
@@ -780,17 +782,22 @@ WARN_LOGFILE           =
 
 INPUT                  = $(LARANA_DIR)/source \
                          $(LARCORE_DIR)/source \
+                         $(LARCOREOBJ_DIR)/source \
                          $(LARDATA_DIR)/source \
+                         $(LARDATAOBJ_DIR)/source \
                          $(LAREVENTDISPLAY_DIR)/source \
                          $(LAREVT_DIR)/source \
                          $(LAREXAMPLES_DIR)/source \
                          $(LARPANDORA_DIR)/source \
                          $(LARRECO_DIR)/source \
                          $(LARSIM_DIR)/source \
+                         $(LARSIMOBJ_DIR)/source \
                          $(NUTOOLS_DIR)/source \
+                         $(NUSIMDATA_DIR)/source \
                          $(GENIE)/src \
                          $(GEANT4_DIR)/source \
                          $(ART_DIR)/source \
+                         $(CANVAS_DIR)/source \
                          $(MESSAGEFACILITY_DIR)/source \
                          $(CETLIB_DIR)/include \
                          $(FHICLCPP_DIR)/source
