@@ -94,8 +94,9 @@ create_working_directory() {
   mrb g lariatsoft
   mrb g -d lariatfragments lariat-online-lariatfragments
   mrb g -d lariatutil lardbt-lariatutil
-  echo "checkout sbndcode"
-  mrb g sbndcode
+  # sbndcode does not keep up with larsoft releases
+  ##echo "checkout sbndcode"
+  ##mrb g sbndcode
   echo "checkout uboonecode"
   mrb g uboonecode
   mrb g ubutil
