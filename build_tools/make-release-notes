@@ -6,7 +6,7 @@
 declare -a packages=(larana larreco larsim  larevt lardata larcore)
 declare -a extra_packages=(lareventdisplay larexamples larpandora larpandoracontent)
 declare -a util_packages=(larbatch larutils)
-declare -a obj_packages=(larsimobj lardataobj larcoreobj)
+declare -a obj_packages=(larsoftobj larsimobj lardataobj larcoreobj)
 
 function get_working_dir() 
 {
@@ -176,10 +176,10 @@ for package in "${packages[@]}"; do
   last_pkg=${package}
 done
 
-for package in "${util_packages[@]}"; do
+for package in "${obj_packages[@]}"; do
   get_util_release ${package}
 done
 
-for package in "${obj_packages[@]}"; do
+for package in "${util_packages[@]}"; do
   get_util_release ${package}
 done
