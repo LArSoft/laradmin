@@ -76,10 +76,11 @@ create_working_directory() {
   cd $MRB_SOURCE
   echo "checkout larsoft_suite"
   mrb g larsoft_suite
-  echo "checkout larobj"
+  echo "checkout larsoftobj_suite"
   mrb g larcoreobj
   mrb g lardataobj
   mrb g larsimobj
+  mrb g larsoftobj
   echo "checkout larbatch"
   mrb g larbatch
   echo "checkout larutils"
