@@ -14,7 +14,7 @@
 # n's product_list must set up package n+1.
 declare -a packages=(larana larreco larsim  larevt lardata larcore)
 declare -a extra_packages=(lareventdisplay larexamples larpandora)
-declare -a obj_packages=(larsim lardata larcore)
+declare -a obj_packages=(larsoft lardata larcore)
 # Tag message.
 tag_msg='LArSoft suite cross-package tag'
 

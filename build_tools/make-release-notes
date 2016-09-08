@@ -6,7 +6,7 @@
 declare -a packages=(larana larreco larsim  larevt lardata larcore)
 declare -a extra_packages=(lareventdisplay larexamples larpandora larpandoracontent)
 declare -a util_packages=(larbatch larutils)
-declare -a obj_packages=(larsoftobj larsimobj lardataobj larcoreobj)
+declare -a obj_packages=(larsoftobj lardataobj larcoreobj)
 
 function get_working_dir() 
 {
