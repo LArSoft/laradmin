@@ -14,7 +14,7 @@
 # n's product_list must set up package n+1.
 declare -a packages=(larana larreco larsim  larevt lardata larcore)
 declare -a extra_packages=(lareventdisplay larexamples larpandora)
-declare -a obj_packages=(larsoft lardata larcore)
+declare -a obj_packages=(lardataobj larcoreobj)
 # Tag message.
 tag_msg='LArSoft suite cross-package tag'
 
@@ -146,8 +146,8 @@ while [[ -n "$1" ]]; do
   ptag "${package}" "LARSOFT_SUITE_${larsoft_version}" "${pv}"
   
   # larsoftobj packages
-  for last_pkg in "${obj_packages[@]}"; do
-    package=${last_pkg}obj
+  last_pkg=lardata
+  for package in "${obj_packages[@]}"; do
     product=`product_for "$package"`
     pv=`wget --no-check-certificate -q -O - "https://cdcvs.fnal.gov/redmine/projects/${last_pkg}/repository/raw/ups/product_deps?rev=LARSOFT_SUITE_${larsoft_version}" | \
      grep    -e '^[ 	]*'"$product"'[ 	]\{1,\}' | \
@@ -160,6 +160,11 @@ while [[ -n "$1" ]]; do
     fi
     ensure_gitconfig $package
     ptag "${package}" "LARSOFT_SUITE_${larsoft_version}" "${pv}"
+    last_pkg=${package}
   done
 
 done
+
+echo
+echo "These packages have not been tagged: larbatch larutils larsoftobj"
+echo
