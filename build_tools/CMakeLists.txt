@@ -1,5 +1,6 @@
 
 INSTALL ( PROGRAMS cp-lar-tag
+                   dogit
                    make-release-notes
                    tagLAr
 		   build-larsoft-products.sh
