@@ -791,7 +791,6 @@ INPUT                  = $(LARANA_DIR)/source \
                          $(LARPANDORA_DIR)/source \
                          $(LARRECO_DIR)/source \
                          $(LARSIM_DIR)/source \
-                         $(LARSIMOBJ_DIR)/source \
                          $(NUTOOLS_DIR)/source \
                          $(NUSIMDATA_DIR)/source \
                          $(GENIE)/src \
