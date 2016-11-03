@@ -2,7 +2,7 @@
 
 # create a basic relase note page for a larsoft release
 
-# Subsidiary packages to be checkedc, These must be in order.
+# Subsidiary packages to be checked, These must be in order.
 declare -a packages=(larana larreco larsim  larevt lardata larcore)
 declare -a extra_packages=(lareventdisplay larexamples larpandora larpandoracontent)
 declare -a util_packages=(larbatch larutils)
@@ -32,7 +32,9 @@ function get_package_release()
   if [[ -n "$pv" ]]; then
     echo "Found $package tag $pv corresponding to LArSoft tag $larsoft_version."
   else
-    echo "Could not find tag for package $package corresponding to LArSoft tag $larsoft_version." 1>&2
+    echo "INFO: Could not find tag for package $package corresponding to LArSoft tag $larsoft_version." 1>&2
+    echo "      Will try LARSOFT_SUITE_${larsoft_version}"
+    pv=LARSOFT_SUITE_${larsoft_version}
     continue
   fi
   set -x
@@ -58,7 +60,7 @@ function get_util_release()
   git clone http://cdcvs.fnal.gov/projects/${pkg} || { echo "ERROR: failed to clone ${pkg}"; exit 1; }
   cd ${my_working_dir}/${pkg}
   git checkout LARSOFT_SUITE_${larsoft_version} || \
-     { echo "EEROR: could not find LARSOFT_SUITE_${larsoft_version} tag"; exit 1; }
+     { echo "ERROR: could not find LARSOFT_SUITE_${larsoft_version} tag"; exit 1; }
   relver=`grep '^[  ]*parent' ${my_working_dir}/${pkg}/ups/product_deps | tr "\t" " " | cut -f3 -d" "`
   echo >> ${relnote}
   echo "h2. ${pkg} ${relver}" >> ${relnote}
@@ -68,6 +70,26 @@ function get_util_release()
   cd ${my_working_dir}
   set +x
 }
+
+function find_larsoftobj_release()
+{
+  mkdir -p ${my_working_dir}/tmp
+  cd ${my_working_dir}/tmp
+  git clone http://cdcvs.fnal.gov/projects/larsoftobj || { echo "ERROR: failed to clone larsoftobj"; exit 1; }
+  cd larsoftobj
+  git checkout LARSOFT_SUITE_${larsoft_version} || \
+     { echo "ERROR: could not find LARSOFT_SUITE_${larsoft_version} tag for larsoftobj"; exit 1; }
+  larsoftobj_version=`grep '^[  ]*parent' ups/product_deps | tr "\t" " " | cut -f3 -d" "`
+  if [[ -n "$larsoftobj_version" ]]; then
+    echo "INFO: Found larsoftobj $larsoftobj_version corresponding to LArSoft tag $larsoft_version."
+  else
+    echo "ERROR: Could not find larsoftobj tag." 1>&2
+    exit 1
+  fi
+  cd ${my_working_dir}
+}
+
+################################################################################
 
 prog=${0##*/}
 
@@ -127,6 +149,8 @@ if [[ ${previous_version} == *_rc* ]]; then
   previous_version_string=${previous_version}
 fi
 
+find_larsoftobj_release
+
 relnote=${my_working_dir}/ReleaseNotes-${larsoft_version}
 rm -f ${relnote}
 echo > ${relnote}
@@ -137,7 +161,8 @@ echo >> ${relnote}
 echo "{{>TOC}}" >> ${relnote}
 echo >> ${relnote}
 echo "[[LArSoft_release_list|list of LArSoft releases]]" >> ${relnote}
-echo "\"Download instructions\":http://scisoft.fnal.gov/scisoft/bundles/larsoft/${larsoft_version}/larsoft-${larsoft_version}.html" >> ${relnote}
+echo "Download instructions for \"larsoft ${larsoft_version}\":http://scisoft.fnal.gov/scisoft/bundles/larsoft/${larsoft_version}/larsoft-${larsoft_version}.html" >> ${relnote}
+echo "Download instructions for \"just larsoftobj ${larsoftobj_version}\":http://scisoft.fnal.gov/scisoft/bundles/larsoftobj/${larsoftobj_version}/larsoftobj-${larsoftobj_version}.html" >> ${relnote}
 echo >> ${relnote}
 echo "h2. Purpose" >> ${relnote}
 echo >> ${relnote}
