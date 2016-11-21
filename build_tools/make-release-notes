@@ -4,7 +4,7 @@
 
 # Subsidiary packages to be checked, These must be in order.
 declare -a packages=(larana larreco larsim  larevt lardata larcore)
-declare -a extra_packages=(lareventdisplay larexamples larpandora larpandoracontent)
+declare -a extra_packages=(lareventdisplay larexamples larpandora larpandoracontent larwirecell)
 declare -a util_packages=(larbatch larutils)
 declare -a obj_packages=(larsoftobj lardataobj larcoreobj)
 
