@@ -4,7 +4,7 @@
 
 # Subsidiary packages to be checked, These must be in order.
 declare -a packages=(larana larreco larsim  larevt lardata larcore)
-declare -a extra_packages=(lareventdisplay larexamples larpandora larpandoracontent larwirecell)
+declare -a extra_packages=(lareventdisplay larexamples larpandora larwirecell)
 declare -a util_packages=(larbatch larutils)
 declare -a obj_packages=(larsoftobj lardataobj larcoreobj)
 
@@ -200,6 +200,10 @@ for package in "${packages[@]}"; do
   get_package_release ${package}
   last_pkg=${package}
 done
+
+# larpandoracontent needs special handling
+package=larpandoracontent
+get_util_release ${package}
 
 for package in "${obj_packages[@]}"; do
   get_util_release ${package}
