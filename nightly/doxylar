@@ -158,7 +158,7 @@ STRIP_FROM_PATH        = /grid/fermiapp/products/larsoft \
                          $(MESSAGEFACILITY_DIR)/source \
                          $(NUTOOLS_DIR)/source \
                          $(NUSIMDATA_DIR)/source \
-                         $(CETLIB_DIR)/include \
+                         $(CETLIB_FQ_DIR)/include \
                          $(FHICLCPP_DIR)/source \
                          $(GEANT4_DIR)/source \
                          $(GENIE)/src
@@ -798,7 +798,7 @@ INPUT                  = $(LARANA_DIR)/source \
                          $(ART_DIR)/source \
                          $(CANVAS_DIR)/source \
                          $(MESSAGEFACILITY_DIR)/source \
-                         $(CETLIB_DIR)/include \
+                         $(CETLIB_FQ_DIR)/include \
                          $(FHICLCPP_DIR)/source
 
 # This tag can be used to specify the character encoding of the source files
