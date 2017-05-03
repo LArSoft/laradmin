@@ -102,6 +102,8 @@ create_working_directory() {
   mrb g ubutil
   echo "checkout argoneutcode"
   mrb g argoneutcode
+  echo "checkout icaruscode"
+  mrb g icaruscode
 }
 
 # Determine command options (just -h for help)
