@@ -69,8 +69,8 @@ create_working_directory() {
   mkdir -p ${working_dir}/${tag}/p  ${working_dir}/${tag}/d || { echo "ERROR: failed to create ${working_dir}/${tag}/p"; exit 1; }
   cd ${working_dir}/${tag}
   echo "run mrb newDev"
-  mrb newDev -f -v ${tag} -q e9:prof -T p || exit 1
-  mrb newDev -f -v ${tag} -q e9:debug -T d || exit 1
+  mrb newDev -f -v ${tag} -q e14:prof -T p || exit 1
+  mrb newDev -f -v ${tag} -q e14:debug -T d || exit 1
   echo "source localProductsXXX/setup"
   source p/localProducts*/setup
   cd $MRB_SOURCE
