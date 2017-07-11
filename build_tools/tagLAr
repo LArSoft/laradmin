@@ -25,7 +25,6 @@
 
 # Determine this command name
 thisComFull=$(basename $0)
-##thisCom=${thisComFull%.*}
 fullCom="${thisComFull%.*}"
 
 # Usage function
