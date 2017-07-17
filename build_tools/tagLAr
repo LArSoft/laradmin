@@ -77,6 +77,7 @@ create_working_directory() {
   mrb g larsoft_suite
   echo "checkout larsoftobj_suite"
   mrb g larcoreobj
+  mrb g larcorealg
   mrb g lardataobj
   mrb g larsoftobj
   echo "checkout larbatch"
