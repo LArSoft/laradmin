@@ -14,7 +14,8 @@
 # n's product_list must set up package n+1.
 declare -a packages=(larana larreco larsim  larevt lardata larcore)
 declare -a extra_packages=(lareventdisplay larexamples larpandora larwirecell)
-declare -a obj_packages=(lardataobj larcorealg larcoreobj)
+declare -a obj_packages=(lardataobj larcoreobj)
+declare -a alg_packages=(larcorealg)
 # Tag message.
 tag_msg='LArSoft suite cross-package tag'
 
@@ -56,7 +57,7 @@ prog=${0##*/}
 function usage() {
     cat 1>&2 <<EOF
 ${prog} --help|-h|-\?
-${prog} <tag>+
+${prog} <larsoft tag> <larsoftobj tag>
 EOF
 }
 
@@ -86,15 +87,17 @@ while true; do
   esac
 done
 
-[[ -z "$1" ]] && { echo "Require existing LArSoft tag as non-option argument" 1>&2; exit 1; }
+[[ -z "$1" ]] && { usage; exit 1; }
+[[ -z "$2" ]] && { usage; exit 1; }
 
-while [[ -n "$1" ]]; do
   larsoft_version=$1
-  shift
+  larsoftobj_version=$2
 
   ensure_gitconfig larsoft
-
   ssh p-larsoft@cdcvs.fnal.gov "cd /cvs/projects/larsoft && { git tag | grep -q $larsoft_version || { echo 'Unable to find LArSoft tag ${larsoft_version}' 1>&2; exit 1; }; } && `maybe_tag \"LARSOFT_SUITE_${larsoft_version}\" \"${larsoft_version}\"`"
+
+  ensure_gitconfig larsoftobj
+  ssh p-larsoftobj@cdcvs.fnal.gov "cd /cvs/projects/larsoftobj && { git tag | grep -q $larsoftobj_version || { echo 'Unable to find LArSoft tag ${larsoftobj_version}' 1>&2; exit 1; }; } && `maybe_tag \"LARSOFT_SUITE_${larsoft_version}\" \"${larsoftobj_version}\"`"
 
   last_pkg=larsoft
   for package in "${packages[@]}"; do
@@ -146,7 +149,7 @@ while [[ -n "$1" ]]; do
   ptag "${package}" "LARSOFT_SUITE_${larsoft_version}" "${pv}"
   
   # larsoftobj packages
-  last_pkg=lardata
+  last_pkg=larsoftobj
   for package in "${obj_packages[@]}"; do
     product=`product_for "$package"`
     pv=`wget --no-check-certificate -q -O - "https://cdcvs.fnal.gov/redmine/projects/${last_pkg}/repository/raw/ups/product_deps?rev=LARSOFT_SUITE_${larsoft_version}" | \
@@ -163,8 +166,23 @@ while [[ -n "$1" ]]; do
     last_pkg=${package}
   done
 
-done
+  last_pkg=larsoftobj
+  for package in "${alg_packages[@]}"; do
+    product=`product_for "$package"`
+    pv=`wget --no-check-certificate -q -O - "https://cdcvs.fnal.gov/redmine/projects/${last_pkg}/repository/raw/ups/product_deps?rev=LARSOFT_SUITE_${larsoft_version}" | \
+     grep    -e '^[ 	]*'"$product"'[ 	]\{1,\}' | \
+     sed -e 's/^[ 	]*'"$product"'[ 	]\{1,\}\(v[^ 	]*\).*$/\1/'`
+    if [[ -n "$pv" ]]; then
+      echo "Found $package tag $pv corresponding to LArSoft tag $larsoft_version."
+    else
+      echo "Could not find tag for package $package corresponding to LArSoft tag $larsoft_version." 1>&2
+      continue
+    fi
+    ensure_gitconfig $package
+    ptag "${package}" "LARSOFT_SUITE_${larsoft_version}" "${pv}"
+  done
+
 
 echo
-echo "These packages have not been tagged: larbatch larutils larsoftobj"
+echo "These packages have not been tagged: larbatch larutils"
 echo
