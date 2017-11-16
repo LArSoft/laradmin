@@ -154,7 +154,7 @@ find_larsoftobj_release
 relnote=${my_working_dir}/ReleaseNotes-${larsoft_version}
 rm -f ${relnote}
 echo > ${relnote}
-echo "| ${dotver} | ${today} |  |  | [[ReleaseNotes${version_string}|Release Notes]] |">> ${relnote}
+echo "| ${larsoft_version} | ${larsoftobj_version} | ${today} |  |  | [[ReleaseNotes${version_string}|Release Notes]] |">> ${relnote}
 echo >> ${relnote}
 echo "h1. LArSoft ${larsoft_version} Release Notes" >> ${relnote}
 echo >> ${relnote}
