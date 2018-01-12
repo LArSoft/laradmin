@@ -793,6 +793,7 @@ INPUT                  = $(LARANA_DIR)/source \
                          $(LARPANDORACONTENT_DIR)/source \
                          $(LARRECO_DIR)/source \
                          $(LARSIM_DIR)/source \
+                         $(LARSOFT_DIR)/source \
                          $(LARWIRECELL_DIR)/source \
                          $(NUTOOLS_DIR)/source \
                          $(NUSIMDATA_DIR)/source \
