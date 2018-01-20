@@ -96,6 +96,7 @@ create_working_directory() {
   mrb g -d lariatutil lardbt-lariatutil
   echo "checkout sbndcode"
   mrb g sbndcode
+  mrb g sbndutil
   echo "checkout uboonecode"
   mrb g uboonecode
   mrb g ubutil
