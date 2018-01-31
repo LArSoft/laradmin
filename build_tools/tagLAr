@@ -33,6 +33,7 @@ function usage() {
     echo "Usage: $fullCom feature <new tag>"
     echo "Usage: $fullCom patch <new tag> <existing tag>"
     echo "Usage: $fullCom branch <new branch> <existing tag>"
+    echo "Usage: $fullCom tagbranch <existing branch> <new tag>"
     echo "Usage: $fullCom mkdir <new tag> <working_dir>"
     echo "   mkdir  - mkdir <working_dir>/<tag>, run newDev, then checkout larsoft_suite and experiment code"
     echo "   start - create release/<tag> branch"
@@ -42,6 +43,7 @@ function usage() {
     echo "   use - use existing <branch> branch"
     echo "   update - modify product_deps to use <tag>"
     echo "   tag - merge changes with master and tag"
+    echo "   tagbranch - tag the designated branch"
     echo "   force - merge changes with master and force update of existing tag"
     echo "   merge - merge changes with develop"
     echo
@@ -86,6 +88,8 @@ create_working_directory() {
   mrb g larutils
   echo "checkout larpandoracontent"
   mrb g larpandoracontent
+  # look for extra options 
+  if [ -z "${extra_options}" ]; then
   echo "checkout dunetpc"
   mrb g dunetpc
   echo "checkout duneutil"
@@ -98,12 +102,37 @@ create_working_directory() {
   mrb g sbndcode
   mrb g sbndutil
   echo "checkout uboonecode"
-  mrb g uboonecode
+  mrb  g uboonecode
   mrb g ubutil
   echo "checkout argoneutcode"
   mrb g argoneutcode
   ##echo "checkout icaruscode"
   ##mrb g icaruscode
+  elif [[ ${extra_options} == "argoneut" ]]; then
+  echo "checkout argoneutcode"
+  mrb g argoneutcode
+  elif [[ ${extra_options} == "dune" ]]; then
+  echo "checkout dunetpc"
+  mrb g dunetpc
+  echo "checkout duneutil"
+  mrb g duneutil
+  elif [[ ${extra_options} == "lariat" ]]; then
+  echo "checkout lariatsoft"
+  mrb g lariatsoft
+  mrb g -d lariatfragments lariat-online-lariatfragments
+  mrb g -d lariatutil lardbt-lariatutil
+  elif [[ ${extra_options} == "sbnd" ]]; then
+  echo "checkout sbndcode"
+  mrb g sbndcode
+  mrb g sbndutil
+  elif [[ ${extra_options} == "uboone" ]]; then
+  echo "checkout uboonecode"
+  mrb  g uboonecode
+  mrb g ubutil
+  else
+    echo "ERROR: unrecognized option ${extra_options}"
+    exit 1
+  fi
 }
 
 # Determine command options (just -h for help)
@@ -119,6 +148,7 @@ done
 flow=${1}
 tag=${2}
 extra=${3}
+extra_options=${4}
 if [ -z "${flow}" ]
 then
     echo 'ERROR: no options specified'
@@ -261,14 +291,27 @@ then
      cd ${MRB_SOURCE}/${REP}
      version=`grep ${REP} ups/product_deps | grep parent | sed -e 's/[[:space:]]/ /g' | cut -f3 -d " "`
      echo "begin ${REP} ${version}"
-     ##rm -f ups/product_deps.bak
      git commit -m"${REP} ${version} for larsoft ${tag}" ups/product_deps  || exit 1
      git checkout master  || exit 1
-     ##git diff release/${tag}   || exit 1
      git merge -m"${REP} ${version} for larsoft ${tag}" release/${tag}   || exit 1
      git tag -a -m"${REP} ${version} for larsoft ${tag}" ${version}  || exit 1
-     git push origin master  || exit 1
-     git push --tags  || exit 1
+     git push origin master ${version} || exit 1
+  done
+fi
+
+if [ "${flow}" = "tagbranch" ]
+then
+  for REP in $pkglist
+  do
+     echo
+     echo "begin ${REP} ${version}"
+     cd ${MRB_SOURCE}/${REP}
+     # make sure we are on the expected branch
+     git checkout ${branch}  || exit 1
+     version=`grep ${REP} ups/product_deps | grep parent | sed -e 's/[[:space:]]/ /g' | cut -f3 -d " "`
+     git commit -m"${REP} ${version} for larsoft ${tag}" ups/product_deps  || exit 1
+     git tag -a -m"${REP} ${version} for larsoft ${tag}" ${version}  || exit 1
+     git push origin ${branch} ${version} || exit 1
   done
 fi
 
