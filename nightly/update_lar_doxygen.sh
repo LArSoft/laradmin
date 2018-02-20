@@ -9,7 +9,7 @@ export LAR_WWW=/nusoft/app/web/htdoc/larsoft/doxsvn
 source ${LARPRODUCTS}/setup
 #export LARVER=`ups list -aK+ larsoft | grep -v v1_ | sort -r | head -n 1 | cut -f2 -d" " | cut -f2 -d"\""`
 export LARVER=`ups list -aK version larsoft | sort | grep -v _rc | grep -v v1_0 | tail -1 | sed -e 's/"//g'`
-setup larsoft ${LARVER} -q e14:debug
+setup larsoft ${LARVER} -q e15:debug
 status=$?
 if [[ ${status} != 0 ]]; then exit 1; fi
 
