@@ -15,7 +15,7 @@
 declare -a packages=(larana larreco larsim  larevt lardata larcore)
 declare -a extra_packages=(lareventdisplay larexamples larpandora larwirecell)
 declare -a obj_packages=(lardataobj larcoreobj)
-declare -a alg_packages=(larcorealg)
+declare -a alg_packages=(larcorealg lardataalg)
 # Tag message.
 tag_msg='LArSoft suite cross-package tag'
 
