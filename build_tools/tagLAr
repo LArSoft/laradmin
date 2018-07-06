@@ -6,7 +6,7 @@
 # mrb newDev ...
 # mrb g larsoft_suite, larbatch, larutils
 # mrb g dunetpc, duneutil
-# mrb g uboonecode, ubutil
+# mrb g uboone_suite
 # mrb g argoneutcode
 # mrb g lariatsoft
 # tagLar start <tag>
@@ -106,8 +106,7 @@ create_working_directory() {
   mrb g sbndcode
   mrb g sbndutil
   echo "checkout uboonecode"
-  mrb  g uboonecode
-  mrb g ubutil
+  mrb  g uboone_suite
   echo "checkout argoneutcode"
   mrb g argoneutcode
   ##echo "checkout icaruscode"
@@ -131,8 +130,7 @@ create_working_directory() {
   mrb g sbndutil
   elif [[ ${extra_options} == "uboone" ]]; then
   echo "checkout uboonecode"
-  mrb  g uboonecode
-  mrb g ubutil
+  mrb  g uboone_suite
   else
     echo "ERROR: unrecognized option ${extra_options}"
     exit 1
