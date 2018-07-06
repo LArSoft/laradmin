@@ -785,6 +785,7 @@ INPUT                  = $(LARANA_DIR)/source \
                          $(LARCOREALG_DIR)/source \
                          $(LARCOREOBJ_DIR)/source \
                          $(LARDATA_DIR)/source \
+                         $(LARDATAALG_DIR)/source \
                          $(LARDATAOBJ_DIR)/source \
                          $(LAREVENTDISPLAY_DIR)/source \
                          $(LAREVT_DIR)/source \
