@@ -13,7 +13,7 @@
 # Subsidiary packages to be tagged, These must be in order: ie package
 # n's product_list must set up package n+1.
 declare -a packages=(larana larreco larsim  larevt lardata larcore)
-declare -a extra_packages=(lareventdisplay larexamples larpandora larwirecell)
+declare -a extra_packages=(lareventdisplay larexamples larg4 larpandora larwirecell)
 declare -a obj_packages=(lardataobj larcoreobj)
 declare -a alg_packages=(lardataalg larcorealg)
 # Tag message.
