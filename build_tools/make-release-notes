@@ -3,8 +3,8 @@
 # create a basic relase note page for a larsoft release
 
 # Subsidiary packages to be checked, These must be in order.
-declare -a packages=(larana larreco larsim  larevt lardata larcore)
-declare -a extra_packages=(lareventdisplay larexamples larpandora larwirecell)
+declare -a packages=(larana larreco larsim larevt lardata larcore)
+declare -a extra_packages=(lareventdisplay larexamples larg4 larpandora larwirecell)
 declare -a util_packages=(larbatch larutils)
 declare -a obj_packages=(larsoftobj lardataobj lardataalg larcorealg larcoreobj)
 
