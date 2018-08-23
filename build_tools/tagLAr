@@ -67,7 +67,7 @@ create_working_directory() {
       exit 1
   fi
   mkdir -p ${working_dir}/${tag} || { echo "ERROR: failed to create ${working_dir}/${tag}"; exit 1; }
-  mkdir -p ${working_dir}/${tag}/p  ${working_dir}/${tag}/d || { echo "ERROR: failed to create ${working_dir}/${tag}/p"; exit 1; }
+  #mkdir -p ${working_dir}/${tag}/p  ${working_dir}/${tag}/d || { echo "ERROR: failed to create ${working_dir}/${tag}/p"; exit 1; }
   mkdir -p ${working_dir}/${tag}/e17p  ${working_dir}/${tag}/e17d || { echo "ERROR: failed to create ${working_dir}/${tag}/e17p"; exit 1; }
   mkdir -p ${working_dir}/${tag}/c2p  ${working_dir}/${tag}/c2d || { echo "ERROR: failed to create ${working_dir}/${tag}/c2p"; exit 1; }
   cd ${working_dir}/${tag}
@@ -79,7 +79,7 @@ create_working_directory() {
   mrb newDev -f -v ${tag} -q c2:prof -T c2p || exit 1
   mrb newDev -f -v ${tag} -q c2:debug -T c2d || exit 1
   echo "source localProductsXXX/setup"
-  source p/localProducts*/setup
+  source e17p/localProducts*/setup
   cd $MRB_SOURCE
   echo "checkout larsoft_suite"
   mrb g larsoft_suite
