@@ -157,6 +157,9 @@ STRIP_FROM_PATH        = /grid/fermiapp/products/larsoft \
                          $(CANVAS_DIR)/source \
                          $(MESSAGEFACILITY_DIR)/source \
                          $(NUTOOLS_DIR)/source \
+                         $(NUG4_DIR)/source \
+                         $(NUGEN_DIR)/source \
+                         $(NURANDOM_DIR)/source \
                          $(NUSIMDATA_DIR)/source \
                          $(CETLIB_FQ_DIR)/include \
                          $(FHICLCPP_DIR)/source \
@@ -797,6 +800,9 @@ INPUT                  = $(LARANA_DIR)/source \
                          $(LARSOFT_DIR)/source \
                          $(LARWIRECELL_DIR)/source \
                          $(NUTOOLS_DIR)/source \
+                         $(NUG4_DIR)/source \
+                         $(NUGEN_DIR)/source \
+                         $(NURANDOM_DIR)/source \
                          $(NUSIMDATA_DIR)/source \
                          $(GENIE)/src \
                          $(GEANT4_DIR)/source \
