@@ -3,7 +3,8 @@
 export DOXVER=doxygen-1.8.11
 #export LARNIGHTLY=/grid/fermiapp/larsoft/home/larsoft/code/nightly_build/srcs
 export LARHOME=/grid/fermiapp/larsoft/home/larsoft
-export LARPRODUCTS=/grid/fermiapp/products/larsoft
+#export LARPRODUCTS=/grid/fermiapp/products/larsoft
+export LARPRODUCTS=/cvmfs/larsoft.opensciencegrid.org/products
 export LAR_WWW=/nusoft/app/web/htdoc/larsoft/doxsvn
 
 source ${LARPRODUCTS}/setup
