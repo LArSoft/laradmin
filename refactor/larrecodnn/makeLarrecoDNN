@@ -3,8 +3,9 @@ cd larreco
 hub pr checkout 6
 git co develop
 git merge feature/mw_trtisPtIdAlg
-- fix larreco/RecoAlg/ImagePatternAlgs/Tensorflow/PointIdAlg/CMakeLists.txt
+- fix larreco/RecoAlg/ImagePatternAlgs/Tensorflow/PointIdAlg/CMakeLists.txt conflict
 git branch -d feature/mw_trtisPtIdAlg
+git remote rm origin
 
 should only have the develop branch
 
