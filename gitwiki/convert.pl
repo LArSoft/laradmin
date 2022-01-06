@@ -76,6 +76,8 @@ sub process_file {
       $newline = $nl1.$nl2;
       $newline =~ s/\&lt\;\&gt\;//;
     }
+    # remove leading whitespace
+    $newline =~ s/^\s+//;
     if (!$ignore_header && !$ignore_footer && $skip_line) {
        #print "will process line $iter $newline\n";
        print POUT "$newline\n";
@@ -83,7 +85,8 @@ sub process_file {
   }
   close(PIN);
   close(POUT);
-  my $cmd = "pandoc --no-wrap --smart -f html -t markdown -s \"".$hfile."\" -o \"".$tfile."\"";
+  # need pandoc 2.14 as built by spack
+  my $cmd = "pandoc --no-wrap --smart -f html -t markdown_github -s \"".$hfile."\" -o \"".$tfile."\"";
   print "run $cmd\n";
   if ( system($cmd) != 0 ) {
      print "ERROR running $cmd\n";
