@@ -65,6 +65,18 @@ convert_files() {
   ${laradmin_dir}/convert.pl *
 }
 
+move_files() {
+  cd ${working_dir}/larsoft.github.io || { echo "ERROR: cd ${working_dir}/larsoft.github.io failed"; exit 1; }
+  mv ../markdown/*.md wiki/ || { echo "ERROR: failed to move markdown files": exit 1; }
+  cd wiki || { echo "ERROR: cd wiki failed"; exit 1; }
+  mv Release* releases/ || { echo "ERROR: mv Releases* failed"; exit 1; }
+  mv Retired_Production_Releases.md releases/ || { echo "ERROR: mv Retired_Production_Releases.md failed"; exit 1; }
+  mv Older_Releases.md releases/ || { echo "ERROR: mv Older_Releases.md failed"; exit 1; }
+  mv LArSoft_release_list.md releases/ || { echo "ERROR: mv LArSoft_release_list.md failed"; exit 1; }
+  mv Initial_Releases.md releases/ || { echo "ERROR: mv Initial_Releases.md failed"; exit 1; }
+  mv Cvmfs_Migration_Plan.md releases/ || { echo "ERROR: mv Cvmfs_Migration_Plan.md failed"; exit 1; }
+}
+
 # Determine command options (just -h for help)
 while getopts ":h" OPTION
 do
@@ -91,5 +103,6 @@ create_working_directory
 run_git_clone
 get_wiki_files
 convert_files
+move_files
 
 exit 0
