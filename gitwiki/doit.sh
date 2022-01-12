@@ -62,6 +62,8 @@ get_wiki_files() {
 convert_files() {
   cd ${working_dir}/markdown || { echo "ERROR: cd ${working_dir}/markdown failed"; exit 1; }
   cp -p ../orig/larsoft_wiki/* . || { echo "ERROR: failed to copy redmine files"; exit 1; }
+  rm index || { echo "ERROR: failed to remove redmine index"; exit 1; }
+  rm new || { echo "ERROR: failed to remove redmine new"; exit 1; }
   ${laradmin_dir}/convert.pl *
 }
 
