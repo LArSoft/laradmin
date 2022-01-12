@@ -76,6 +76,14 @@ sub process_file {
       $newline = $nl1.$nl2;
       $newline =~ s/\&lt\;\&gt\;//;
     }
+    if( $line =~ "issue tracker" ) {
+      my $p1 = index($line, '<a class="issue');
+      my $p2 = index($line, 'class', $p1);
+      my $p3 = index($line, 'href', $p1);
+      my $nl1 = substr $line, 0, $p2;
+      my $nl2 = substr $line, $p3;
+      $newline = $nl1.$nl2;
+    }
     # remove leading whitespace
     $newline =~ s/^\s+//;
     if (!$ignore_header && !$ignore_footer && $skip_line) {
