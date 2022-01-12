@@ -12,6 +12,16 @@ function usage() {
     echo
 }
 
+get_laradmin_dir() 
+{
+    ( cd / ; /bin/pwd -P ) >/dev/null 2>&1
+    if (( $? == 0 )); then
+      pwd_P_arg="-P"
+    fi
+    reldir=`dirname ${0}`
+    laradmin_dir=`cd ${reldir} && /bin/pwd ${pwd_P_arg}`
+}
+
 create_working_directory() {
   if [ -z "${working_dir}" ]
   then
@@ -28,6 +38,7 @@ create_working_directory() {
   fi
   mkdir -p ${working_dir} || { echo "ERROR: failed to create ${working_dir}"; exit 1; }
   mkdir -p ${working_dir}/orig || { echo "ERROR: failed to create ${working_dir}/orig"; exit 1; }
+  mkdir -p ${working_dir}/markdown || { echo "ERROR: failed to create ${working_dir}/markdown"; exit 1; }
 }
 
 run_git_clone() {
@@ -48,6 +59,11 @@ get_wiki_files() {
   fi
 }
 
+convert_files() {
+  cd ${working_dir}/markdown || { echo "ERROR: cd ${working_dir}/markdown failed"; exit 1; }
+  cp -p ../orig/larsoft_wiki/* . || { echo "ERROR: failed to copy redmine files"; exit 1; }
+  ${laradmin_dir}/convert.pl *
+}
 
 # Determine command options (just -h for help)
 while getopts ":h" OPTION
@@ -69,11 +85,11 @@ fi
 
 thisdir=${PWD}
 working_dir="${thisdir}/${workdir}"
+get_laradmin_dir
 
 create_working_directory 
-
 run_git_clone
-
 get_wiki_files
+convert_files
 
 exit 0
