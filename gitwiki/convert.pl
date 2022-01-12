@@ -99,7 +99,8 @@ sub process_file {
 # (https://cdcvs.fnal.gov/redmine/projects/larsoft/wiki)
     $line =~ s/https\:\/\/cdcvs\.fnal\.gov\/redmine\/projects\/larsoft\/wiki\///g;
     $line =~ s/\/redmine\/projects\/larsoft\/wiki\///g;
-    $line =~ s/Working_with_Github/Working_with_GitHub/g;
+    $line =~ s/Working_with_github/Working_with_GitHub/g;
+    $line =~ s/\\_/_/g;
     $newline = $line;
     if( $line =~ '[¶]' ) {
       my $p3 = index($line,'[¶]');
