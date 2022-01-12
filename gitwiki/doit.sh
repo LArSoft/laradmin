@@ -27,7 +27,27 @@ create_working_directory() {
       exit 1
   fi
   mkdir -p ${working_dir} || { echo "ERROR: failed to create ${working_dir}"; exit 1; }
+  mkdir -p ${working_dir}/orig || { echo "ERROR: failed to create ${working_dir}/orig"; exit 1; }
 }
+
+run_git_clone() {
+  cd ${working_dir} || { echo "ERROR: cd ${working_dir}" failed; exit 1; }
+  git clone https://cdcvs.fnal.gov/projects/redmine-lib
+  git clone git@github.com:LArSoft/larsoft.github.io.git
+}
+
+get_wiki_files() {
+  cd ${working_dir}/redmine-lib/bash || { echo "ERROR: cd ${working_dir}/redmine-lib/bash failed"; exit 1; } 
+  sed -i -e 's/ups/larsoft/' download_wiki*.sh  || { echo "ERROR:edit of download files failed"; exit 1; }
+  source download_wiki.sh
+  if [ -d /tmp/larsoft_wiki ]; then
+    mv /tmp/larsoft_wiki ${working_dir}/orig/
+  else
+    echo "ERROR: cannot find /tmp/larsoft_wiki"
+    exit 1;
+  fi
+}
+
 
 # Determine command options (just -h for help)
 while getopts ":h" OPTION
@@ -38,15 +58,22 @@ do
     esac
 done
 
-working_dir=${1}
+workdir=${1}
 
-if [ -z "${working_dir}" ]
+if [ -z "${workdir}" ]
 then
     echo 'ERROR: no working directory specified'
     usage
     exit 1
 fi
 
+thisdir=${PWD}
+working_dir="${thisdir}/${workdir}"
+
 create_working_directory 
+
+run_git_clone
+
+get_wiki_files
 
 exit 0
