@@ -22,3 +22,6 @@ Note that running the script requires a password for your github ssh token and t
   From some working directory in scratch
   .../laradmin/gitwiki/doit.sh <new_dir>
 
+There is a problem with one or more of the the wiki/*.md pages.  
+Working procedure.  Remove all wiki/*.md and add them back a few at a time.
+
