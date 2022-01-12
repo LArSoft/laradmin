@@ -1,0 +1,34 @@
+git clone git@github.com:LArSoft/larreco.git larreco.1
+cd larreco
+hub pr checkout 6
+git co develop
+git merge feature/mw_trtisPtIdAlg
+- fix larreco/RecoAlg/ImagePatternAlgs/Tensorflow/PointIdAlg/CMakeLists.txt conflict
+git branch -d feature/mw_trtisPtIdAlg
+git remote rm origin
+
+should only have the develop branch
+
+cd ..
+git clone larreco.1 larrecodnn.try4
+cd larrecodnn.try4
+git remote rm origin
+~/devel/lar/laradmin/svnToGit/gitMoveLarreco
+- this step leaves a backup in .git
+~/devel/lar/laradmin/svnToGit/cleanup_larrecodnn.sh
+- now we can delete history
+~/devel/lar/laradmin/svnToGit/helpers/git-delete-history.sh larreco test larrecodnn/ImagePatternAlgs/DataProvider
+
+This now looks good.
+
+Run the migration script and add larrecodnn/CMakeLists.txt
+../../v08_46_00/srcs/larsoft/bin/v08_46_00-larrecodnn/MigrateImagePatternAlgs.sh
+fix ups/product_deps
+
+on github 
+add new (empty) repository in the LArSoft organization
+on redmine, add the LArRecoDNN project
+
+git remote add origin git@github.com:LArSoft/larrecodnn.git
+git push -u origin develop
+

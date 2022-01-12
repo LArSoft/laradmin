@@ -1,0 +1,27 @@
+This conversion needs a recent pandoc release.  I solved the problem by building pandoc in spack as below.  I then added a link in $HOME/bin to pandoc so it is found whenever running convert.pl
+
+Building pandoc:
+  git clone -c feature.manyFiles=true https://github.com/spack/spack.git
+  cd spack
+  git co releases/v0.17
+  cd bin
+  ./spack instal pandoc
+  this is pandoc 2.14.0
+
+  These steps are for using pandoc from spack
+  source spack/share/spack/setup-env.sh
+  spack find pandoc
+  spack load pandoc
+
+  But I added a symlink
+  cd $HOME/bin
+  ln -s /scratch/garren/spack/spack/opt/spack/linux-scientific7-haswell/gcc-4.8.5/pandoc-2.14.0.3-ywxpn5lrrcjjl7uij4ycnuaowabpfnue/bin/pandoc
+
+The actual conversion is controlled by doit.sh.
+Note that running the script requires a password for your github ssh token and the FNAL services password.
+  From some working directory in scratch
+  .../laradmin/gitwiki/doit.sh <new_dir>
+
+There is a problem with one or more of the the wiki/*.md pages.  
+Working procedure.  Remove all wiki/*.md and add them back a few at a time.
+

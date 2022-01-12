@@ -1,0 +1,63 @@
+#!/bin/bash
+#
+# gitMoveLarreco
+#
+
+
+# Check that we are in a git repository
+#
+if [[ ! -d .git ]] ; then
+  echo "ERROR:  not in a git repository!!" 
+  exit 1
+fi
+
+# Get source and target directories
+#
+parent_dir=larrecodnn
+target_dir=larrecodnn/ImagePatternAlgs
+source_dirs=larreco/RecoAlg/ImagePatternAlgs
+
+
+echo "Source directories = $source_dirs"
+echo "Target directory   = $target_dir"
+
+# Check that everything exists and is writable
+#
+if [[ -z $source_dirs ]] ; then
+  echo "ERROR:  no source directory specified"
+  exit 1
+fi
+
+for dir in $source_dirs ; do
+  if [[ ! -d $dir ]] ; then
+    echo "ERROR:  source directory \"$dir\" does not exist" 
+    exit 1
+  elif [[ ! -w $dir ]] ; then
+    echo "ERROR:  source directory \"$dir\" not writable" 
+    exit 1
+  fi
+done
+
+if [[ -z $target_dir ]] ; then
+  echo "ERROR:  no target directory specified"
+  usage
+fi
+
+if [[ ! -d `dirname $parent_dir` ]] ; then
+  echo "ERROR:  parent directory \"`dirname $parent_dir`\" does not exist"
+  exit 1
+elif [[ ! -w `dirname $parent_dir` ]] ; then
+  echo "ERROR:  parent directory \"`dirname $parent_dir`\" not writable"
+  exit 1
+fi
+
+# Now start the move
+#
+for source in $source_dirs ; do
+  echo "gitMoveLarreco:  moving ${source} to ${target_dir}"
+  git filter-branch -f --tree-filter \
+        "test -e ${source} && ( [[ -d ${parent_dir} ]] || mkdir ${parent_dir} ) && mv ${source} ${target_dir} || echo '  Nothing to do'" HEAD
+done
+
+echo "Done!"	
+  
