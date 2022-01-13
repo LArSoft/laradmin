@@ -48,6 +48,7 @@ sub process_file {
   my $iter = -1;
   my $ignore_header = 1;
   my $ignore_footer = 0;
+  my $ignore_toc = 0;
   my $skip_line;
   open(PIN, "< $pfile") or die "Couldn't open $pfile";
   open(POUT, "> $hfile") or die "Couldn't open $hfile";
@@ -63,6 +64,19 @@ sub process_file {
        #print "found collapsible at line $iter\n";
        $ignore_footer = 1;
     } 
+    if( $line =~ '<ul class="toc' ) {
+      print "found TOC: $line\n";
+      $ignore_toc = 1;
+       $skip_line=0;
+    }
+    if( $ignore_toc == 1 ) {
+      print "should we skip $line\n";
+      if ( $line =~ /^\s*$/) { 
+        $ignore_toc = 0;
+      } else { 
+       $skip_line=0;
+      }
+    }
     $newline = $line;
     if( $line =~ "Edit this section" ) {
        #print "ignore $line\n";
