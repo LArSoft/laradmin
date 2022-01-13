@@ -104,8 +104,18 @@ sub process_file {
   open(POUT, "> $mfile") or die "Couldn't open $mfile";
   while ( $line=<PIN> ) {
     chop $line;
+    # the larsoft wiki
     $line =~ s/https\:\/\/cdcvs\.fnal\.gov\/redmine\/projects\/larsoft\/wiki\///g;
     $line =~ s/\/redmine\/projects\/larsoft\/wiki\///g;
+    # other redmine projects
+    if( $line =~ 'redmine/projects' ) {
+      if( $line =~ 'https://cdcvs.fnal.gov/redmine/projects' ) {
+         #skip
+      } else {
+    $line =~ s/\/redmine\/projects/https\:\/\/cdcvs\.fnal\.gov\/redmine\/projects/g;
+      }
+    }
+    # redmine issues
     $line =~ s/\/redmine\/issues/https\:\/\/cdcvs\.fnal\.gov\/redmine\/issues/g;
     $line =~ s/\[\\\#/\[redmine issue /g;
     $line =~ s/Working_with_github/Working_with_GitHub/g;
