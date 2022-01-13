@@ -65,16 +65,16 @@ sub process_file {
        $ignore_footer = 1;
     } 
     if( $line =~ '<ul class="toc' ) {
-      print "found TOC: $line\n";
-      $ignore_toc = 1;
+      #print "found TOC: $line\n";
+       $ignore_toc = 1;
        $skip_line=0;
     }
     if( $ignore_toc == 1 ) {
-      print "should we skip $line\n";
+      #print "should we skip $line\n";
       if ( $line =~ /^\s*$/) { 
         $ignore_toc = 0;
       } else { 
-       $skip_line=0;
+        $skip_line=0;
       }
     }
     $newline = $line;
