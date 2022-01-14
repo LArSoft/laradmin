@@ -50,6 +50,10 @@ run_git_clone() {
 get_wiki_files() {
   cd ${working_dir}/redmine-lib/bash || { echo "ERROR: cd ${working_dir}/redmine-lib/bash failed"; exit 1; } 
   sed -i -e 's/ups/larsoft/' download_wiki*.sh  || { echo "ERROR:edit of download files failed"; exit 1; }
+  echo 
+  echo "You are about to have one try to type your services password correctly."
+  echo "If this step fails, rm -rf ${workdir} and run this command again."
+  echo
   source download_wiki.sh
   if [ -d /tmp/larsoft_wiki ]; then
     mv /tmp/larsoft_wiki ${working_dir}/orig/
@@ -65,6 +69,7 @@ convert_files() {
   rm index || { echo "ERROR: failed to remove redmine index"; exit 1; }
   rm new || { echo "ERROR: failed to remove redmine new"; exit 1; }
   rm OBSOLETE* || { echo "ERROR: failed to remove OBSOLETE files"; exit 1; }
+  sed -i -e 's%<a href="mailto:scisoft-team@fnal.gov">The Scisoft Team</a>%The Scisoft Team%g' *
   ${laradmin_dir}/convert.pl *
 }
 
