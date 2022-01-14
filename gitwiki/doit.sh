@@ -70,6 +70,7 @@ convert_files() {
   rm new || { echo "ERROR: failed to remove redmine new"; exit 1; }
   rm OBSOLETE* || { echo "ERROR: failed to remove OBSOLETE files"; exit 1; }
   sed -i -e 's%<a href="mailto:scisoft-team@fnal.gov">The Scisoft Team</a>%The Scisoft Team%g' *
+  sed -i -e 's%<a href="mailto:petrillo@slac.stanford.edu">Gianluca Petrillo</a>%Gianluca Petrillo%g' *
   ${laradmin_dir}/convert.pl *
 }
 
