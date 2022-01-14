@@ -22,6 +22,13 @@ Note that running the script requires a password for your github ssh token and t
   From some working directory in scratch
   .../laradmin/gitwiki/doit.sh <new_dir>
 
+Issues noted:
+  Tables must have the same number of columns in all rows.
+  If they do not, pandoc will not create a markdown table.
+
+  Pandoc does not seem able to deal with collapsed pointers.  Just get rid of them.
+  This only affected two LArSoft wiki pages.
+
 There is a problem with one or more of the the wiki/*.md pages.  
 Working procedure.  Remove all wiki/*.md and add them back a few at a time.
 
