@@ -29,6 +29,9 @@ Issues noted:
   Pandoc does not seem able to deal with collapsed pointers.  Just get rid of them.
   This only affected two LArSoft wiki pages.
 
+  Most email references are removed by scripting, but a few of the less common constructs were
+  simply removed by editing the redmine wiki pages.
+
 There is a problem with one or more of the the wiki/*.md pages.  
 Working procedure.  Remove all wiki/*.md and add them back a few at a time.
 
