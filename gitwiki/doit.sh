@@ -71,7 +71,7 @@ convert_files() {
   rm OBSOLETE* || { echo "ERROR: failed to remove OBSOLETE files"; exit 1; }
   sed -i -e 's%<a href="mailto:scisoft-team@fnal.gov">The Scisoft Team</a>%The Scisoft Team%g' *
   sed -i -e 's%<a href="mailto:petrillo@slac.stanford.edu">Gianluca Petrillo</a>%Gianluca Petrillo%g' *
-  sed -i -e 's%"Gianluca Petrillo":mailto:petrillo@fnal.gov%Gianluca Petrillo%g' *
+  sed -i -e 's%<a href="mailto:petrillo@fnal.gov">Gianluca Petrillo</a>%Gianluca Petrillo%g' *
   ${laradmin_dir}/convert.pl *
 }
 
