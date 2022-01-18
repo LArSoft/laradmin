@@ -84,8 +84,10 @@ move_files() {
   mv Older_Releases.md releases/ || { echo "ERROR: mv Older_Releases.md failed"; exit 1; }
   mv LArSoft_release_list.md releases/ || { echo "ERROR: mv LArSoft_release_list.md failed"; exit 1; }
   mv Initial_Releases.md releases/ || { echo "ERROR: mv Initial_Releases.md failed"; exit 1; }
+  mv FutureChanges.md releases/ || { echo "ERROR: mv FutureChanges.md failed"; exit 1; }
   mv Breaking_Changes*.md releases/ || { echo "ERROR: mv Breaking_Changes*.md failed"; exit 1; }
   sed -i -e 's%(LArSoft_release_list)%(releases/LArSoft_release_list)%g' *.md
+  sed -i -e 's%(FutureChanges)%(releases/FutureChanges)%g' *.md
   sed -i -e 's%(Breaking_Changes)%(releases/Breaking_Changes)%g' *.md
 }
 
