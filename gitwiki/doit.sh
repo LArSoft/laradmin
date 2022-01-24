@@ -77,7 +77,7 @@ convert_files() {
 
 move_files() {
   cd ${working_dir}/larsoft.github.io || { echo "ERROR: cd ${working_dir}/larsoft.github.io failed"; exit 1; }
-  mv ../markdown/*.md wiki/ || { echo "ERROR: failed to move markdown files": exit 1; }
+  cp ../markdown/*.md wiki/ || { echo "ERROR: failed to move markdown files": exit 1; }
   cd wiki || { echo "ERROR: cd wiki failed"; exit 1; }
   mv Release* releases/ || { echo "ERROR: mv Releases* failed"; exit 1; }
   mv Retired_Production_Releases.md releases/ || { echo "ERROR: mv Retired_Production_Releases.md failed"; exit 1; }
