@@ -74,7 +74,19 @@ convert_files() {
   sed -i -e 's%"Gianluca Petrillo":mailto:petrillo@slac.stanford.edu%Gianluca Petrillo%g' *
   sed -i -e 's%"Gianluca Petrillo":mailto:petrillo@fnal.gov%Gianluca Petrillo%g' *
   sed -i -e 's%Gianluca Petrillo (petrillo@fnal.gov)%Gianluca Petrillo%g' *
-  #${laradmin_dir}/convert.pl *
+  sed -i -e 's%(petrillo@fnal.gov)%Gianluca Petrillo%g' *
+  sed -i -e 's%larsoft-team (larsoft-team@fnal.gov)%SciSoft Team%g' *
+  sed -i -e 's%larsoft-team@fnal.gov%the SciSoft Team%g' *
+  sed -i -e 's%scisoft-team@fnal.gov%The Scisoft Team%g' *
+  sed -i -e 's%Brian Rebel, brebel@fnal.gov%Brian Rebel%g' *
+  sed -i -e 's%Brian Rebel (brebel@fnal.gov)%Brian Rebel%g' *
+  sed -i -e 's%brebel@fnal.gov%Brian Rebel%g' *
+  sed -i -e 's%kirby@fnal.gov%Mike Kirby%g' *
+  sed -i -e 's%larsoft@fnal.gov%the larsoft mailing list%g' *
+  sed -i -e 's%Herb Greenlee (greenlee@fnal.gov)%Herb Greenlee%g' *
+  sed -i -e 's%Herbert Greenlee <greenlee@fnal.gov>%Herb Greenlee%g' *
+  sed -i -e 's%Tingjun Yang <tjyang@fnal.gov>%Tingjun Yang%g' *
+  sed -i -e 's%Thomas R. Junk <trj@fnal.gov>%Thomas R. Junk%g' *
   for in_file in `ls -1 *.textile`; do
     file_base=$(basename --suffix=.textile $in_file)
     out_file=${file_base}.tmp
