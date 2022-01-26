@@ -78,6 +78,7 @@ convert_files() {
   sed -i -e 's%larsoft-team (larsoft-team@fnal.gov)%SciSoft Team%g' *
   sed -i -e 's%larsoft-team@fnal.gov%the SciSoft Team%g' *
   sed -i -e 's%scisoft-team@fnal.gov%The Scisoft Team%g' *
+  sed -i -e 's%scisoft-team@listserv.fnal.gov%The Scisoft Team%g' *
   sed -i -e 's%Brian Rebel, brebel@fnal.gov%Brian Rebel%g' *
   sed -i -e 's%Brian Rebel (brebel@fnal.gov)%Brian Rebel%g' *
   sed -i -e 's%brebel@fnal.gov%Brian Rebel%g' *
@@ -87,6 +88,14 @@ convert_files() {
   sed -i -e 's%Herbert Greenlee <greenlee@fnal.gov>%Herb Greenlee%g' *
   sed -i -e 's%Tingjun Yang <tjyang@fnal.gov>%Tingjun Yang%g' *
   sed -i -e 's%Thomas R. Junk <trj@fnal.gov>%Thomas R. Junk%g' *
+  sed -i -e 's%Jacob Calcultt <calcuttj@msu.edu>%Jacob Calcultt%g' *
+  sed -i -e 's%Etienne CHARDONNET <chardonn@apc.in2p3.fr>%Etienne Chardonnet%g' *
+  sed -i -e 's%Tracy Usher <usher@slac.stanford.edu>%Tracy Usher%g' *
+  sed -i -e 's%Johnny Ho <johnnyho@uchicago.edu>%Johnny Ho%g' *
+  sed -i -e 's%Jonathan Asaadi <jonathan.asaadi@uta.edu>%Jonathan Asaadi%g' *
+  sed -i -e 's%Brailsford, Dominic <d.brailsford@lancaster.ac.uk>%Dominic Brailsford%g' *
+  sed -i -e 's%Andrzej Szelc <andrzej.szelc@manchester.ac.uk>%Andrzej Szelc%g' *
+  sed -i -e 's%Miquel Nebot-Guinot <miquel.nebot@ed.ac.uk>%Miquel Nebot-Guinot%g' *
   for in_file in `ls -1 *.textile`; do
     file_base=$(basename --suffix=.textile $in_file)
     out_file=${file_base}.tmp
