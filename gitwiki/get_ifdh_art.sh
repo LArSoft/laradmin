@@ -77,10 +77,10 @@ convert_files() {
     #~/bin/pandoc --wrap=none -f textile -t gfm -s ${in_file} -o ${out_file}  || exit 1
     ${laradmin_dir}/convert_source.pl ${file_base}
   done
-  sed -i -e 's%<code class="sh">%```sh%g' *.md
-  sed -i -e 's%<code class="css">%```css%g' *.md
-  sed -i -e 's%<code class="CPP">%```CPP%g' *.md
-  sed -i -e 's%</code>%```%g' *.md
+  sed -i -e 's%^ *<code class="sh">%```sh%g' *.md
+  sed -i -e 's%^ *<code class="css">%```css%g' *.md
+  sed -i -e 's%^ *<code class="CPP">%```CPP%g' *.md
+  sed -i -e 's%^ *</code>%```%g' *.md
   sed -i -e 's%{{\\>TOC}}%%g' *.md
 }
 
