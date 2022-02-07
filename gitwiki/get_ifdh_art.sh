@@ -72,9 +72,9 @@ convert_files() {
   sed -i -e 's%"The Scisoft Team":mailto:scisoft-team@fnal.gov%The Scisoft Team%g' *
   for in_file in `ls -1 *.textile`; do
     file_base=$(basename --suffix=.textile $in_file)
-    out_file=${file_base}.tmp
-    echo "converting $in_file to $out_file"
-    ~/bin/pandoc --wrap=none -f textile -t gfm -s ${in_file} -o ${out_file}  || exit 1
+    #out_file=${file_base}.tmp
+    #echo "converting $in_file to $out_file"
+    #~/bin/pandoc --wrap=none -f textile -t gfm -s ${in_file} -o ${out_file}  || exit 1
     ${laradmin_dir}/convert_source.pl ${file_base}
   done
   sed -i -e 's%<code class="sh">%```sh%g' *.md

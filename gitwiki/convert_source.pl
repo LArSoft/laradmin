@@ -1,6 +1,9 @@
 #!/usr/bin/env perl
 #
-# process output of pandoc as run on textile files
+# process textile
+# run pandoc
+#    ~/bin/pandoc --wrap=none -f textile -t gfm -s ${in_file} -o ${out_file}  || exit 1
+# process the results of pandoc
 #
 
 use strict;
@@ -32,14 +35,26 @@ while ( $iter < $#ARGV ) {
 foreach my $file (@filelist) {
   print "$thisfile: reading $file\n";
   process_textile( $file );
+  # need recent pandoc built by spack
+  my $tfile = $file.".tmp";
+  my $pdfile = $file.".pd";
+  my $cmd = "~/bin/pandoc --wrap=none -f textile -t gfm -s \"".$tfile."\" -o \"".$pdfile."\"";
+  print "run $cmd\n";
+  if ( system($cmd) != 0 ) {
+     print "ERROR running $cmd\n";
+     exit 1;
+  }
+  process_tmp( $file );
 }
 
 exit 0;
 
-sub process_textile {
+sub process_tmp {
   my @params = @_;
   my $pfile = $params[0];
+  my $orgfile = $pfile.".textile";
   my $tfile = $pfile.".tmp";
+  my $pdfile = $pfile.".pd";
   my $mfile = $pfile.".md";
   my $line;
   my $newline;
@@ -51,7 +66,7 @@ sub process_textile {
   my $nl2;
   my $nl3;
   my $nl4;
-  open(PIN, "< $tfile") or die "Couldn't open $tfile";
+  open(PIN, "< $pdfile") or die "Couldn't open $pdfile";
   open(POUT, "> $mfile") or die "Couldn't open $mfile";
   while ( $line=<PIN> ) {
     chop $line;
@@ -109,6 +124,53 @@ sub process_textile {
   }
   print "finished with $pfile\n";
   return;
+}
+
+sub process_textile {
+  my @params = @_;
+  my $pfile = $params[0];
+  my $orgfile = $pfile.".textile";
+  my $tfile = $pfile.".tmp";
+  my $mfile = $pfile.".md";
+  my $line;
+  my $newline;
+  my $p1;
+  my $p2;
+  my $p3;
+  my $pc;
+  my $nl1;
+  my $nl2;
+  my $nl3;
+  my $nl4;
+  my $templine;
+  my $code_block = 0;
+  open(PIN, "< $orgfile") or die "Couldn't open $orgfile";
+  open(POUT, "> $tfile") or die "Couldn't open $tfile";
+  while ( $line=<PIN> ) {
+    chop $line;
+    $newline = $line;
+    if( $line =~ "p{border: 1px solid black;}." ) {
+       print "found border: $line\n";
+       print POUT "<pre><code class=\"sh\">\n";
+       $newline =~ s%p{border: 1px solid black;}.%%;
+       print "newline: $newline\n";
+       $code_block = 1;
+    } 
+    if ( $code_block ) {
+       print "looking for end of code block: $line\n";
+       if ($newline =~ /^\s*$/) {
+         $code_block = 0;
+         print "ending code block at $newline\n";
+         print POUT "</code></pre>\n";
+       } else {
+         $newline =~ s%@%%g;
+         print "code block line: $newline\n";
+       }
+    }
+     print POUT "$newline\n";
+  }
+  close(PIN);
+  close(POUT);
 }
 
 sub print_usage {
