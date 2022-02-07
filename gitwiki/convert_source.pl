@@ -163,7 +163,9 @@ sub process_textile {
          print "ending code block at $newline\n";
          print POUT "</code></pre>\n";
        } else {
+         # removing formatting that does not translate
          $newline =~ s%@%%g;
+         $newline =~ s%\*%%g;
          print "code block line: $newline\n";
        }
     }
