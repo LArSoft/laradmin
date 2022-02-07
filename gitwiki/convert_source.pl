@@ -120,6 +120,14 @@ sub process_tmp {
       }
       #print "$newline\n";
     }
+    if( $newline =~ '\!\[\]\(' ) {
+      #print "found image line $line\n";
+      $p1 = index($newline, ')');
+      $nl1 = substr $newline, 4, $p1-4;
+      #print "keep: $nl1\n";
+      $newline = "[[assets/img/".$nl1."]]";
+      #print "newline $newline\n";
+    }
     print POUT "$newline\n";
   }
   print "finished with $pfile\n";
@@ -166,7 +174,7 @@ sub process_textile {
          # removing formatting that does not translate
          $newline =~ s%@%%g;
          $newline =~ s%\*%%g;
-         print "code block line: $newline\n";
+         #print "code block line: $newline\n";
        }
     }
      print POUT "$newline\n";
