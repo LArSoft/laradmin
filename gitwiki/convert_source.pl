@@ -185,7 +185,7 @@ sub process_textile {
       $p2 = index($line, '">', $p1);
       #print "found $p1 - $p2\n";
       $nl1 = substr $line, 0, $p1;
-      $nl2 = substr $line, $p1, $p2+2;
+      $nl2 = substr $line, $p1, $p2-$p1+2;
       #print "first line: $nl1\n";
       #print "second line: $nl2\n";
       if ($nl1 =~ /^\s*$/) {
