@@ -159,7 +159,7 @@ sub process_tmp {
       $nl1 = substr $newline, 4, $p1-4;
       #print "keep: $nl1\n";
       if ( $nl1 =~ "http" ) {
-        $newline = "[[".$nl1."]]";
+        $newline = $line;
       } else { 
         $newline = "[[assets/img/".$nl1."]]";
       }
