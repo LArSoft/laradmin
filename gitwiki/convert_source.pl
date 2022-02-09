@@ -145,6 +145,7 @@ sub process_textile {
   my $p1;
   my $p2;
   my $p3;
+  my $p4;
   my $pc;
   my $nl1;
   my $nl2;
@@ -177,7 +178,56 @@ sub process_textile {
          #print "code block line: $newline\n";
        }
     }
-     print POUT "$newline\n";
+    # put all code block delmeters on a separate line
+    if ( $line =~ "<pre><code" ) {
+      #print "break apart $line\n";
+      $p1 = index($line, '<pre>');
+      $p2 = index($line, '">', $p1);
+      #print "found $p1 - $p2\n";
+      $nl1 = substr $line, 0, $p1;
+      $nl2 = substr $line, $p1, $p2+2;
+      #print "first line: $nl1\n";
+      #print "second line: $nl2\n";
+      if ($nl1 =~ /^\s*$/) {
+      } else { print POUT "$nl1\n"; }
+      print POUT "$nl2\n";
+      if ( $line =~ "</code></pre>" ) {
+        $p3 = index($line, '</code></pre>');
+        if ( $p3 < $p1 ) { print "OOPS\n"; exit 1; }
+        #print "found $p1 - $p2 - $p3\n";
+        $nl3 = substr $line, $p2+2, $p3-$p2-2;
+        $nl4 = substr $line, $p3+13;
+        #print "part 3: $nl3\n";
+        #print "finish: $nl4\n";
+        print POUT "$nl3\n";
+        if ($nl4 =~ /^\s*$/) {
+          $newline = "</code></pre>";
+        } else {
+          print POUT "</code></pre>\n";
+          $newline = $nl4;
+        }
+      } else {
+        $nl3 = substr $line, $p2+2;
+        #print "finish: $nl3\n";
+        $newline = $nl3;
+      }
+    } elsif ( $line =~ "</code></pre>" ) {
+      #print "break apart $line\n";
+      $p1 = index($line, '</code></pre>');
+      $nl1 = substr $line, 0, $p1;
+      $nl2 = substr $line, $p1+13;
+      #print "first line: $nl1\n";
+      #print "finish $nl2\n";
+      if ($nl1 =~ /^\s*$/) {
+      } else { print POUT "$nl1\n"; }
+      if ($nl2 =~ /^\s*$/) {
+        $newline = "</code></pre>";
+      } else {
+        print POUT "</code></pre>\n";
+        $newline = $nl2;
+      }
+    }
+    print POUT "$newline\n";
   }
   close(PIN);
   close(POUT);
