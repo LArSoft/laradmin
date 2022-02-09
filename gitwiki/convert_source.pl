@@ -39,7 +39,7 @@ foreach my $file (@filelist) {
   my $tfile = $file.".tmp";
   my $pdfile = $file.".pd";
   my $cmd = "~/bin/pandoc --wrap=none -f textile -t gfm -s \"".$tfile."\" -o \"".$pdfile."\"";
-  print "run $cmd\n";
+  #print "run $cmd\n";
   if ( system($cmd) != 0 ) {
      print "ERROR running $cmd\n";
      exit 1;
@@ -120,12 +120,49 @@ sub process_tmp {
       }
       #print "$newline\n";
     }
+    if( $line =~ '":https' ) {
+      #print "deal with: $line\n";
+      # there may be more than one occurance of the pattern
+      my $remnant = $line;
+      my $working_line = "";
+      while( $remnant =~ '":https' ) {
+        $p1 = index($remnant, '"');
+        $p2 = index($remnant, '":https');
+        $p3 = index($remnant, " ", $p2);
+        if ($p1 <= $p2 ) {
+          $nl1 = substr $remnant, 0, $p1;
+          # strip out the quotes when we get nl2
+          $nl2 = substr $remnant, $p1+1, $p2-$p1-1;
+          $nl3 = substr $remnant, $p2+2, $p3-$p2-2;
+          $nl4 = substr $remnant, $p3;
+          #print "nl1: $nl1\n";
+          #print "nl2: $nl2\n";
+          #print "nl3: $nl3\n";
+          #print "nl4: $nl4\n";
+          #$newline = $nl1."[".$nl2."](".$nl3.")".$nl4;
+          $working_line = $working_line.$nl1."[".$nl2."](".$nl3.")";
+          $remnant = $nl4;
+          #print "working line: $working_line\n";
+          #print "remnant: $remnant\n";
+        } else {
+          print "STUMPED by $remnant\n";
+          exit 1
+        }
+      }
+      #print "ending with $working_line\n";
+      #print "       and $remnant\n";
+      $newline = $working_line.$remnant;
+    }
     if( $newline =~ '\!\[\]\(' ) {
       #print "found image line $line\n";
       $p1 = index($newline, ')');
       $nl1 = substr $newline, 4, $p1-4;
       #print "keep: $nl1\n";
-      $newline = "[[assets/img/".$nl1."]]";
+      if ( $nl1 =~ "http" ) {
+        $newline = "[[".$nl1."]]";
+      } else { 
+        $newline = "[[assets/img/".$nl1."]]";
+      }
       #print "newline $newline\n";
     }
     print POUT "$newline\n";
@@ -145,7 +182,6 @@ sub process_textile {
   my $p1;
   my $p2;
   my $p3;
-  my $p4;
   my $pc;
   my $nl1;
   my $nl2;
@@ -159,17 +195,17 @@ sub process_textile {
     chop $line;
     $newline = $line;
     if( $line =~ "p{border: 1px solid black;}." ) {
-       print "found border: $line\n";
+       #print "found border: $line\n";
        print POUT "<pre><code class=\"sh\">\n";
        $newline =~ s%p{border: 1px solid black;}.%%;
-       print "newline: $newline\n";
+       #print "newline: $newline\n";
        $code_block = 1;
     } 
     if ( $code_block ) {
-       print "looking for end of code block: $line\n";
+       #print "looking for end of code block: $line\n";
        if ($newline =~ /^\s*$/) {
          $code_block = 0;
-         print "ending code block at $newline\n";
+         #print "ending code block at $newline\n";
          print POUT "</code></pre>\n";
        } else {
          # removing formatting that does not translate
