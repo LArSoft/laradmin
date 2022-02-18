@@ -161,7 +161,7 @@ sub process_tmp {
       if ( $nl1 =~ "http" ) {
         $newline = $line;
       } else { 
-        $newline = "[[assets/img/".$nl1."]]";
+        $newline = "[[assets/img/larsoft/".$nl1."]]";
       }
       #print "newline $newline\n";
     }
