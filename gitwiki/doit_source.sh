@@ -120,11 +120,11 @@ convert_files() {
 
 move_files() {
   cd ${working_dir}/larsoft.github.io || { echo "ERROR: cd ${working_dir}/larsoft.github.io failed"; exit 1; }
-  if [ ! -d testwiki/releases ]; then 
-     mkdir -p testwiki/releases
+  if [ ! -d ${wiki_dir}/releases ]; then 
+     mkdir -p ${wiki_dir}/releases
   fi
-  cp ../markdown/*.md testwiki/ || { echo "ERROR: failed to move markdown files"; exit 1; }
-  cd testwiki || { echo "ERROR: cd testwiki failed"; exit 1; }
+  cp ../markdown/*.md ${wiki_dir}/ || { echo "ERROR: failed to move markdown files"; exit 1; }
+  cd ${wiki_dir} || { echo "ERROR: cd ${wiki_dir} failed"; exit 1; }
   mv Release* releases/ || { echo "ERROR: mv Releases* failed"; exit 1; }
   mv Retired_Production_Releases.md releases/ || { echo "ERROR: mv Retired_Production_Releases.md failed"; exit 1; }
   mv Older_Releases.md releases/ || { echo "ERROR: mv Older_Releases.md failed"; exit 1; }
@@ -160,6 +160,8 @@ fi
 
 thisdir=${PWD}
 working_dir="${thisdir}/${workdir}"
+wiki_dir=wiki
+
 get_laradmin_dir
 
 create_working_directory 
