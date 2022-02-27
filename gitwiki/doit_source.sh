@@ -114,6 +114,8 @@ convert_files() {
   sed -i -e 's%^ *</code> *$%```%g' *.md
   sed -i -e 's%{{\\>TOC}}%%g' *.md
   sed -i -e 's%{{\\>toc}}%%g' *.md
+  sed -i -e 's%{{TOC}}%%g' *.md
+  sed -i -e 's%{{toc}}%%g' *.md
   sed -i -e 's%&amp;nbsp;% %g' *.md
   sed -i -e "s%&#39;%'%g" *.md
 }
