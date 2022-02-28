@@ -193,6 +193,12 @@ sub process_tmp {
       $newline =~ s%\Q\> \*%> -%g;
       #print "fixed $newline\n";
     }
+    if( $newline =~ m/\Q\> / ) {
+      $newline =~ s%^\s*\\> %> %g;
+    }
+    if( $newline =~ m/\Q\>/ ) {
+      $newline =~ s%^\s*\\>%>%g;
+    }
     print POUT "$newline\n";
   }
   print "finished with $pfile\n";
