@@ -99,17 +99,17 @@ sub process_tmp {
         #print " $nl4\n";
         $newline = $nl1."[".$nl3."](".$nl2.")".$nl4;
       } elsif (( $p22 > $p1 ) && ( $p22 < $p3 )) {
-        print " special case for $line\n";
+        #print " special case for $line\n";
         $nl1 = substr $line, 0, $p1;
         $nl2 = substr $line, $p1+4, $p22-$p1-4;
         $nl3 = substr $line, $p22+1, $p3-$p22-1;
         $nl4 = substr $line, $p3+4;
         $pc = index($nl2, ':');
-        print "found $pc in $nl2\n";
+        #print "found $pc in $nl2\n";
         if ( $pc > 0 ) {
           my $nl21 = substr $nl2, 0, $pc;
           my $nl22 = substr $nl2, $pc+1;
-          print "nl2 splits into %$nl21%$nl22%\n";
+          #print "nl2 splits into %$nl21%$nl22%\n";
           $nl2 = "https://cdcvs.fnal.gov/redmine/projects/".$nl21."/wiki/".$nl22
         }
         #print " $nl1\n";
@@ -118,7 +118,7 @@ sub process_tmp {
         #print "nl3: $nl3---\n";
         #print "nl4: $nl4---\n";
         $newline = $nl1."[".$nl3."](".$nl2.")".$nl4;
-        print "$newline\n";
+        #print "$newline\n";
       } else {
         $nl1 = substr $line, 0, $p1;
         $nl3 = substr $line, $p1+4, $p3-$p1-4;
@@ -187,6 +187,11 @@ sub process_tmp {
         $newline = "![".$nl1."](/assets/img/larsoft/".$nl1.")";
       }
       #print "newline $newline\n";
+    }
+    if( $newline =~ m/\Q\> \*/ ) {
+      ##print "fix $newline\n";
+      $newline =~ s%\Q\> \*%> -%g;
+      #print "fixed $newline\n";
     }
     print POUT "$newline\n";
   }
