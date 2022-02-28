@@ -194,10 +194,15 @@ sub process_tmp {
       #print "fixed $newline\n";
     }
     if( $newline =~ m/\Q\> / ) {
-      $newline =~ s%^\s*\\> %> %g;
+      $newline =~ s%^\s*\\> %> %;
     }
     if( $newline =~ m/\Q\>/ ) {
-      $newline =~ s%^\s*\\>%>%g;
+      $newline =~ s%^\s*\\>%>%;
+    }
+    if( $newline =~ m/^\s*\\\* / ) {
+      #print "fix $newline\n";
+      $newline =~ s%^\s*\\\* %- %;
+      #print "fixed $newline\n";
     }
     print POUT "$newline\n";
   }
