@@ -60,6 +60,7 @@ sub process_tmp {
   my $newline;
   my $p1;
   my $p2;
+  my $p22;
   my $p3;
   my $pc;
   my $nl1;
@@ -76,8 +77,9 @@ sub process_tmp {
       #print "fix $line\n";
       $p1 = index($line, '\[\[');
       $p2 = index($line, '\|', $p1);
+      $p22 = index($line, '|', $p1);
       $p3 = index($line, '\]\]', $p1);
-      #print "found $p1 - $p2 - $p3\n";
+      #print "found $p1 - $p2 - $p22 - $p3\n";
       if ( $p2 > $p1 ) {
         $nl1 = substr $line, 0, $p1;
         $nl2 = substr $line, $p1+4, $p2-$p1-4;
@@ -96,6 +98,27 @@ sub process_tmp {
         #print " $nl3\n";
         #print " $nl4\n";
         $newline = $nl1."[".$nl3."](".$nl2.")".$nl4;
+      } elsif (( $p22 > $p1 ) && ( $p22 < $p3 )) {
+        print " special case for $line\n";
+        $nl1 = substr $line, 0, $p1;
+        $nl2 = substr $line, $p1+4, $p22-$p1-4;
+        $nl3 = substr $line, $p22+1, $p3-$p22-1;
+        $nl4 = substr $line, $p3+4;
+        $pc = index($nl2, ':');
+        print "found $pc in $nl2\n";
+        if ( $pc > 0 ) {
+          my $nl21 = substr $nl2, 0, $pc;
+          my $nl22 = substr $nl2, $pc+1;
+          print "nl2 splits into %$nl21%$nl22%\n";
+          $nl2 = "https://cdcvs.fnal.gov/redmine/projects/".$nl21."/wiki/".$nl22
+        }
+        #print " $nl1\n";
+        #print "nl1: $nl1---\n";
+        #print "nl2: $nl2---\n";
+        #print "nl3: $nl3---\n";
+        #print "nl4: $nl4---\n";
+        $newline = $nl1."[".$nl3."](".$nl2.")".$nl4;
+        print "$newline\n";
       } else {
         $nl1 = substr $line, 0, $p1;
         $nl3 = substr $line, $p1+4, $p3-$p1-4;
