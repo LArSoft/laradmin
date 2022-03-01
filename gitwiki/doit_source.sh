@@ -112,6 +112,7 @@ convert_files() {
   sed -i -e 's%^ *<code class="c"> *$%```c%g' *.md
   sed -i -e 's%^ *<code class="diff"> *$%```diff%g' *.md
   sed -i -e 's%^ *</code> *$%```%g' *.md
+  sed -i -e 's%^\s*\\\#%1.%' *.md
   sed -i -e 's%{{\\>TOC}}%%g' *.md
   sed -i -e 's%{{\\>toc}}%%g' *.md
   sed -i -e 's%{{TOC}}%%g' *.md
