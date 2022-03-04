@@ -204,6 +204,12 @@ sub process_tmp {
       $newline =~ s%^\s*\\\* %- %;
       #print "fixed $newline\n";
     }
+#  sed -i -e 's/%20/_/g' *.md
+    if(( $newline =~ m/\Q%20/ ) && !( $newline =~ m/fermipoint/ )) {
+      #print "fix $newline\n";
+      $newline =~ s/\%20/_/g;
+      #print "fixed $newline\n";
+    }
     print POUT "$newline\n";
   }
   print "finished with $pfile\n";
