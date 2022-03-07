@@ -74,17 +74,21 @@ sub process_tmp {
     $line =~ s/\\_/_/g;
     $newline = $line;
     if( $line =~ m/\Q\[\[/ ) {
+      # there may be more than one occurance of the pattern
+      my $remnant = $line;
+      my $working_line = "";
       #print "fix $line\n";
-      $p1 = index($line, '\[\[');
-      $p2 = index($line, '\|', $p1);
-      $p22 = index($line, '|', $p1);
-      $p3 = index($line, '\]\]', $p1);
+      while( $remnant =~ m/\Q\[\[/ ) {
+      $p1 = index($remnant, '\[\[');
+      $p2 = index($remnant, '\|', $p1);
+      $p22 = index($remnant, '|', $p1);
+      $p3 = index($remnant, '\]\]', $p1);
       #print "found $p1 - $p2 - $p22 - $p3\n";
       if ( $p2 > $p1 ) {
-        $nl1 = substr $line, 0, $p1;
-        $nl2 = substr $line, $p1+4, $p2-$p1-4;
-        $nl3 = substr $line, $p2+2, $p3-$p2-2;
-        $nl4 = substr $line, $p3+4;
+        $nl1 = substr $remnant, 0, $p1;
+        $nl2 = substr $remnant, $p1+4, $p2-$p1-4;
+        $nl3 = substr $remnant, $p2+2, $p3-$p2-2;
+        $nl4 = substr $remnant, $p3+4;
         $pc = index($nl2, ':');
         #print "found $pc in $nl2\n";
         if ( $pc > 0 ) {
@@ -97,13 +101,14 @@ sub process_tmp {
         #print " $nl2\n";
         #print " $nl3\n";
         #print " $nl4\n";
-        $newline = $nl1."[".$nl3."](".$nl2.")".$nl4;
+        $working_line = $working_line.$nl1."[".$nl3."](".$nl2.")";
+        $remnant = $nl4;
       } elsif (( $p22 > $p1 ) && ( $p22 < $p3 )) {
-        #print " special case for $line\n";
-        $nl1 = substr $line, 0, $p1;
-        $nl2 = substr $line, $p1+4, $p22-$p1-4;
-        $nl3 = substr $line, $p22+1, $p3-$p22-1;
-        $nl4 = substr $line, $p3+4;
+        #print " special case for $remnant\n";
+        $nl1 = substr $remnant, 0, $p1;
+        $nl2 = substr $remnant, $p1+4, $p22-$p1-4;
+        $nl3 = substr $remnant, $p22+1, $p3-$p22-1;
+        $nl4 = substr $remnant, $p3+4;
         $pc = index($nl2, ':');
         #print "found $pc in $nl2\n";
         if ( $pc > 0 ) {
@@ -117,12 +122,13 @@ sub process_tmp {
         #print "nl2: $nl2---\n";
         #print "nl3: $nl3---\n";
         #print "nl4: $nl4---\n";
-        $newline = $nl1."[".$nl3."](".$nl2.")".$nl4;
+        $working_line = $working_line.$nl1."[".$nl3."](".$nl2.")";
+        $remnant = $nl4;
         #print "$newline\n";
       } else {
-        $nl1 = substr $line, 0, $p1;
-        $nl3 = substr $line, $p1+4, $p3-$p1-4;
-        $nl4 = substr $line, $p3+4;
+        $nl1 = substr $remnant, 0, $p1;
+        $nl3 = substr $remnant, $p1+4, $p3-$p1-4;
+        $nl4 = substr $remnant, $p3+4;
         $nl2 = $nl3;
         $nl2 =~ s% %_%g;
         $pc = index($nl2, ':');
@@ -137,10 +143,13 @@ sub process_tmp {
         #print " $nl2\n";
         #print " $nl3\n";
         #print " $nl4\n";
-        $newline = $nl1."[".$nl3."](".$nl2.")".$nl4;
-        #$newline =~ s%\Q\[\[%(%g;
-        #$newline =~ s%\Q\]\]%)%g;
+        $working_line = $working_line.$nl1."[".$nl3."](".$nl2.")";
+        $remnant = $nl4;
       }
+      }
+      #print "ending with $working_line\n";
+      #print "       and $remnant\n";
+      $newline = $working_line.$remnant;
       #print "$newline\n";
     }
     if( $line =~ '":https' ) {
