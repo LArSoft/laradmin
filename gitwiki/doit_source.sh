@@ -14,12 +14,16 @@ declare -a internal_files=(LArSoft_Internals.md \
  Install_for_cvmfs.md \
  Installing_products_on_cvmfs.md \
  LArSoft_cvmfs.md \
+ LArSoft_License.md \
  LArSoft_release_management.md \
+ LArSoft_release_naming_policy.md \
  Migration_to_root_6.md \
+ Move_to_v05.md \
  PMA_module_code_analysis.md \
  Policy_for_development_from_a_tagged_release.md \
  Procedure_to_create_a_new_version_of_larsoft_data.md \
  ProtoDUNE_and_DUNE_Far_Detector_v06_57_00.md \
+ Special_Instructions_for_Major_Releases.md \
  Truncating_commit_history.md \
  Using_the_cetmodules_migration_script.md \
  Usability_improvements.md \
@@ -175,6 +179,9 @@ move_files() {
   mv How_to_tag_and_build_a_LArSoft* internal/ || { echo "ERROR: mv How_to_tag_and_build_a_LArSoft* failed"; exit 1; }
   mv Removing_old_* internal/ || { echo "ERROR: mv Removing_old_* failed"; exit 1; }
   sed -i -e 's%(LArSoft_Internals)%(internal/LArSoft_Internals)%g' *.md
+  sed -i -e 's%(LArSoft_release_naming_policy)%(/wiki/internal/LArSoft_release_naming_policy)%g' releases/*.md
+  sed -i -e 's%(Move_to_v05)%(/wiki/internal/Move_to_v05)%g' releases/*.md
+  sed -i -e 's%(Installation_procedures)%(/wiki/Installation_procedures)%g' internal/*.md
 }
 
 # Determine command options (just -h for help)
