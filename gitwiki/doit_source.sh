@@ -4,6 +4,27 @@
 thisComFull=$(basename $0)
 fullCom="${thisComFull%.*}"
 
+declare -a internal_files=(LArSoft_Internals.md \
+ Adding_or_removing_users.md Building_with_clang.md \
+ Code_analysis_process_and_tools.md \
+ Code_and_Performance_analysis_tools.md \
+ "Data_product_revision_(phase_II).md" \
+ How_we_initialized_larsoft_cvmfs.md \
+ Informal_list_of_experiment_contacts.md \
+ Install_for_cvmfs.md \
+ Installing_products_on_cvmfs.md \
+ LArSoft_cvmfs.md \
+ LArSoft_release_management.md \
+ Migration_to_root_6.md \
+ PMA_module_code_analysis.md \
+ Policy_for_development_from_a_tagged_release.md \
+ Procedure_to_create_a_new_version_of_larsoft_data.md \
+ ProtoDUNE_and_DUNE_Far_Detector_v06_57_00.md \
+ Truncating_commit_history.md \
+ Using_the_cetmodules_migration_script.md \
+ Usability_improvements.md \
+ What_Lynn_does.md)
+
 # Usage function
 function usage() {
     echo "Usage: $fullCom <working_dir>"
@@ -124,11 +145,13 @@ convert_files() {
 
 move_files() {
   cd ${working_dir}/larsoft.github.io || { echo "ERROR: cd ${working_dir}/larsoft.github.io failed"; exit 1; }
-  if [ ! -d ${wiki_dir}/releases ]; then 
-     mkdir -p ${wiki_dir}/releases
+  full_wiki_dir=${working_dir}/larsoft.github.io/${wiki_dir}
+  cp ../markdown/*.md ${full_wiki_dir}/ || { echo "ERROR: failed to move markdown files"; exit 1; }
+  cd ${full_wiki_dir} || { echo "ERROR: cd ${full_wiki_dir} failed"; exit 1; }
+  # releases
+  if [ ! -d ${full_wiki_dir}/releases ]; then 
+     mkdir -p ${full_wiki_dir}/releases
   fi
-  cp ../markdown/*.md ${wiki_dir}/ || { echo "ERROR: failed to move markdown files"; exit 1; }
-  cd ${wiki_dir} || { echo "ERROR: cd ${wiki_dir} failed"; exit 1; }
   mv Release* releases/ || { echo "ERROR: mv Releases* failed"; exit 1; }
   mv Retired_Production_Releases.md releases/ || { echo "ERROR: mv Retired_Production_Releases.md failed"; exit 1; }
   mv Older_Releases.md releases/ || { echo "ERROR: mv Older_Releases.md failed"; exit 1; }
@@ -142,6 +165,16 @@ move_files() {
   sed -i -e 's%(FutureChanges)%(releases/FutureChanges)%g' *.md
   sed -i -e 's%(Core_Services_Review)%(releases/Core_Services_Review)%g' *.md
   sed -i -e 's%(Breaking_Changes)%(releases/Breaking_Changes)%g' *.md
+  # internal files
+  if [ ! -d ${full_wiki_dir}/internal ]; then 
+     mkdir -p ${full_wiki_dir}/internal
+  fi
+  for ifile in "${internal_files[@]}"; do
+    mv ${ifile} internal/ || { echo "ERROR: mv ${ifile} failed"; exit 1; }
+  done
+  mv How_to_tag_and_build_a_LArSoft* internal/ || { echo "ERROR: mv How_to_tag_and_build_a_LArSoft* failed"; exit 1; }
+  mv Removing_old_* internal/ || { echo "ERROR: mv Removing_old_* failed"; exit 1; }
+  sed -i -e 's%(LArSoft_Internals)%(internal/LArSoft_Internals)%g' *.md
 }
 
 # Determine command options (just -h for help)
