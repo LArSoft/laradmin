@@ -147,6 +147,18 @@ convert_files() {
   sed -i -e 's%http:%https:%g' *.md
   sed -i -e 's%&amp;nbsp;% %g' *.md
   sed -i -e "s%&#39;%'%g" *.md
+  # fix redmine code links
+  sed -i -e 's%//cdcvs.fnal.gov/redmine/projects/larcore/repository/revisions/develop/entry/%//github.com/LArSoft/larcore/blob/develop/%g' *.md
+  sed -i -e 's%//cdcvs.fnal.gov/redmine/projects/larcoreobj/repository/revisions/develop/entry/%//github.com/LArSoft/larcoreobj/blob/develop/%g' *.md
+  sed -i -e 's%//cdcvs.fnal.gov/redmine/projects/larcorealg/repository/revisions/develop/entry/%//github.com/LArSoft/larcorealg/blob/develop/%g' *.md
+  sed -i -e 's%//cdcvs.fnal.gov/redmine/projects/lardata/repository/revisions/develop/entry/%//github.com/LArSoft/lardata/blob/develop/%g' *.md
+  sed -i -e 's%//cdcvs.fnal.gov/redmine/projects/lardataobj/repository/revisions/develop/entry/%//github.com/LArSoft/lardataobj/blob/develop/%g' *.md
+  sed -i -e 's%//cdcvs.fnal.gov/redmine/projects/lardataalg/repository/revisions/develop/entry/%//github.com/LArSoft/lardataalg/blob/develop/%g' *.md
+  sed -i -e 's%//cdcvs.fnal.gov/redmine/projects/larsim/repository/revisions/develop/entry/%//github.com/LArSoft/larsim/blob/develop/%g' *.md
+  sed -i -e 's%//cdcvs.fnal.gov/redmine/projects/larreco/repository/revisions/develop/entry/%//github.com/LArSoft/larreco/blob/develop/%g' *.md
+  sed -i -e 's%//cdcvs.fnal.gov/redmine/projects/larexamples/repository/revisions/develop/entry/%//github.com/LArSoft/larexamples/blob/develop/%g' *.md
+  sed -i -e 's%//cdcvs.fnal.gov/redmine/projects/larreco/repository/revisions/develop/show/%//github.com/LArSoft/larreco/blob/develop/%g' *.md
+  sed -i -e 's%//cdcvs.fnal.gov/redmine/projects/larexamples/repository/revisions/develop/show/%//github.com/LArSoft/larexamples/blob/develop/%g' *.md
 }
 
 move_files() {
