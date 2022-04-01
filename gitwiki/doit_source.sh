@@ -189,21 +189,22 @@ move_files() {
   sed -i -e 's%(Core_Services_Review)%(releases/Core_Services_Review)%g' *.md
   sed -i -e 's%(Breaking_Changes)%(releases/Breaking_Changes)%g' *.md
   # internal files
-  if [ ! -d ${full_wiki_dir}/internal ]; then 
-     mkdir -p ${full_wiki_dir}/internal
+  if [ ! -d ${full_wiki_dir}/LArSoftInternals ]; then
+     mkdir -p ${full_wiki_dir}/LArSoftInternals
   fi
   for ifile in "${internal_files[@]}"; do
-    mv ${ifile} internal/ || { echo "ERROR: mv ${ifile} failed"; exit 1; }
+    mv ${ifile} LArSoftInternals/ || { echo "ERROR: mv ${ifile} failed"; exit 1; }
   done
-  mv How_to_tag_and_build_a_LArSoft* internal/ || { echo "ERROR: mv How_to_tag_and_build_a_LArSoft* failed"; exit 1; }
-  mv Removing_old_* internal/ || { echo "ERROR: mv Removing_old_* failed"; exit 1; }
-  sed -i -e 's%(LArSoft_Internals)%(internal/LArSoft_Internals)%g' *.md
-  sed -i -e 's%(LArSoft_release_naming_policy)%(/LArSoftWiki/internal/LArSoft_release_naming_policy)%g' releases/*.md
-  sed -i -e 's%(Move_to_v05)%(/LArSoftWiki/internal/Move_to_v05)%g' releases/*.md
-  sed -i -e 's%(Data_products_architecture_and_design)%(/LArSoftWiki/Data_products_architecture_and_design)%g' internal/*.md
-  sed -i -e 's%(Getting_new_code_into_a_LArSoft_release)%(/LArSoftWiki/Getting_new_code_into_a_LArSoft_release)%g' internal/*.md
-  sed -i -e 's%(Installation_procedures)%(/LArSoftWiki/Installation_procedures)%g' internal/*.md
-  sed -i -e 's%(LArSoft_git_Guidelines)%(/LArSoftWiki/LArSoft_git_Guidelines)%g' internal/*.md
+  mv How_to_tag_and_build_a_LArSoft* LArSoftInternals/ || { echo "ERROR: mv How_to_tag_and_build_a_LArSoft* failed"; exit 1; }
+  mv Removing_old_* LArSoftInternals/ || { echo "ERROR: mv Removing_old_* failed"; exit 1; }
+  mv LArSoftInternals/LArSoft_Internals.md LArSoftInternals/index.md || { echo "ERROR: renaming LArSoft_Internals.md failed"; exit 1; }
+  sed -i -e 's%(LArSoft_Internals)%(LArSoftInternals/LArSoft_Internals)%g' *.md
+  sed -i -e 's%(LArSoft_release_naming_policy)%(/LArSoftWiki/LArSoftInternals/LArSoft_release_naming_policy)%g' releases/*.md
+  sed -i -e 's%(Move_to_v05)%(/LArSoftWiki/LArSoftInternals/Move_to_v05)%g' releases/*.md
+  sed -i -e 's%(Data_products_architecture_and_design)%(/LArSoftWiki/Data_products_architecture_and_design)%g' LArSoftInternals/*.md
+  sed -i -e 's%(Getting_new_code_into_a_LArSoft_release)%(/LArSoftWiki/Getting_new_code_into_a_LArSoft_release)%g' LArSoftInternals/*.md
+  sed -i -e 's%(Installation_procedures)%(/LArSoftWiki/Installation_procedures)%g' LArSoftInternals/*.md
+  sed -i -e 's%(LArSoft_git_Guidelines)%(/LArSoftWiki/LArSoft_git_Guidelines)%g' LArSoftInternals/*.md
 }
 
 # Determine command options (just -h for help)
