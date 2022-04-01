@@ -159,13 +159,18 @@ convert_files() {
   sed -i -e 's%//cdcvs.fnal.gov/redmine/projects/larexamples/repository/revisions/develop/entry/%//github.com/LArSoft/larexamples/blob/develop/%g' *.md
   sed -i -e 's%//cdcvs.fnal.gov/redmine/projects/larreco/repository/revisions/develop/show/%//github.com/LArSoft/larreco/blob/develop/%g' *.md
   sed -i -e 's%//cdcvs.fnal.gov/redmine/projects/larexamples/repository/revisions/develop/show/%//github.com/LArSoft/larexamples/blob/develop/%g' *.md
+  sed -i -e 's%(LArSoftWiki%(/LArSoftWiki/index%g' *.md
 }
 
 move_files() {
   cd ${working_dir}/larsoft.github.io || { echo "ERROR: cd ${working_dir}/larsoft.github.io failed"; exit 1; }
   full_wiki_dir=${working_dir}/larsoft.github.io/${wiki_dir}
+  if [ ! -d ${full_wiki_dir} ]; then 
+     mkdir -p ${full_wiki_dir}
+  fi
   cp ../markdown/*.md ${full_wiki_dir}/ || { echo "ERROR: failed to move markdown files"; exit 1; }
   cd ${full_wiki_dir} || { echo "ERROR: cd ${full_wiki_dir} failed"; exit 1; }
+  mv LArSoftWiki.md index.md
   # releases
   if [ ! -d ${full_wiki_dir}/releases ]; then 
      mkdir -p ${full_wiki_dir}/releases
@@ -180,7 +185,7 @@ move_files() {
   mv Explicit_code_changes_since_v06_18_00.md releases/ || { echo "ERROR: mv Explicit_code_changes_since_v06_18_00.md failed"; exit 1; }
   mv Breaking_Changes*.md releases/ || { echo "ERROR: mv Breaking_Changes*.md failed"; exit 1; }
   sed -i -e 's%(LArSoft_release_list)%(releases/LArSoft_release_list)%g' *.md
-  sed -i -e 's%(FutureChanges)%(/wiki/releases/FutureChanges)%g' *.md
+  sed -i -e 's%(FutureChanges)%(/LArSoftWiki/releases/FutureChanges)%g' *.md
   sed -i -e 's%(Core_Services_Review)%(releases/Core_Services_Review)%g' *.md
   sed -i -e 's%(Breaking_Changes)%(releases/Breaking_Changes)%g' *.md
   # internal files
@@ -193,12 +198,12 @@ move_files() {
   mv How_to_tag_and_build_a_LArSoft* internal/ || { echo "ERROR: mv How_to_tag_and_build_a_LArSoft* failed"; exit 1; }
   mv Removing_old_* internal/ || { echo "ERROR: mv Removing_old_* failed"; exit 1; }
   sed -i -e 's%(LArSoft_Internals)%(internal/LArSoft_Internals)%g' *.md
-  sed -i -e 's%(LArSoft_release_naming_policy)%(/wiki/internal/LArSoft_release_naming_policy)%g' releases/*.md
-  sed -i -e 's%(Move_to_v05)%(/wiki/internal/Move_to_v05)%g' releases/*.md
-  sed -i -e 's%(Data_products_architecture_and_design)%(/wiki/Data_products_architecture_and_design)%g' internal/*.md
-  sed -i -e 's%(Getting_new_code_into_a_LArSoft_release)%(/wiki/Getting_new_code_into_a_LArSoft_release)%g' internal/*.md
-  sed -i -e 's%(Installation_procedures)%(/wiki/Installation_procedures)%g' internal/*.md
-  sed -i -e 's%(LArSoft_git_Guidelines)%(/wiki/LArSoft_git_Guidelines)%g' internal/*.md
+  sed -i -e 's%(LArSoft_release_naming_policy)%(/LArSoftWiki/internal/LArSoft_release_naming_policy)%g' releases/*.md
+  sed -i -e 's%(Move_to_v05)%(/LArSoftWiki/internal/Move_to_v05)%g' releases/*.md
+  sed -i -e 's%(Data_products_architecture_and_design)%(/LArSoftWiki/Data_products_architecture_and_design)%g' internal/*.md
+  sed -i -e 's%(Getting_new_code_into_a_LArSoft_release)%(/LArSoftWiki/Getting_new_code_into_a_LArSoft_release)%g' internal/*.md
+  sed -i -e 's%(Installation_procedures)%(/LArSoftWiki/Installation_procedures)%g' internal/*.md
+  sed -i -e 's%(LArSoft_git_Guidelines)%(/LArSoftWiki/LArSoft_git_Guidelines)%g' internal/*.md
 }
 
 # Determine command options (just -h for help)
@@ -221,7 +226,7 @@ fi
 
 thisdir=${PWD}
 working_dir="${thisdir}/${workdir}"
-wiki_dir=wiki
+wiki_dir=LArSoftWiki
 
 get_laradmin_dir
 
