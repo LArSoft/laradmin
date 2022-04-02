@@ -198,7 +198,7 @@ move_files() {
   mv How_to_tag_and_build_a_LArSoft* LArSoftInternals/ || { echo "ERROR: mv How_to_tag_and_build_a_LArSoft* failed"; exit 1; }
   mv Removing_old_* LArSoftInternals/ || { echo "ERROR: mv Removing_old_* failed"; exit 1; }
   mv LArSoftInternals/LArSoft_Internals.md LArSoftInternals/index.md || { echo "ERROR: renaming LArSoft_Internals.md failed"; exit 1; }
-  sed -i -e 's%(LArSoft_Internals)%(LArSoftInternals/LArSoft_Internals)%g' *.md
+  sed -i -e 's%(LArSoft_Internals)%(LArSoftInternals/)%g' *.md
   sed -i -e 's%(LArSoft_release_naming_policy)%(/LArSoftWiki/LArSoftInternals/LArSoft_release_naming_policy)%g' releases/*.md
   sed -i -e 's%(Move_to_v05)%(/LArSoftWiki/LArSoftInternals/Move_to_v05)%g' releases/*.md
   sed -i -e 's%(Data_products_architecture_and_design)%(/LArSoftWiki/Data_products_architecture_and_design)%g' LArSoftInternals/*.md
